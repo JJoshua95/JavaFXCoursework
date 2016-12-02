@@ -1,0 +1,5 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+.root {
+-fx-background-color: rgba(127, 30, 48, 0.99); /* used this to find color rgba values http://www.css3maker.com/css-3-rgba.html */
+}
+

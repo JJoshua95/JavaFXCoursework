@@ -1,0 +1,9 @@
+package application;
+
+public class Employee {
+	
+	private boolean isManager = false;
+	private String username;
+	private String password;
+
+}
