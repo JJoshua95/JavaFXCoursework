@@ -1,0 +1,26 @@
+package application;
+
+import java.sql.*;
+
+public class SqliteConnection {
+	
+	/**
+	 * The Connector method establishes a link with a locally saved database named RestaurantDB.sqlite which contains 
+	 * information like passwords and accounts details, this allows the java program to access data values stored in it and to 
+	 * store further data in it.
+	 * 
+	 * @return connection
+	 */
+	
+	public static Connection Connector() {
+		try {
+			Class.forName("org.sqlite.JDBC");
+			Connection connection = DriverManager.getConnection("jdbc:sqlite:RestaurantDB.sqlite");
+			return connection;
+		} catch (Exception e) {
+			System.out.println(e);
+			return null;
+		}
+	}
+
+}
