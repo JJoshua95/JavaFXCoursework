@@ -7,6 +7,8 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -15,14 +17,14 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Circle?>
 
-<AnchorPane prefHeight="500.0" prefWidth="1208.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StaffScreenController">
+<AnchorPane prefHeight="556.0" prefWidth="1208.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StaffScreenController">
    <children>
-      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#SignOut" text="Sign Out" textFill="#f50303" />
-      <Label fx:id="lblUser" alignment="CENTER_RIGHT" layoutX="243.0" layoutY="14.0" prefHeight="27.0" prefWidth="129.0" text="Username Label" />
-      <GridPane layoutX="57.0" layoutY="104.0" prefHeight="379.0" prefWidth="313.0">
+      <Button layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#SignOut" text="Sign Out" textFill="#f50303" />
+      <Label fx:id="lblUser" alignment="CENTER_RIGHT" layoutX="259.0" layoutY="9.0" prefHeight="27.0" prefWidth="129.0" text="Username Label" textFill="#1ad324" />
+      <GridPane layoutX="57.0" layoutY="104.0" prefHeight="379.0" prefWidth="343.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="167.0" minWidth="10.0" prefWidth="157.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="185.0" minWidth="10.0" prefWidth="156.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="211.0" minWidth="10.0" prefWidth="198.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="185.0" minWidth="10.0" prefWidth="145.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -30,12 +32,12 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Circle fx:id="circleTable1" fill="#ff1f1f" radius="50.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fx:id="circleTable1" fill="#fc4545" radius="50.0" stroke="BLACK" strokeType="INSIDE" />
             <Circle fx:id="circleTable3" fill="#fffe21" radius="50.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="1" />
-            <Circle fx:id="circleTable5" fill="#1f94ff" radius="50.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="2" />
+            <Circle fx:id="circleTable5" fill="#2ebdff" radius="50.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="2" />
             <Circle fx:id="circleTable2" fill="#ff8421" radius="50.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" />
             <Circle fx:id="circleTable4" fill="#1fff51" radius="50.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Circle fx:id="circleTable6" fill="#b41fff" radius="50.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Circle fx:id="circleTable6" fill="#9d6ecc" radius="50.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label alignment="CENTER" prefHeight="17.0" prefWidth="100.0" text="Table 1" />
             <Label alignment="CENTER" prefHeight="17.0" prefWidth="101.0" text="Table 2" GridPane.columnIndex="1" />
             <Label alignment="CENTER" layoutX="158.0" layoutY="63.0" prefHeight="17.0" prefWidth="101.0" text="Table 3" GridPane.rowIndex="1" />
@@ -44,8 +46,8 @@
             <Label alignment="CENTER" layoutX="10.0" layoutY="185.0" prefHeight="17.0" prefWidth="101.0" text="Table 6" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
       </GridPane>
-      <Label layoutX="164.0" layoutY="510.0" prefHeight="17.0" prefWidth="58.0" text="(Kitchen)" />
-      <Label layoutX="164.0" layoutY="73.0" text="(Entance)" />
+      <Label layoutX="173.0" layoutY="508.0" prefHeight="17.0" prefWidth="58.0" text="(Kitchen)" />
+      <Label layoutX="175.0" layoutY="73.0" text="(Entance)" />
       <TabPane layoutX="398.0" prefHeight="542.0" prefWidth="810.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="         Current Order           ">
@@ -54,9 +56,9 @@
                      <children>
                         <Pane prefHeight="562.0" prefWidth="811.0">
                            <children>
-                              <ListView layoutX="23.0" layoutY="39.0" prefHeight="367.0" prefWidth="349.0" />
+                              <ListView fx:id="menuListView" layoutX="23.0" layoutY="39.0" prefHeight="367.0" prefWidth="349.0" />
                               <Label layoutX="23.0" layoutY="14.0" prefHeight="17.0" prefWidth="48.0" text="Menu:" />
-                              <Button layoutX="314.0" layoutY="430.0" mnemonicParsing="false" text="Add" />
+                              <Button fx:id="addFoodItemBtn" layoutX="314.0" layoutY="430.0" mnemonicParsing="false" onAction="#AddItemToOrder" text="Add" />
                               <Label layoutX="96.0" layoutY="430.0" prefHeight="27.0" prefWidth="202.0" text="Add to currently selected order:" />
                               <GridPane layoutX="398.0" layoutY="23.0" prefHeight="500.0" prefWidth="388.0">
                                 <columnConstraints>
@@ -85,10 +87,11 @@
                                     <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                     <Button mnemonicParsing="false" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                     <CheckBox mnemonicParsing="false" text="Order Complete?" GridPane.rowIndex="7" />
-                                    <ListView prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <Button mnemonicParsing="false" text="Remove Item" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <ListView fx:id="currentOrderListView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Button fx:id="removeFoodItemFromOrder" mnemonicParsing="false" onAction="#RemoveItemFromOrder" text="Remove Item" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                     <Label text="TotalValue" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                     <Label text="TimeStamp" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Button mnemonicParsing="false" text="Delete" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
                                  </children>
                               </GridPane>
                               <Separator layoutX="375.0" orientation="VERTICAL" prefHeight="489.0" prefWidth="15.0" />
@@ -102,14 +105,18 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="551.0" prefWidth="810.0">
                      <children>
-                        <ListView layoutX="224.0" layoutY="13.0" prefHeight="489.0" prefWidth="564.0" />
                         <Button layoutX="85.0" layoutY="442.0" mnemonicParsing="false" text="Search" />
+                        <TableView layoutX="223.0" layoutY="29.0" prefHeight="445.0" prefWidth="542.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="C1" />
+                            <TableColumn prefWidth="75.0" text="C2" />
+                          </columns>
+                        </TableView>
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
         </tabs>
       </TabPane>
-      <Separator layoutX="370.0" layoutY="1.0" orientation="VERTICAL" prefHeight="600.0" prefWidth="58.0" />
    </children>
 </AnchorPane>

@@ -67,13 +67,13 @@ public class LoginController implements Initializable {
 				primaryStage.setScene(scene);
 				primaryStage.show();
 			} else {
-				lblLoginStatus.setText("Username and Password Incorrect");
+				lblLoginStatus.setText("Username and/or Password Incorrect");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("SQLerr");
 			e.printStackTrace();
-			lblLoginStatus.setText("Username and Password Incorrect");
+			lblLoginStatus.setText("Username and/or Password Incorrect");
 		} catch (IOException e) {
 			System.out.println("IOerr");
 			// TODO Auto-generated catch block

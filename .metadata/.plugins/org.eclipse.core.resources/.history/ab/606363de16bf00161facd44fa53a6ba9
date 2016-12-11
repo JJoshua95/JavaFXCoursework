@@ -1,0 +1,103 @@
+package application;
+
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+
+public class StaffScreenController implements Initializable {
+	
+	// UI Components
+	@FXML
+	private Label lblUser;
+	@FXML
+	private Circle circleTable1;
+	@FXML
+	private Circle circleTable2;
+	@FXML
+	private Circle circleTable3;
+	@FXML
+	private Circle circleTable4;
+	@FXML
+	private Circle circleTable5;
+	@FXML
+	private Circle circleTable6;
+	@FXML
+	private ListView<Food> menuListView;
+	
+	// Data holders
+	private ObservableList<Food> menuObservableList;
+	
+	public StaffScreenController() {
+		menuObservableList = FXCollections.observableArrayList();
+		// add some food to the menu
+		menuObservableList.addAll(
+				new Food("chicken", 3.60),
+				new Food("beef", 4.30),
+				new Food("lamb", 5.00)
+				);
+		
+	}
+		
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		// TODO Auto-generated method stub
+		menuListView.setItems(menuObservableList);
+		menuListView.setCellFactory(new Callback<ListView<Food>, ListCell<Food>>() {
+			@Override
+			public ListCell<Food> call(ListView<Food> p) {
+				ListCell<Food> cell = new ListCell<Food>() {
+					@Override
+					protected void updateItem(Food f, boolean bool) {
+						super.updateItem(f, bool);
+						if (f != null) {
+							DecimalFormat df = new DecimalFormat("#.00");
+							setText(f.getMenuItem() + ": £" + df.format(f.getPrice()));
+						}
+					}
+				};
+				
+				return cell;
+			}
+		});
+	}
+	
+	
+	
+	public void GetUser(String user) {
+		lblUser.setText(user);
+		//System.out.println(user);
+	}
+	
+	public void SignOut(ActionEvent event) {
+		try {
+			((Node)event.getSource()).getScene().getWindow().hide();
+			Stage primaryStage = new Stage();
+			FXMLLoader loader = new FXMLLoader();
+			Pane root = loader.load(getClass().getResource("/application/Login.fxml").openStream());
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		} catch (Exception e) {
+			
+		}
+	}
+
+}
