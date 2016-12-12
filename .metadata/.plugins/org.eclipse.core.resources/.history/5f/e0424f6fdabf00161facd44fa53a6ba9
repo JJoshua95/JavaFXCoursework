@@ -1,0 +1,27 @@
+package application;
+import java.sql.*;
+
+public class StaffScreenModel extends LoginModel {
+	
+	/*
+	private Connection connection;
+	
+	public StaffScreenModel() {
+		connection = SqliteConnection.Connector();
+		if (connection == null) {
+			System.exit(1);
+		}
+	}
+	
+	public boolean isDbConnected() {
+		try {
+			return !connection.isClosed();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	*/
+
+}

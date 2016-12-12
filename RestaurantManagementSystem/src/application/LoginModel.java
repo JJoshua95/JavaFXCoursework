@@ -4,16 +4,24 @@ import java.sql.*;
 
 public class LoginModel {
 	
-	Connection connection;
+	private Connection connection;
 	
-	public LoginModel() {
+	void closeConnection() {
+		try {
+			this.connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			}
+	}
+	
+	LoginModel() {
 		connection = SqliteConnection.Connector();
 		if (connection == null) {
 			System.exit(1);
 		}
 	}
 	
-	public boolean isDbConnected() {
+	boolean isDbConnected() {
 		try {
 			return !connection.isClosed();
 		} catch (SQLException e) {
@@ -23,7 +31,7 @@ public class LoginModel {
 		}
 	}
 	
-	public boolean verifyStaffLogin(String user, String pass) throws SQLException {
+	boolean verifyStaffLogin(String user, String pass) throws SQLException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		//String query = "select * from staff where username = ? and password = ?"; 
@@ -51,12 +59,12 @@ public class LoginModel {
 		}
 	}
 	
-	public boolean verifyManagerLogin(String user, String pass) throws SQLException {
+	boolean verifyManagerLogin(String user, String pass) throws SQLException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		//String query = "select * from staff where username = ? and password = ?"; 
 		String query = "select * from staff where username = ? and password = ? and isManager = 'true'";
-		// query database for username and password from user and password args and isManager = true
+		// query database for username and password from user and password arguments and isManager = true
 		try {
 			preparedStatement = connection.prepareStatement(query);
 			

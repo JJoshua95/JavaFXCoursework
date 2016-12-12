@@ -1,0 +1,103 @@
+package application;
+import java.sql.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import javafx.collections.ObservableList;
+
+public class StaffScreenModel {
+	
+	private Connection connection;
+	
+	StaffScreenModel() {
+		connection = SqliteConnection.Connector();
+		if (connection == null) {
+			System.exit(1);
+		}
+	}
+	
+	boolean isDbConnected() {
+		try {
+			return !connection.isClosed();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	void SaveCurrentOrderToDatabase(int tableNum, ObservableList<Food> orderList) throws SQLException {
+		
+		//String[] foodItemArr; // array to hold strings of the items in the form [name:cost, name:cost, ... ]
+		ArrayList<String> foodItemList = new ArrayList<String>();
+		
+		// Store the food price and costs into a single array that we will write to a database cell as a string
+		for (Food f : orderList) {
+			String foodNameString;
+			String foodPriceString;
+			foodNameString = f.getMenuItemName();
+			DecimalFormat df = new DecimalFormat("#.00"); // to print the price to 2dp i.e. to the nearest penny
+			foodPriceString = df.format(f.getPrice());
+			foodItemList.add("" + foodNameString + ":" + foodPriceString);
+		}
+		//foodItemList.toString();
+		System.out.println(foodItemList.toString());
+		/*
+		for (String s: foodItemList) {
+			System.out.println(s);
+		}
+		*/
+		
+		//String query = "INSERT INTO orders (tableNo, orderList) VALUES (1, ?) ";
+		
+		PreparedStatement preparedStatement = null; // to hold the query
+		
+		try {
+			
+			String query = "INSERT INTO orders (tableNo, orderList) VALUES (?, ?)";
+			
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, tableNum);
+			preparedStatement.setString(2, foodItemList.toString());
+			preparedStatement.execute();
+			
+			// Handle overwriting of tables already written
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			preparedStatement.close();
+		}
+		
+	}
+	
+	ObservableList<Food> RetrieveATableOrderFromDB(int tableNoVal) {
+		String targetOrder;
+		ObservableList<Food> thisList = null;
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		
+		try {
+			
+			String query = "SELECT orderList FROM orders WHERE tableNo = ?";
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tableNoVal);
+			resSet = prepStmt.executeQuery();
+			if (resSet.next()) {
+				//System.out.println(resSet.getString(1));
+				targetOrder = resSet.getString(1);
+				
+			} else {
+				System.out.println("No order found for that table");
+				throw new Exception();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return thisList;
+		
+	}
+
+}

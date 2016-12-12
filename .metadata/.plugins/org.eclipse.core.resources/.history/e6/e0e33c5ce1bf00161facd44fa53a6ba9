@@ -1,0 +1,28 @@
+package application;
+import java.sql.*;
+
+import javafx.collections.ObservableList;
+
+public class StaffScreenModel extends LoginModel {
+	
+	private Connection connection;
+	
+	public StaffScreenModel() {
+		super();
+	}
+	
+	void SaveCurrentOrderToDatabase(ObservableList<Food> orderList) {
+		
+		PreparedStatement preparedStatement = null; // to hold the query
+		ResultSet resultSet = null; // to hold the resulting table
+		String[] foodItemArr; // array to hold strings of the items in the form [name:cost, name:cost, ... ]
+		
+		// Store the food price and costs into a single array that we will write to a database cell as a string
+		for (Food f : orderList) {
+			String foodNameString;
+			String foodPriceString;
+			
+		}
+	}
+
+}

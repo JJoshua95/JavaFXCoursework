@@ -1,0 +1,40 @@
+package application;
+import java.sql.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import javafx.collections.ObservableList;
+
+public class StaffScreenModel extends LoginModel {
+	
+	private Connection connection;
+	
+	public StaffScreenModel() {
+		super();
+	}
+	
+	void SaveCurrentOrderToDatabase(ObservableList<Food> orderList) {
+		
+		PreparedStatement preparedStatement = null; // to hold the query
+		ResultSet resultSet = null; // to hold the resulting table
+		//String[] foodItemArr; // array to hold strings of the items in the form [name:cost, name:cost, ... ]
+		ArrayList<String> foodItemList = new ArrayList<String>();
+		
+		// Store the food price and costs into a single array that we will write to a database cell as a string
+		for (Food f : orderList) {
+			String foodNameString;
+			String foodPriceString;
+			foodNameString = f.getMenuItemName();
+			DecimalFormat df = new DecimalFormat("#.00"); // to print the price to 2dp i.e. to the nearest penny
+			foodPriceString = df.format(f.getPrice());
+			foodItemList.add("" + foodNameString + ":" + foodPriceString + ",");
+		}
+		// get rid of final comma for syntax purposes later
+		foodItemList.remove(foodItemList.size() - 1);
+		
+		for (String s: foodItemList) {
+			System.out.println(s);
+		}
+	}
+
+}

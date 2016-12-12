@@ -1,0 +1,127 @@
+package application;
+import java.sql.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import javafx.collections.ObservableList;
+
+public class StaffScreenModel {
+	
+	private ObservableList<Food> TempOrderItemObsListHolder;
+	private Connection connection;
+	
+	StaffScreenModel() {
+		connection = SqliteConnection.Connector();
+		if (connection == null) {
+			System.exit(1);
+		}
+	}
+	
+	boolean isDbConnected() {
+		try {
+			return !connection.isClosed();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	void SaveCurrentOrderToDatabase(int tableNum, ObservableList<Food> orderList) throws SQLException {
+		
+		//String[] foodItemArr; // array to hold strings of the items in the form [name:cost, name:cost, ... ]
+		ArrayList<String> foodItemList = new ArrayList<String>();
+		
+		// Store the food price and costs into a single array that we will write to a database cell as a string
+		for (Food f : orderList) {
+			String foodNameString;
+			String foodPriceString;
+			foodNameString = f.getMenuItemName();
+			DecimalFormat df = new DecimalFormat("#.00"); // to print the price to 2dp i.e. to the nearest penny
+			foodPriceString = df.format(f.getPrice());
+			foodItemList.add("" + foodNameString + ":" + foodPriceString);
+		}
+		//foodItemList.toString();
+		System.out.println(foodItemList.toString());
+		/*
+		for (String s: foodItemList) {
+			System.out.println(s);
+		}
+		*/
+		
+		//String query = "INSERT INTO orders (tableNo, orderList) VALUES (1, ?) ";
+		
+		PreparedStatement preparedStatement = null; // to hold the query
+		
+		try {
+			
+			String query = "INSERT INTO orders (tableNo, orderList) VALUES (?, ?)";
+			
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, tableNum);
+			preparedStatement.setString(2, foodItemList.toString());
+			preparedStatement.execute();
+			
+			// Handle overwriting of tables already written
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			preparedStatement.close();
+		}
+		
+	}
+	
+	String RetrieveATableOrderFromDB(int tableNoVal) throws SQLException {
+		String targetOrder = null;
+		String[] stringOrderArray = null;
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		
+		try {
+			String query = "SELECT orderList FROM orders WHERE tableNo = ?";
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tableNoVal);
+			resSet = prepStmt.executeQuery();
+			
+			if (resSet.next()) {
+				//System.out.println(resSet.getString(1));
+				targetOrder = resSet.getString(1); // get the first string in the column as there should only be a single string there
+				targetOrder = targetOrder.replace("[", ""); 
+				targetOrder = targetOrder.replace("]", ""); // get rid of square brackets
+				stringOrderArray = targetOrder.split(","); // split the string into individual name:price pairs
+				System.out.println(targetOrder);
+				// go through the food price pairs array to turn them back into Food type objects
+				
+			} else {
+				System.out.println("No order found for that table");
+				throw new Exception();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally { 
+			prepStmt.close();
+			resSet.close();
+		}
+		return targetOrder; // an array of [name:price, ... ]
+
+	}
+	
+	ObservableList<Food> getFoodObsListFromStringArray(String[] input) {
+		
+		for (int i = 0; i < input.length; i++) {
+			String words[];
+			words = input[i].split(":");
+			String loopName = words[0];
+			double loopPrice = Double.parseDouble(words[1]);
+			Food f = new Food(loopName, loopPrice);
+			TempOrderItemObsListHolder.add(f);
+		}
+		
+		return TempOrderItemObsListHolder;
+	}
+	
+
+}

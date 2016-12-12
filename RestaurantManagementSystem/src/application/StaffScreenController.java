@@ -1,7 +1,9 @@
 package application;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -16,12 +18,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class StaffScreenController implements Initializable {
+	
+	public StaffScreenModel staffModel = new StaffScreenModel();
 	
 	// UI Components
 	@FXML
@@ -46,6 +51,8 @@ public class StaffScreenController implements Initializable {
 	private ListView<Food> currentOrderListView;
 	@FXML
 	private Button removeFoodItemFromOrder;
+	@FXML
+	private Button saveOrderBtn;
 	
 	// Data holder variables
 	private ObservableList<Food> menuObservableList; // Menu list of all possible food options
@@ -60,10 +67,11 @@ public class StaffScreenController implements Initializable {
 		menuObservableList = FXCollections.observableArrayList();
 		// add some food to the menu
 		menuObservableList.addAll(
-				new Food("chicken", 3.60),
-				new Food("beef", 4.30),
-				new Food("lamb", 5.00)
+				new Food("Chicken", 3.60),
+				new Food("Beef", 4.30),
+				new Food("Lamb", 5.00)
 				);
+		
 	}
 		
 	@Override
@@ -79,7 +87,9 @@ public class StaffScreenController implements Initializable {
 						super.updateItem(f, bool);
 						if (f != null) {
 							DecimalFormat df = new DecimalFormat("#.00"); // to print the price to 2dp i.e. to the nearest penny
-							setText(f.getMenuItemName() + ":£" + df.format(f.getPrice()));
+							setText(f.getMenuItemName() + " : £" + df.format(f.getPrice()));
+						} else {
+							setText(null);
 						}
 					}
 				};
@@ -88,15 +98,6 @@ public class StaffScreenController implements Initializable {
 			}
 		});
 		
-		currentOrderObservableList = FXCollections.observableArrayList(); // initialise the current oder list view
-		
-	}
-	
-	public void AddItemToOrder(ActionEvent event) {
-		currentItemToAdd = menuListView.getSelectionModel().getSelectedItem();
-		//System.out.println(currentItem.getMenuItemName());
-		currentOrderObservableList.add(currentItemToAdd);
-		currentOrderListView.setItems(currentOrderObservableList);
 		currentOrderListView.setCellFactory(new Callback<ListView<Food>, ListCell<Food>>() {
 			@Override
 			public ListCell<Food> call(ListView<Food> p) {
@@ -106,14 +107,30 @@ public class StaffScreenController implements Initializable {
 						super.updateItem(f, bool);
 						if (f != null) {
 							DecimalFormat df = new DecimalFormat("#.00"); // to print the price to 2dp i.e. to the nearest penny
-							setText(f.getMenuItemName() + ":£" + df.format(f.getPrice()));
+							setText(f.getMenuItemName() + " : £" + df.format(f.getPrice()));
+						} else {
+							setText(null);
 						}
 					}
 				};
 				
 				return cell;
 			}
-		});	
+		});
+		
+		currentOrderObservableList = FXCollections.observableArrayList(); // initialise the current order list view
+		
+	}
+	
+	public void AddItemToOrder(ActionEvent event) {
+		currentItemToAdd = menuListView.getSelectionModel().getSelectedItem();
+		currentOrderObservableList.add(currentItemToAdd);
+		currentOrderListView.setItems(currentOrderObservableList);
+	}
+	
+	public void clearOrderListView() {
+		currentOrderObservableList.clear();
+		currentOrderListView.setItems(currentOrderObservableList);
 	}
 	
 	public void RemoveItemFromOrder(ActionEvent event) {
@@ -121,29 +138,46 @@ public class StaffScreenController implements Initializable {
 		currentItemToRemove = currentOrderListView.getSelectionModel().getSelectedItem();
 		currentOrderObservableList.remove(currentItemToRemove);
 		currentOrderListView.setItems(currentOrderObservableList);
-		currentOrderListView.setCellFactory(new Callback<ListView<Food>, ListCell<Food>>() {
-			@Override
-			public ListCell<Food> call(ListView<Food> p) {
-				ListCell<Food> cell = new ListCell<Food>() {
-					@Override
-					protected void updateItem(Food f, boolean bool) {
-						super.updateItem(f, bool);
-						if (f != null) {
-							DecimalFormat df = new DecimalFormat("#.00"); // to print the price to 2dp i.e. to the nearest penny
-							setText(f.getMenuItemName() + ":£" + df.format(f.getPrice()));
-						}
-					}
-				};
-				
-				return cell;
-			}
-		});
+		
 		// Deal with errors if nothing to remove
 	}
 	
-	public void GetUser(String user) {
+	public void getTableOneOrder(MouseEvent mouseEvent) throws SQLException {
+		if (mouseEvent.getClickCount() == 2) {
+		clearOrderListView();
+		ArrayList<Food> arr1 = staffModel.RetrieveATableOrderFromDB(1);
+		currentOrderObservableList.addAll(arr1);
+		currentOrderListView.setItems(currentOrderObservableList);
+		}
+		
+		/*
+		if (mouseEvent.getClickCount() == 1) {
+			// Search the database orders for table 1s order and show it in the listview
+			staffModel.RetrieveATableOrderFromDB(1);
+		} else if (mouseEvent.getClickCount() > 1) {
+			// Let it edit order
+			System.out.println("Clicked twice");
+		}
+		*/
+	}
+	
+	public void getTableTwoOrder(MouseEvent mouseEvent) throws SQLException {
+		if (mouseEvent.getClickCount() == 2) {
+		clearOrderListView();
+		ArrayList<Food> arr2 = staffModel.RetrieveATableOrderFromDB(2);
+		currentOrderObservableList.addAll(arr2);
+		currentOrderListView.setItems(currentOrderObservableList);
+		}
+		
+	}
+	
+	void GetUser(String user) {
 		lblUser.setText(user);
 		//System.out.println(user);
+	}
+	
+	public void SaveCurrentOrder() throws SQLException {
+		staffModel.SaveCurrentOrderToDatabase(3,currentOrderObservableList);
 	}
 	
 	public void SignOut(ActionEvent event) {

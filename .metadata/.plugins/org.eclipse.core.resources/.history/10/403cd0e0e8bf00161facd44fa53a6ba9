@@ -1,0 +1,58 @@
+package application;
+import java.sql.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import javafx.collections.ObservableList;
+
+public class StaffScreenModel extends LoginModel {
+	
+	private Connection connection;
+	
+	public StaffScreenModel() {
+		super();
+	}
+	
+	void SaveCurrentOrderToDatabase(ObservableList<Food> orderList) throws SQLException {
+		
+		PreparedStatement preparedStatement = null; // to hold the query
+		
+		//String[] foodItemArr; // array to hold strings of the items in the form [name:cost, name:cost, ... ]
+		ArrayList<String> foodItemList = new ArrayList<String>();
+		
+		// Store the food price and costs into a single array that we will write to a database cell as a string
+		for (Food f : orderList) {
+			String foodNameString;
+			String foodPriceString;
+			foodNameString = f.getMenuItemName();
+			DecimalFormat df = new DecimalFormat("#.00"); // to print the price to 2dp i.e. to the nearest penny
+			foodPriceString = df.format(f.getPrice());
+			foodItemList.add("" + foodNameString + ":" + foodPriceString);
+		}
+		//foodItemList.toString();
+		System.out.println(foodItemList.toString());
+		/*
+		for (String s: foodItemList) {
+			System.out.println(s);
+		}
+		*/
+		
+		//String query = "INSERT INTO orders (tableNo, orderList) VALUES (1, ?) ";
+		
+		try {
+			String query = "INSERT INTO orders (tableNo, orderList) VALUES (1, ?) ";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, foodItemList.toString());
+			preparedStatement.executeUpdate(query);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			preparedStatement.close();
+		}
+		
+		
+	}
+
+}

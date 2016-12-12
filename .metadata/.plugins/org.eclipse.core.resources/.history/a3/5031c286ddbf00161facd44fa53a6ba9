@@ -1,0 +1,18 @@
+package application;
+import java.sql.*;
+
+import javafx.collections.ObservableList;
+
+public class StaffScreenModel extends LoginModel {
+	
+	private Connection connection;
+	
+	public StaffScreenModel() {
+		super();
+	}
+	
+	void SaveCurrentOrderToDatabase(ObservableList<Food> order) {
+		
+	}
+
+}

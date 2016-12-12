@@ -78,7 +78,9 @@ public class LoginController implements Initializable {
 			System.out.println("IOerr");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		} finally {
+			loginModel.closeConnection();
+		}
 	}
 
 }

@@ -1,0 +1,15 @@
+package application;
+import java.sql.*;
+
+public class StaffScreenModel {
+	
+	private Connection connection;
+	
+	public StaffScreenModel() {
+		connection = SqliteConnection.Connector();
+		if (connection == null) {
+			System.exit(1);
+		}
+	}
+
+}
