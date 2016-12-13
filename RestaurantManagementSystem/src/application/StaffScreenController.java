@@ -53,6 +53,10 @@ public class StaffScreenController implements Initializable {
 	private Button removeFoodItemFromOrder;
 	@FXML
 	private Button saveOrderBtn;
+	@FXML
+	private Label lblCurrentTable;
+	@FXML 
+	private Button deleteCurrentOrderBtn;
 	
 	// Data holder variables
 	private ObservableList<Food> menuObservableList; // Menu list of all possible food options
@@ -62,8 +66,22 @@ public class StaffScreenController implements Initializable {
 	private Food currentItemToRemove; // Two variables needed for selecting items to add or to remove
 	// Or there is possible ambiguity when both items are selected on the lists and add or remove are pressed.
 	
-	// the code in the class constructor will be called when the page is loaded so initialise data here.
-	public StaffScreenController() {
+	// Current status variables like which table is being focused on at a particular time
+	private int currentTableNo;
+	
+	// click count variables to reset the table editing status
+	int oneClickCount;
+	int twoClickCount;
+	int threeClickCount;
+	int fourClickCount;
+	int fiveClickCount;
+	int sixClickCount;
+		
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		
+		// TODO Auto-generated method stub
+		
 		menuObservableList = FXCollections.observableArrayList();
 		// add some food to the menu
 		menuObservableList.addAll(
@@ -72,11 +90,6 @@ public class StaffScreenController implements Initializable {
 				new Food("Lamb", 5.00)
 				);
 		
-	}
-		
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
 		menuListView.setItems(menuObservableList);
 		menuListView.setCellFactory(new Callback<ListView<Food>, ListCell<Food>>() {
 			@Override
@@ -120,6 +133,9 @@ public class StaffScreenController implements Initializable {
 		
 		currentOrderObservableList = FXCollections.observableArrayList(); // initialise the current order list view
 		
+		lblCurrentTable.setText("");
+		
+		// set buttons to uneditable to begin until a table is selected.
 	}
 	
 	public void AddItemToOrder(ActionEvent event) {
@@ -143,41 +159,73 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	public void getTableOneOrder(MouseEvent mouseEvent) throws SQLException {
-		if (mouseEvent.getClickCount() == 2) {
+		// reset all click counts of other tables to avoid confusing editable statuses when switching tables
+		// or else you may click back on a new table one and it is immediately editable
+		//oneClickCount = 0;
+		twoClickCount = 0;
+		threeClickCount = 0;
+		fourClickCount = 0;
+		fiveClickCount = 0;
+		sixClickCount = 0;
+		// stop editing of orders on 1st click (enable editing of orders after a second click)
+		addFoodItemBtn.setDisable(true);
+		removeFoodItemFromOrder.setDisable(true);
+		saveOrderBtn.setDisable(true);
+		deleteCurrentOrderBtn.setDisable(true);
+		currentTableNo = 1;
+		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
 		ArrayList<Food> arr1 = staffModel.RetrieveATableOrderFromDB(1);
 		currentOrderObservableList.addAll(arr1);
 		currentOrderListView.setItems(currentOrderObservableList);
+		oneClickCount++;
+		if (oneClickCount > 1) {
+			// on second click
+			// enable editing
+			addFoodItemBtn.setDisable(false);
+			removeFoodItemFromOrder.setDisable(false);
+			saveOrderBtn.setDisable(false);
+			deleteCurrentOrderBtn.setDisable(false);
+			mouseEvent.consume();
+			// oneClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
-		
-		/*
-		if (mouseEvent.getClickCount() == 1) {
-			// Search the database orders for table 1s order and show it in the listview
-			staffModel.RetrieveATableOrderFromDB(1);
-		} else if (mouseEvent.getClickCount() > 1) {
-			// Let it edit order
-			System.out.println("Clicked twice");
-		}
-		*/
 	}
 	
 	public void getTableTwoOrder(MouseEvent mouseEvent) throws SQLException {
-		if (mouseEvent.getClickCount() == 2) {
+		oneClickCount = 0;
+		//twoClickCount = 0;
+		threeClickCount = 0;
+		fourClickCount = 0;
+		fiveClickCount = 0;
+		sixClickCount = 0;
+		currentTableNo = 2;
+		addFoodItemBtn.setDisable(true);
+		removeFoodItemFromOrder.setDisable(true);
+		saveOrderBtn.setDisable(true);
+		deleteCurrentOrderBtn.setDisable(true);
+		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
 		ArrayList<Food> arr2 = staffModel.RetrieveATableOrderFromDB(2);
 		currentOrderObservableList.addAll(arr2);
 		currentOrderListView.setItems(currentOrderObservableList);
+		twoClickCount++;
+		if (twoClickCount > 1) {
+			// enable editing
+			addFoodItemBtn.setDisable(false);
+			removeFoodItemFromOrder.setDisable(false);
+			saveOrderBtn.setDisable(false);
+			deleteCurrentOrderBtn.setDisable(false);
+			mouseEvent.consume();
+			// twoClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
-		
-	}
-	
-	void GetUser(String user) {
-		lblUser.setText(user);
-		//System.out.println(user);
 	}
 	
 	public void SaveCurrentOrder() throws SQLException {
 		staffModel.SaveCurrentOrderToDatabase(3,currentOrderObservableList);
+	}
+	
+	void GetUser(String user) {
+		lblUser.setText(user);
 	}
 	
 	public void SignOut(ActionEvent event) {
