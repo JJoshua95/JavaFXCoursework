@@ -187,7 +187,6 @@ public class StaffScreenController implements Initializable {
 	public void clearOrderListView() {
 		currentOrderObservableList.clear();
 		currentOrderListView.setItems(currentOrderObservableList);
-		// clear the comments and set the CheckBox to null
 	}
 	
 	public void RemoveItemFromOrder(ActionEvent event) {
@@ -197,10 +196,6 @@ public class StaffScreenController implements Initializable {
 		currentOrderListView.setItems(currentOrderObservableList);
 		
 		// Deal with errors if nothing to remove
-	}
-	
-	public void resetOrderViews() {
-		
 	}
 	
 	// condense some of the following into smaller component methods to be called repeatedly

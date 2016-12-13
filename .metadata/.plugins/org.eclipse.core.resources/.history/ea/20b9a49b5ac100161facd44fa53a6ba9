@@ -170,9 +170,6 @@ public class StaffScreenController implements Initializable {
 		deleteCurrentOrderBtn.setDisable(true);
 		calculateTotalBtn.setDisable(true);
 		orderCompleteCheckBox.setDisable(true);
-		// make the text areas uneditable
-		specialRequestsTxt.setEditable(false);
-		commentsTxt.setEditable(false);
 		
 	}
 	
@@ -187,7 +184,6 @@ public class StaffScreenController implements Initializable {
 	public void clearOrderListView() {
 		currentOrderObservableList.clear();
 		currentOrderListView.setItems(currentOrderObservableList);
-		// clear the comments and set the CheckBox to null
 	}
 	
 	public void RemoveItemFromOrder(ActionEvent event) {
@@ -199,11 +195,6 @@ public class StaffScreenController implements Initializable {
 		// Deal with errors if nothing to remove
 	}
 	
-	public void resetOrderViews() {
-		
-	}
-	
-	// condense some of the following into smaller component methods to be called repeatedly
 	public void getTableOneOrder(MouseEvent mouseEvent) throws SQLException {
 		// reset all click counts of other tables to avoid confusing editable statuses when switching tables
 		// or else you may click back on a new table one and it is immediately editable
@@ -220,8 +211,6 @@ public class StaffScreenController implements Initializable {
 		deleteCurrentOrderBtn.setDisable(true);
 		calculateTotalBtn.setDisable(true);
 		orderCompleteCheckBox.setDisable(true);
-		specialRequestsTxt.setEditable(false);
-		commentsTxt.setEditable(false);
 		currentTableNo = 1;
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
@@ -238,8 +227,6 @@ public class StaffScreenController implements Initializable {
 			deleteCurrentOrderBtn.setDisable(false);
 			calculateTotalBtn.setDisable(false);
 			orderCompleteCheckBox.setDisable(false);
-			specialRequestsTxt.setEditable(true);
-			commentsTxt.setEditable(true);
 			mouseEvent.consume();
 			// oneClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
@@ -259,8 +246,6 @@ public class StaffScreenController implements Initializable {
 		deleteCurrentOrderBtn.setDisable(true);
 		calculateTotalBtn.setDisable(true);
 		orderCompleteCheckBox.setDisable(true);
-		specialRequestsTxt.setEditable(false);
-		commentsTxt.setEditable(false);
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
 		ArrayList<Food> arr2 = staffModel.RetrieveATableOrderFromDB(2);
@@ -275,8 +260,6 @@ public class StaffScreenController implements Initializable {
 			deleteCurrentOrderBtn.setDisable(false);
 			calculateTotalBtn.setDisable(false);
 			orderCompleteCheckBox.setDisable(false);
-			specialRequestsTxt.setEditable(true);
-			commentsTxt.setEditable(true);
 			mouseEvent.consume();
 			// twoClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
@@ -298,8 +281,6 @@ public class StaffScreenController implements Initializable {
 		deleteCurrentOrderBtn.setDisable(true);
 		calculateTotalBtn.setDisable(true);
 		orderCompleteCheckBox.setDisable(true);
-		specialRequestsTxt.setEditable(false);
-		commentsTxt.setEditable(false);
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
 		ArrayList<Food> arr3 = staffModel.RetrieveATableOrderFromDB(3);
@@ -314,8 +295,6 @@ public class StaffScreenController implements Initializable {
 			deleteCurrentOrderBtn.setDisable(false);
 			calculateTotalBtn.setDisable(false);
 			orderCompleteCheckBox.setDisable(false);
-			specialRequestsTxt.setEditable(true);
-			commentsTxt.setEditable(true);
 			mouseEvent.consume();
 			// twoClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
@@ -337,8 +316,6 @@ public class StaffScreenController implements Initializable {
 		deleteCurrentOrderBtn.setDisable(true);
 		calculateTotalBtn.setDisable(true);
 		orderCompleteCheckBox.setDisable(true);
-		specialRequestsTxt.setEditable(false);
-		commentsTxt.setEditable(false);
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
 		ArrayList<Food> arr4 = staffModel.RetrieveATableOrderFromDB(4);
@@ -353,8 +330,6 @@ public class StaffScreenController implements Initializable {
 			deleteCurrentOrderBtn.setDisable(false);
 			calculateTotalBtn.setDisable(false);
 			orderCompleteCheckBox.setDisable(false);
-			specialRequestsTxt.setEditable(true);
-			commentsTxt.setEditable(true);
 			mouseEvent.consume();
 			// twoClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
@@ -376,8 +351,6 @@ public class StaffScreenController implements Initializable {
 		deleteCurrentOrderBtn.setDisable(true);
 		calculateTotalBtn.setDisable(true);
 		orderCompleteCheckBox.setDisable(true);
-		specialRequestsTxt.setEditable(false);
-		commentsTxt.setEditable(false);
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
 		ArrayList<Food> arr5 = staffModel.RetrieveATableOrderFromDB(5);
@@ -392,8 +365,6 @@ public class StaffScreenController implements Initializable {
 			deleteCurrentOrderBtn.setDisable(false);
 			calculateTotalBtn.setDisable(false);
 			orderCompleteCheckBox.setDisable(false);
-			specialRequestsTxt.setEditable(true);
-			commentsTxt.setEditable(true);
 			mouseEvent.consume();
 			// twoClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
@@ -415,8 +386,6 @@ public class StaffScreenController implements Initializable {
 		deleteCurrentOrderBtn.setDisable(true);
 		calculateTotalBtn.setDisable(true);
 		orderCompleteCheckBox.setDisable(true);
-		specialRequestsTxt.setEditable(false);
-		commentsTxt.setEditable(false);
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
 		ArrayList<Food> arr6 = staffModel.RetrieveATableOrderFromDB(6);
@@ -431,8 +400,6 @@ public class StaffScreenController implements Initializable {
 			deleteCurrentOrderBtn.setDisable(false);
 			calculateTotalBtn.setDisable(false);
 			orderCompleteCheckBox.setDisable(false);
-			specialRequestsTxt.setEditable(true);
-			commentsTxt.setEditable(true);
 			mouseEvent.consume();
 			// twoClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}

@@ -199,10 +199,6 @@ public class StaffScreenController implements Initializable {
 		// Deal with errors if nothing to remove
 	}
 	
-	public void resetOrderViews() {
-		
-	}
-	
 	// condense some of the following into smaller component methods to be called repeatedly
 	public void getTableOneOrder(MouseEvent mouseEvent) throws SQLException {
 		// reset all click counts of other tables to avoid confusing editable statuses when switching tables

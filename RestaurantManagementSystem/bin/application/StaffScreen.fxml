@@ -55,16 +55,16 @@
                                     <Label text="Items Ordered:" GridPane.rowIndex="2" />
                                     <Label text="Special Requests:" GridPane.rowIndex="4" />
                                     <Label text="Comments:" GridPane.rowIndex="5" />
-                                    <Label text="Total:" GridPane.rowIndex="6" />
-                                    <TextArea prefHeight="18.0" prefWidth="194.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                    <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                    <TextArea fx:id="specialRequestsTxt" prefHeight="18.0" prefWidth="194.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    <TextArea fx:id="commentsTxt" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                     <Button fx:id="saveOrderBtn" mnemonicParsing="false" onAction="#SaveCurrentOrder" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                    <CheckBox mnemonicParsing="false" text="Order Complete?" GridPane.rowIndex="7" />
+                                    <CheckBox fx:id="orderCompleteCheckBox" mnemonicParsing="false" text="Order Complete?" GridPane.rowIndex="7" />
                                     <Button fx:id="removeFoodItemFromOrder" mnemonicParsing="false" onAction="#RemoveItemFromOrder" text="Remove Item" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <Label text="TotalValue" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                    <Label text="TimeStamp" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Label fx:id="totalPriceLbl" text="TotalValue" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                    <Label fx:id="timestampLbl" text="TimeStamp" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <Button fx:id="deleteCurrentOrderBtn" mnemonicParsing="false" onAction="#DeleteCurrentOrder" text="Delete" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
                                     <ListView fx:id="currentOrderListView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Button fx:id="calculateTotalBtn" mnemonicParsing="false" onAction="#getOrderPriceTotal" text="Calculate Total" GridPane.rowIndex="6" />
                                  </children>
                               </GridPane>
                               <Separator layoutX="375.0" orientation="VERTICAL" prefHeight="532.0" prefWidth="15.0" />
