@@ -462,8 +462,11 @@ public class StaffScreenController implements Initializable {
 			isOrderCompleteString = "false";
 		}
 		
+		
 		staffModel.SaveCurrentOrderToDatabase(currentTableNo,currentOrderObservableList);
 
+		
+		
 	}
 	
 	public void DeleteCurrentOrder() {

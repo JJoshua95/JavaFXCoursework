@@ -199,18 +199,16 @@ public class StaffScreenController implements Initializable {
 		// Deal with errors if nothing to remove
 	}
 	
-	// condense some of the following into smaller component methods to be called repeatedly
-	public void getTableOneOrder(MouseEvent mouseEvent) throws SQLException {
+	public void resetViewableOrder(MouseEvent me, int tableNumval) throws SQLException {
+		
+		// reset all click counts of other tables to avoid confusing editable statuses when switching tables
+		// or else you may click back on a new table one and it is immediately editable
 		//oneClickCount = 0;
 		twoClickCount = 0;
 		threeClickCount = 0;
 		fourClickCount = 0;
 		fiveClickCount = 0;
 		sixClickCount = 0;
-		currentTableNo = 1;
-		
-		// reset all click counts of other tables to avoid confusing editable statuses when switching tables
-		// or else you may click back on a new table one and it is immediately editable
 		// stop editing of orders on 1st click (enable editing of orders after a second click)
 		addFoodItemBtn.setDisable(true);
 		removeFoodItemFromOrder.setDisable(true);
@@ -220,7 +218,51 @@ public class StaffScreenController implements Initializable {
 		orderCompleteCheckBox.setDisable(true);
 		specialRequestsTxt.setEditable(false);
 		commentsTxt.setEditable(false);
-		
+		lblCurrentTable.setText("Table " + currentTableNo);
+		clearOrderListView();
+		ArrayList<Food> arr1 = staffModel.RetrieveATableOrderFromDB(1);
+		currentOrderObservableList.addAll(arr1);
+		currentOrderListView.setItems(currentOrderObservableList);
+		oneClickCount++;
+			if (oneClickCount > 1) {
+				// on second click
+				// enable editing
+				addFoodItemBtn.setDisable(false);
+				removeFoodItemFromOrder.setDisable(false);
+				saveOrderBtn.setDisable(false);
+				deleteCurrentOrderBtn.setDisable(false);
+				calculateTotalBtn.setDisable(false);
+				orderCompleteCheckBox.setDisable(false);
+				specialRequestsTxt.setEditable(true);
+				commentsTxt.setEditable(true);
+				me.consume();
+				// oneClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
+			}
+	}
+	
+	// condense some of the following into smaller component methods to be called repeatedly
+	public void getTableOneOrder(MouseEvent mouseEvent) throws SQLException {
+		currentTableNo = 1;
+		resetViewableOrder(mouseEvent, currentTableNo);
+		// reset all click counts of other tables to avoid confusing editable statuses when switching tables
+		// or else you may click back on a new table one and it is immediately editable
+		//oneClickCount = 0;
+		/*
+		twoClickCount = 0;
+		threeClickCount = 0;
+		fourClickCount = 0;
+		fiveClickCount = 0;
+		sixClickCount = 0;
+		// stop editing of orders on 1st click (enable editing of orders after a second click)
+		addFoodItemBtn.setDisable(true);
+		removeFoodItemFromOrder.setDisable(true);
+		saveOrderBtn.setDisable(true);
+		deleteCurrentOrderBtn.setDisable(true);
+		calculateTotalBtn.setDisable(true);
+		orderCompleteCheckBox.setDisable(true);
+		specialRequestsTxt.setEditable(false);
+		commentsTxt.setEditable(false);
+		currentTableNo = 1;
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
 		ArrayList<Food> arr1 = staffModel.RetrieveATableOrderFromDB(1);
@@ -241,18 +283,20 @@ public class StaffScreenController implements Initializable {
 			mouseEvent.consume();
 			// oneClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
-		
+		*/
 	}
 	
 	public void getTableTwoOrder(MouseEvent mouseEvent) throws SQLException {
 		currentTableNo = 2;
+		resetViewableOrder(mouseEvent, currentTableNo);
+		/*
 		oneClickCount = 0;
 		//twoClickCount = 0;
 		threeClickCount = 0;
 		fourClickCount = 0;
 		fiveClickCount = 0;
 		sixClickCount = 0;
-		
+		currentTableNo = 2;
 		addFoodItemBtn.setDisable(true);
 		removeFoodItemFromOrder.setDisable(true);
 		saveOrderBtn.setDisable(true);
@@ -280,12 +324,13 @@ public class StaffScreenController implements Initializable {
 			mouseEvent.consume();
 			// twoClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
-		
+		*/
 	}
 	
 	public void getTableThreeOrder(MouseEvent mouseEvent) throws SQLException {
 		currentTableNo = 3;
-		
+		resetViewableOrder(mouseEvent, currentTableNo);
+		/*
 		// count resetting
 		oneClickCount = 0;
 		twoClickCount = 0;
@@ -294,7 +339,7 @@ public class StaffScreenController implements Initializable {
 		fiveClickCount = 0;
 		sixClickCount = 0;
 		// change working table 
-		
+		currentTableNo = 3;
 		addFoodItemBtn.setDisable(true);
 		removeFoodItemFromOrder.setDisable(true);
 		saveOrderBtn.setDisable(true);
@@ -320,13 +365,15 @@ public class StaffScreenController implements Initializable {
 			specialRequestsTxt.setEditable(true);
 			commentsTxt.setEditable(true);
 			mouseEvent.consume();
+			// twoClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
-		
+		*/
 	}
 	
 	public void getTableFourOrder(MouseEvent mouseEvent) throws SQLException {
 		currentTableNo = 4;
-		
+		resetViewableOrder(mouseEvent, currentTableNo);
+		/*
 		// count resetting
 		oneClickCount = 0;
 		twoClickCount = 0;
@@ -335,7 +382,7 @@ public class StaffScreenController implements Initializable {
 		fiveClickCount = 0;
 		sixClickCount = 0;
 		// change working table 
-		
+		currentTableNo = 4;
 		addFoodItemBtn.setDisable(true);
 		removeFoodItemFromOrder.setDisable(true);
 		saveOrderBtn.setDisable(true);
@@ -361,13 +408,15 @@ public class StaffScreenController implements Initializable {
 			specialRequestsTxt.setEditable(true);
 			commentsTxt.setEditable(true);
 			mouseEvent.consume();
+			// twoClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
-		
+		*/
 	}
 	
 	public void getTableFiveOrder(MouseEvent mouseEvent) throws SQLException {
 		currentTableNo = 5;
-		
+		resetViewableOrder(mouseEvent, currentTableNo);
+		/*
 		// count resetting
 		oneClickCount = 0;
 		twoClickCount = 0;
@@ -376,6 +425,7 @@ public class StaffScreenController implements Initializable {
 		//fiveClickCount = 0;
 		sixClickCount = 0;
 		// change working table 
+		currentTableNo = 5;
 		addFoodItemBtn.setDisable(true);
 		removeFoodItemFromOrder.setDisable(true);
 		saveOrderBtn.setDisable(true);
@@ -401,13 +451,15 @@ public class StaffScreenController implements Initializable {
 			specialRequestsTxt.setEditable(true);
 			commentsTxt.setEditable(true);
 			mouseEvent.consume();
+			// twoClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
-		
+		*/
 	}
 	
 	public void getTableSixOrder(MouseEvent mouseEvent) throws SQLException {
-		currentTableNo = 6;
-		
+		currentTableNo = 1;
+		resetViewableOrder(mouseEvent, currentTableNo);
+		/*
 		// count resetting
 		oneClickCount = 0;
 		twoClickCount = 0;
@@ -416,7 +468,7 @@ public class StaffScreenController implements Initializable {
 		fiveClickCount = 0;
 		//sixClickCount = 0;
 		// change working table 
-		
+		currentTableNo = 6;
 		addFoodItemBtn.setDisable(true);
 		removeFoodItemFromOrder.setDisable(true);
 		saveOrderBtn.setDisable(true);
@@ -442,28 +494,18 @@ public class StaffScreenController implements Initializable {
 			specialRequestsTxt.setEditable(true);
 			commentsTxt.setEditable(true);
 			mouseEvent.consume();
+			// twoClickCount = 0; // can add this and remove consume method to allow switching of editable status on subsequent clicks
 		}
-		
+		*/
 	}
 	
 	public void SaveCurrentOrder() throws SQLException {
-		// save all the important variables
+		staffModel.SaveCurrentOrderToDatabase(currentTableNo,currentOrderObservableList);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		// Date date = new Date();
 		dateTimeOfCurrentOrder = new Date();
 		timestampLbl.setText(dateFormat.format(dateTimeOfCurrentOrder));
-		//System.out.println(dateFormat.format(dateTimeOfCurrentOrder));
-		specialRequestsString = specialRequestsTxt.getText();
-		commentsString = commentsTxt.getText();
-		// compute the total again in case the user forgets to click it 
-		orderTotalPrice = getOrderPriceTotal();
-		if (orderCompleteCheckBox.isSelected() == true) {
-			isOrderCompleteString = "true";
-		} else {
-			isOrderCompleteString = "false";
-		}
-		
-		staffModel.SaveCurrentOrderToDatabase(currentTableNo,currentOrderObservableList);
-
+		System.out.println(dateFormat.format(dateTimeOfCurrentOrder));
 	}
 	
 	public void DeleteCurrentOrder() {
@@ -483,7 +525,7 @@ public class StaffScreenController implements Initializable {
 		
 	}
 	
-	public Double getOrderPriceTotal() {
+	public void getOrderPriceTotal() {
 		double total = 0;
 		for (Food f : currentOrderObservableList) {
 			total += f.getPrice();
@@ -492,7 +534,6 @@ public class StaffScreenController implements Initializable {
 		totalPriceLbl.setText("£" + df.format(total));
 		orderTotalPrice = total;
 		System.out.println(total);
-		return total;
 	}
 	
 	void GetUser(String user) {

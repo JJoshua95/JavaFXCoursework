@@ -447,23 +447,12 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	public void SaveCurrentOrder() throws SQLException {
-		// save all the important variables
+		staffModel.SaveCurrentOrderToDatabase(currentTableNo,currentOrderObservableList);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		// Date date = new Date();
 		dateTimeOfCurrentOrder = new Date();
 		timestampLbl.setText(dateFormat.format(dateTimeOfCurrentOrder));
-		//System.out.println(dateFormat.format(dateTimeOfCurrentOrder));
-		specialRequestsString = specialRequestsTxt.getText();
-		commentsString = commentsTxt.getText();
-		// compute the total again in case the user forgets to click it 
-		orderTotalPrice = getOrderPriceTotal();
-		if (orderCompleteCheckBox.isSelected() == true) {
-			isOrderCompleteString = "true";
-		} else {
-			isOrderCompleteString = "false";
-		}
-		
-		staffModel.SaveCurrentOrderToDatabase(currentTableNo,currentOrderObservableList);
-
+		System.out.println(dateFormat.format(dateTimeOfCurrentOrder));
 	}
 	
 	public void DeleteCurrentOrder() {
@@ -483,7 +472,7 @@ public class StaffScreenController implements Initializable {
 		
 	}
 	
-	public Double getOrderPriceTotal() {
+	public void getOrderPriceTotal() {
 		double total = 0;
 		for (Food f : currentOrderObservableList) {
 			total += f.getPrice();
@@ -492,7 +481,6 @@ public class StaffScreenController implements Initializable {
 		totalPriceLbl.setText("£" + df.format(total));
 		orderTotalPrice = total;
 		System.out.println(total);
-		return total;
 	}
 	
 	void GetUser(String user) {
