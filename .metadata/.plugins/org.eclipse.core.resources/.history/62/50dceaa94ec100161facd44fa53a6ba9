@@ -142,8 +142,6 @@ public class StaffScreenController implements Initializable {
 		// set buttons to uneditable to begin until a table is selected.
 	}
 	
-	// ------------------------------------------------------- Current Order GUI Controls ----------------------------------------------
-	
 	public void AddItemToOrder(ActionEvent event) {
 		currentItemToAdd = menuListView.getSelectionModel().getSelectedItem();
 		currentOrderObservableList.add(currentItemToAdd);

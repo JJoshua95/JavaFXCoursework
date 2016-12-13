@@ -88,7 +88,7 @@ public class StaffScreenModel {
 			if (resSet.next()) {
 				
 				//System.out.println(resSet.getString(1));
-				targetOrder = resSet.getString("orderList"); //.getString(1); // get the first string in the column as there should only be a single string there
+				targetOrder = resSet.getString("orderList");//.getString(1); // get the first string in the column as there should only be a single string there
 				targetOrder = targetOrder.replace("[", ""); 
 				targetOrder = targetOrder.replace("]", ""); // get rid of square brackets
 				stringOrderArray = targetOrder.split(","); // split the string into individual name:price pairs
@@ -119,22 +119,7 @@ public class StaffScreenModel {
 		
 	}
 	
-	void DeleteCurrentOrderFromDB(int tableNum) {
-		PreparedStatement prepStmt = null;
-		
-		String query = "DELETE FROM orders WHERE tableNo = ?";
-		try {
-			prepStmt = connection.prepareStatement(query);
-			prepStmt.setInt(1, tableNum);
-			prepStmt.execute();
-			//connection.commit();
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Failed to delete record");
-			e.printStackTrace();
-			
-		}
+	void DeleteCurrentOrderFromDB() {
 		
 	}
 	

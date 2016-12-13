@@ -126,8 +126,8 @@ public class StaffScreenModel {
 		try {
 			prepStmt = connection.prepareStatement(query);
 			prepStmt.setInt(1, tableNum);
-			prepStmt.execute();
-			//connection.commit();
+			prepStmt.executeUpdate(query);
+			connection.commit();
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -142,8 +142,6 @@ public class StaffScreenController implements Initializable {
 		// set buttons to uneditable to begin until a table is selected.
 	}
 	
-	// ------------------------------------------------------- Current Order GUI Controls ----------------------------------------------
-	
 	public void AddItemToOrder(ActionEvent event) {
 		currentItemToAdd = menuListView.getSelectionModel().getSelectedItem();
 		currentOrderObservableList.add(currentItemToAdd);
@@ -356,9 +354,9 @@ public class StaffScreenController implements Initializable {
 	
 	public void DeleteCurrentOrder() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Confirm Delete");
-		alert.setHeaderText("Are you sure? Deleting this order cannot be undone");
-		alert.setContentText("Continue with deleting this current order?");
+		alert.setTitle("Confirm Deletion Of This Order");
+		alert.setHeaderText("Deleting this order cannot be undone");
+		alert.setContentText("Are you sure you want to delete this current order?");
 		
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK) {

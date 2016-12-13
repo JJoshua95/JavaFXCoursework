@@ -44,7 +44,7 @@ public class LoginController implements Initializable {
 		try {
 			if (loginModel.verifyStaffLogin(txtUsername.getText(), txtPassword.getText())) {
 				lblLoginStatus.setText("Username and Password Correct");
-				//loginModel.closeConnection();
+				loginModel.closeConnection();
 				((Node)event.getSource()).getScene().getWindow().hide();
 				Stage primaryStage = new Stage();
 				FXMLLoader loader = new FXMLLoader();
@@ -57,7 +57,7 @@ public class LoginController implements Initializable {
 				primaryStage.show();
 			} else if (loginModel.verifyManagerLogin(txtUsername.getText(), txtPassword.getText())) {
 				lblLoginStatus.setText("Username and Password Correct");
-				//loginModel.closeConnection();
+				loginModel.closeConnection();
 				((Node)event.getSource()).getScene().getWindow().hide();
 				Stage primaryStage = new Stage();
 				FXMLLoader loader = new FXMLLoader();

@@ -119,22 +119,7 @@ public class StaffScreenModel {
 		
 	}
 	
-	void DeleteCurrentOrderFromDB(int tableNum) {
-		PreparedStatement prepStmt = null;
-		
-		String query = "DELETE FROM orders WHERE tableNo = ?";
-		try {
-			prepStmt = connection.prepareStatement(query);
-			prepStmt.setInt(1, tableNum);
-			prepStmt.execute();
-			//connection.commit();
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Failed to delete record");
-			e.printStackTrace();
-			
-		}
+	void DeleteCurrentOrderFromDB() {
 		
 	}
 	

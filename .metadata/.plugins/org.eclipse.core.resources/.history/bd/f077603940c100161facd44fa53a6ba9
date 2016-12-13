@@ -41,7 +41,7 @@ public class StaffScreenModel {
 			foodItemList.add("" + foodNameString + ":" + foodPriceString);
 		}
 		//foodItemList.toString();
-		//System.out.println(foodItemList.toString());
+		System.out.println(foodItemList.toString());
 		/*
 		for (String s: foodItemList) {
 			System.out.println(s);
@@ -54,7 +54,7 @@ public class StaffScreenModel {
 		
 		try {
 			
-			String query = "INSERT OR REPLACE INTO orders (tableNo, orderList) VALUES (?, ?)";
+			String query = "INSERT INTO orders (tableNo, orderList) VALUES (?, ?)";
 			
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, tableNum);
@@ -79,7 +79,6 @@ public class StaffScreenModel {
 		ArrayList<Food> orderArrayList = new ArrayList<Food>();
 		
 		try {
-			
 			String query = "SELECT orderList FROM orders WHERE tableNo = ?";
 			prepStmt = connection.prepareStatement(query);
 			prepStmt.setInt(1, tableNoVal);
@@ -88,7 +87,7 @@ public class StaffScreenModel {
 			if (resSet.next()) {
 				
 				//System.out.println(resSet.getString(1));
-				targetOrder = resSet.getString("orderList"); //.getString(1); // get the first string in the column as there should only be a single string there
+				targetOrder = resSet.getString(1); // get the first string in the column as there should only be a single string there
 				targetOrder = targetOrder.replace("[", ""); 
 				targetOrder = targetOrder.replace("]", ""); // get rid of square brackets
 				stringOrderArray = targetOrder.split(","); // split the string into individual name:price pairs
@@ -117,25 +116,7 @@ public class StaffScreenModel {
 		
 		return orderArrayList;
 		
-	}
-	
-	void DeleteCurrentOrderFromDB(int tableNum) {
-		PreparedStatement prepStmt = null;
-		
-		String query = "DELETE FROM orders WHERE tableNo = ?";
-		try {
-			prepStmt = connection.prepareStatement(query);
-			prepStmt.setInt(1, tableNum);
-			prepStmt.execute();
-			//connection.commit();
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Failed to delete record");
-			e.printStackTrace();
-			
-		}
-		
+
 	}
 	
 
