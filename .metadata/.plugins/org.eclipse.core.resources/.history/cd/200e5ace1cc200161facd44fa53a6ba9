@@ -501,11 +501,10 @@ public class StaffScreenController implements Initializable {
 		// compute the total again in case the user forgets to click it 
 		orderTotalPrice = getOrderPriceTotal();
 		if (orderCompleteCheckBox.isSelected() == true) {
-			isOrderCompleteString = "true";
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.setTitle("Confirm Completion");
 			alert.setHeaderText("Are you sure this order is completed?");
-			alert.setContentText("This order will be removed and stored into the records");
+			alert.setContentText("This order will be removed and stored in order record");
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK) {
 				// move the record and then clear the fields
@@ -516,9 +515,8 @@ public class StaffScreenController implements Initializable {
 				totalPriceLbl.setText("");
 				specialRequestsTxt.setText("");
 				commentsTxt.setText("");
+				isOrderCompleteString = "true";
 				clearOrderListView();
-				orderCompleteCheckBox.setSelected(false);
-				staffModel.DeleteCurrentOrderFromDB(currentTableNo);
 			} else {
 				alert.close();
 			}

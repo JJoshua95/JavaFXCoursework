@@ -502,39 +502,16 @@ public class StaffScreenController implements Initializable {
 		orderTotalPrice = getOrderPriceTotal();
 		if (orderCompleteCheckBox.isSelected() == true) {
 			isOrderCompleteString = "true";
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("Confirm Completion");
-			alert.setHeaderText("Are you sure this order is completed?");
-			alert.setContentText("This order will be removed and stored into the records");
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.OK) {
-				// move the record and then clear the fields
-				staffModel.moveCurrentOrderToStorage(currentTableNo,currentOrderObservableList,
-						orderTotalPrice, specialRequestsString, commentsString,
-						isOrderCompleteString, dateTimeOfCurrentOrder); 
-				timeLbl.setText("");
-				totalPriceLbl.setText("");
-				specialRequestsTxt.setText("");
-				commentsTxt.setText("");
-				clearOrderListView();
-				orderCompleteCheckBox.setSelected(false);
-				staffModel.DeleteCurrentOrderFromDB(currentTableNo);
-			} else {
-				alert.close();
-			}
 		} else {
 			isOrderCompleteString = "false";
-			staffModel.SaveCurrentOrderToDatabase(currentTableNo,currentOrderObservableList,
-					orderTotalPrice, specialRequestsString, commentsString,
-					isOrderCompleteString, dateTimeOfCurrentOrder); 
 		}
 		
 		//System.out.println(dateTimeOfCurrentOrder);
 		
-		/*
+		
 		staffModel.SaveCurrentOrderToDatabase(currentTableNo,currentOrderObservableList,
 				orderTotalPrice, specialRequestsString, commentsString,
-				isOrderCompleteString, dateTimeOfCurrentOrder); */
+				isOrderCompleteString, dateTimeOfCurrentOrder); 
 		//staffModel.saveTimeOfOrder(currentTableNo, dateTimeOfCurrentOrder); 
 
 	}
@@ -548,11 +525,7 @@ public class StaffScreenController implements Initializable {
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK) {
 			staffModel.DeleteCurrentOrderFromDB(currentTableNo);
-			// and clear the fields
-			timeLbl.setText("");
-			totalPriceLbl.setText("");
-			specialRequestsTxt.setText("");
-			commentsTxt.setText("");
+			// and clear the listview
 			clearOrderListView();
 		} else {
 			alert.close();

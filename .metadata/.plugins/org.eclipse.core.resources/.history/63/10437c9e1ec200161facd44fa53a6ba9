@@ -92,7 +92,6 @@ public class StaffScreenModel {
 			} else { // If there is already a record for this table update
 						// all but the time and date
 				System.out.println("Table order exists, updating it now");
-				preparedStatement.close();
 
 				query = "UPDATE orders "
 						+ "SET orderList = ?, totalPrice = ?, specialRequests = ?, comments = ?, isComplete = ? "
@@ -148,7 +147,7 @@ public class StaffScreenModel {
 				stringOrderArray = targetOrder.split(","); // split the string
 															// into individual
 															// name:price pairs
-				//System.out.println(targetOrder);
+				// System.out.println(targetOrder);
 
 				for (int i = 0; i < stringOrderArray.length; i++) {
 					String words[];

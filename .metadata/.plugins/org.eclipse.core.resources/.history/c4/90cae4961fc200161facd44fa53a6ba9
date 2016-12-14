@@ -130,6 +130,7 @@ public class StaffScreenModel {
 			prepStmt = connection.prepareStatement(query);
 			prepStmt.setInt(1, tableNoVal);
 			resSet = prepStmt.executeQuery();
+			System.out.println(resSet.next());
 
 			if (resSet.next()) {
 
@@ -148,7 +149,7 @@ public class StaffScreenModel {
 				stringOrderArray = targetOrder.split(","); // split the string
 															// into individual
 															// name:price pairs
-				//System.out.println(targetOrder);
+				// System.out.println(targetOrder);
 
 				for (int i = 0; i < stringOrderArray.length; i++) {
 					String words[];

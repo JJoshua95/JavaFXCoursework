@@ -66,11 +66,9 @@ public class StaffScreenModel {
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, tableNum);
 			resultSet = preparedStatement.executeQuery();
-			
 
 			// if there is no record for this table insert one
 			if (!resultSet.next()) {
-				preparedStatement.close();
 				System.out.println("No order for this table was found so new record created");
 
 				query = "INSERT INTO orders "
@@ -92,7 +90,6 @@ public class StaffScreenModel {
 			} else { // If there is already a record for this table update
 						// all but the time and date
 				System.out.println("Table order exists, updating it now");
-				preparedStatement.close();
 
 				query = "UPDATE orders "
 						+ "SET orderList = ?, totalPrice = ?, specialRequests = ?, comments = ?, isComplete = ? "
@@ -148,7 +145,7 @@ public class StaffScreenModel {
 				stringOrderArray = targetOrder.split(","); // split the string
 															// into individual
 															// name:price pairs
-				//System.out.println(targetOrder);
+				// System.out.println(targetOrder);
 
 				for (int i = 0; i < stringOrderArray.length; i++) {
 					String words[];
@@ -307,10 +304,9 @@ public class StaffScreenModel {
 		String timeString = timeFormat.format(inDate);
 
 		PreparedStatement preparedStatement = null; // to hold the query
-
+		ResultSet resultSet = null;
 		String query;
 		// if the order is marked as complete we can move it out from the current orders and store it
-		try {
 				if (isComplete.equals("true")) {
 					query = "INSERT INTO storedOrders "
 							+ "(tableNo, orderList, totalPrice, specialRequests, comments, isComplete, date, time) "
@@ -329,10 +325,9 @@ public class StaffScreenModel {
 					preparedStatement.execute(); // store the order into the stored
 													// orders
 
+					DeleteCurrentOrderFromDB(tableNum); // remove it from current
+														// working orders
 				}
-		  } catch(SQLException e) {
-			  e.printStackTrace();
-		  }
 	}
 
 	// --------------------------------------------- Deal with TableView queries

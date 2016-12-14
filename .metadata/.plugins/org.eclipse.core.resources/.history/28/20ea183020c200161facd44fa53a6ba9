@@ -517,7 +517,6 @@ public class StaffScreenController implements Initializable {
 				specialRequestsTxt.setText("");
 				commentsTxt.setText("");
 				clearOrderListView();
-				orderCompleteCheckBox.setSelected(false);
 				staffModel.DeleteCurrentOrderFromDB(currentTableNo);
 			} else {
 				alert.close();
