@@ -381,4 +381,46 @@ public class StaffScreenModel {
 		return targetOrders;
 	}
 
+	ArrayList<Order> searchByFoodItem(String group, String inputItem) {
+		ArrayList<Order> targetOrders = new ArrayList<Order>();
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		String targetString = "%" + inputItem + "%";
+		System.out.println(targetString);
+		try {
+			if (group.equals("Current Orders")) {
+				String query = "SELECT * FROM orders WHERE orderList LIKE ?";
+				prepStmt = connection.prepareStatement(query);
+				prepStmt.setString(1, targetString);
+				resSet = prepStmt.executeQuery();
+				while (resSet.next()) {
+					targetOrders.add(new Order(resSet.getInt("tableNo"), resSet.getString("orderList"),
+							resSet.getString("totalPrice"), resSet.getString("specialRequests"),
+							resSet.getString("comments"), resSet.getString("isComplete"), resSet.getString("date"),
+							resSet.getString("time")));
+				}
+				prepStmt.close();
+				resSet.close();
+			} else {
+				String query = "SELECT * FROM storedOrders WHERE orderList LIKE ?";
+				prepStmt = connection.prepareStatement(query);
+				prepStmt.setString(1, targetString);
+				resSet = prepStmt.executeQuery();
+				while (resSet.next()) {
+					targetOrders.add(new Order(resSet.getInt("tableNo"), resSet.getString("orderList"),
+							resSet.getString("totalPrice"), resSet.getString("specialRequests"),
+							resSet.getString("comments"), resSet.getString("isComplete"), resSet.getString("date"),
+							resSet.getString("time")));
+				}
+				prepStmt.close();
+				resSet.close();
+			}	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//System.out.println(targetOrders.toString());
+		return targetOrders;
+	}
+
 }

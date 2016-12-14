@@ -21,23 +21,23 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Circle?>
 
-<AnchorPane prefHeight="623.0" prefWidth="1218.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StaffScreenController">
+<AnchorPane prefHeight="663.0" prefWidth="1218.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StaffScreenController">
    <children>
       <Button layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#SignOut" text="Sign Out" textFill="#f50303" />
       <Label fx:id="lblUser" alignment="CENTER_RIGHT" layoutX="1078.0" layoutY="9.0" prefHeight="27.0" prefWidth="129.0" text="Username Label" textFill="#1ad324" />
-      <TabPane layoutY="42.0" prefHeight="567.0" prefWidth="1215.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutY="42.0" prefHeight="621.0" prefWidth="1215.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="         Current Orders          ">
             <content>
               <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="564.0" prefWidth="810.0">
                      <children>
-                        <Pane prefHeight="562.0" prefWidth="1202.0">
+                        <Pane prefHeight="588.0" prefWidth="1202.0">
                            <children>
-                              <ListView fx:id="menuListView" layoutX="411.0" layoutY="49.0" prefHeight="414.0" prefWidth="349.0" />
+                              <ListView fx:id="menuListView" layoutX="412.0" layoutY="41.0" prefHeight="480.0" prefWidth="349.0" />
                               <Label layoutX="425.0" layoutY="14.0" prefHeight="17.0" prefWidth="48.0" text="Menu:" />
-                              <Button fx:id="addFoodItemBtn" layoutX="690.0" layoutY="476.0" mnemonicParsing="false" onAction="#AddItemToOrder" text="Add" />
-                              <Label layoutX="437.0" layoutY="476.0" prefHeight="27.0" prefWidth="202.0" text="Add to currently selected order:" />
-                              <GridPane layoutX="800.0" layoutY="6.0" prefHeight="508.0" prefWidth="388.0">
+                              <Button fx:id="addFoodItemBtn" layoutX="690.0" layoutY="528.0" mnemonicParsing="false" onAction="#AddItemToOrder" text="Add" />
+                              <Label layoutX="435.0" layoutY="528.0" prefHeight="27.0" prefWidth="202.0" text="Add to currently selected order:" />
+                              <GridPane layoutX="800.0" layoutY="35.0" prefHeight="548.0" prefWidth="388.0">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -71,8 +71,8 @@
                                     <Label fx:id="timeLbl" text="Time" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                  </children>
                               </GridPane>
-                              <Separator layoutX="375.0" orientation="VERTICAL" prefHeight="532.0" prefWidth="15.0" />
-                              <GridPane layoutX="47.0" layoutY="50.0" prefHeight="433.0" prefWidth="343.0">
+                              <Separator layoutX="375.0" orientation="VERTICAL" prefHeight="585.0" prefWidth="15.0" />
+                              <GridPane layoutX="47.0" layoutY="58.0" prefHeight="473.0" prefWidth="343.0">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="211.0" minWidth="10.0" prefWidth="198.0" />
                                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="185.0" minWidth="10.0" prefWidth="145.0" />
@@ -97,9 +97,10 @@
                                     <Label alignment="CENTER" layoutX="10.0" layoutY="185.0" prefHeight="17.0" prefWidth="101.0" text="Table 6" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="TOP" />
                                  </children>
                               </GridPane>
-                              <Label layoutX="170.0" layoutY="489.0" text="(Entance)" />
+                              <Label layoutX="170.0" layoutY="533.0" text="(Entance)" />
                               <Label layoutX="170.0" layoutY="22.0" prefHeight="17.0" prefWidth="58.0" text="(Kitchen)" />
-                              <Separator layoutX="774.0" layoutY="-2.0" orientation="VERTICAL" prefHeight="536.0" prefWidth="15.0" />
+                              <Separator layoutX="774.0" layoutY="-2.0" orientation="VERTICAL" prefHeight="591.0" prefWidth="15.0" />
+                              <Label layoutX="950.0" layoutY="14.0" text="View/Edit Order:" />
                            </children>
                         </Pane>
                      </children>
@@ -110,7 +111,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="551.0" prefWidth="810.0">
                      <children>
-                        <TableView fx:id="orderTableView" layoutX="317.0" layoutY="31.0" prefHeight="468.0" prefWidth="884.0">
+                        <TableView fx:id="orderTableView" layoutX="313.0" layoutY="22.0" prefHeight="544.0" prefWidth="884.0">
                           <columns>
                             <TableColumn fx:id="tableNoCol" prefWidth="96.0" text="Table Number" />
                             <TableColumn fx:id="orderListCol" prefWidth="172.0" text="Order list" />
@@ -122,25 +123,34 @@
                               <TableColumn fx:id="completedCol" prefWidth="94.0" text="Completed" />
                           </columns>
                         </TableView>
-                        <Pane fx:id="searchPane" layoutX="14.0" layoutY="106.0" prefHeight="393.0" prefWidth="299.0">
+                        <Pane fx:id="searchPane" layoutX="14.0" layoutY="106.0" prefHeight="470.0" prefWidth="299.0">
                            <children>
                               <Button fx:id="searchTableNoBtn" layoutX="217.0" layoutY="14.0" mnemonicParsing="false" onAction="#searchForTableNum" text="Search" />
                               <TextField fx:id="searchTableNoTxt" layoutX="20.0" layoutY="14.0" promptText="Table Number" />
-                              <TextField layoutX="20.0" layoutY="50.0" promptText="Food Item" />
-                              <Button layoutX="217.0" layoutY="50.0" mnemonicParsing="false" text="Search" />
-                              <Button layoutX="217.0" layoutY="85.0" mnemonicParsing="false" text="Search" />
-                              <TextField layoutX="20.0" layoutY="85.0" promptText="Comments" />
-                              <Button layoutX="217.0" layoutY="122.0" mnemonicParsing="false" text="Search" />
-                              <TextField layoutX="20.0" layoutY="122.0" promptText="Special Requests" />
-                              <ChoiceBox layoutX="127.0" layoutY="235.0" prefWidth="150.0" />
-                              <ChoiceBox layoutX="127.0" layoutY="274.0" prefWidth="150.0" />
-                              <DatePicker layoutX="27.0" layoutY="163.0" prefHeight="27.0" prefWidth="245.0" promptText="Pick a date" />
-                              <Label layoutX="50.0" layoutY="203.0" prefHeight="27.0" prefWidth="179.0" text="And choose a time interval:" />
-                              <Label layoutX="21.0" layoutY="240.0" prefHeight="17.0" prefWidth="44.0" text="From:" />
-                              <Label layoutX="21.0" layoutY="279.0" prefHeight="17.0" prefWidth="44.0" text="To:" />
-                              <Button layoutX="94.0" layoutY="323.0" mnemonicParsing="false" text="Search by date" />
-                              <Label layoutX="14.0" layoutY="364.0" text="Search Status:" />
-                              <Label fx:id="searchStatus" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="111.0" layoutY="364.0" prefHeight="17.0" prefWidth="182.0" />
+                              <TextField fx:id="searchFoodItemTxt" layoutX="20.0" layoutY="50.0" promptText="Food Item" />
+                              <Button fx:id="searchFoodBtn" layoutX="217.0" layoutY="50.0" mnemonicParsing="false" onAction="#searchForFoodItem" text="Search" />
+                              <Button fx:id="searchSpecialReqsBtn" layoutX="217.0" layoutY="85.0" mnemonicParsing="false" text="Search" />
+                              <TextField fx:id="searchCommentsTxt" layoutX="20.0" layoutY="122.0" promptText="Comments" />
+                              <Button fx:id="searchCommentsBtn" layoutX="217.0" layoutY="122.0" mnemonicParsing="false" text="Search" />
+                              <TextField fx:id="searchSpecialReqsTxt" layoutX="20.0" layoutY="85.0" promptText="Special Requests" />
+                              <ChoiceBox layoutX="127.0" layoutY="330.0" prefWidth="150.0" />
+                              <ChoiceBox layoutX="127.0" layoutY="366.0" prefWidth="150.0" />
+                              <DatePicker layoutX="27.0" layoutY="269.0" prefHeight="27.0" prefWidth="245.0" promptText="Pick a date" />
+                              <Label layoutX="60.0" layoutY="297.0" prefHeight="27.0" prefWidth="179.0" text="And choose a time interval:" />
+                              <Label layoutX="21.0" layoutY="335.0" prefHeight="17.0" prefWidth="44.0" text="From:" />
+                              <Label layoutX="21.0" layoutY="371.0" prefHeight="17.0" prefWidth="44.0" text="To:" />
+                              <Button layoutX="86.0" layoutY="407.0" mnemonicParsing="false" text="Search by date" />
+                              <Label layoutX="10.0" layoutY="448.0" text="Search Status:" />
+                              <Label fx:id="searchStatus" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="106.0" layoutY="448.0" prefHeight="17.0" prefWidth="182.0" />
+                              <Button layoutX="218.0" layoutY="160.0" mnemonicParsing="false" text="Search" />
+                              <TextField layoutX="34.0" layoutY="160.0" prefHeight="27.0" prefWidth="63.0" promptText="Price" />
+                              <TextField layoutX="123.0" layoutY="160.0" prefHeight="27.0" prefWidth="63.0" promptText="Price" />
+                              <Label layoutX="103.0" layoutY="165.0" text="to" />
+                              <Label layoutX="10.0" layoutY="165.0" text="(£)" />
+                              <CheckBox layoutX="23.0" layoutY="201.0" mnemonicParsing="false" text="Uncompleted Orders" />
+                              <Button layoutX="218.0" layoutY="196.0" mnemonicParsing="false" text="Search" />
+                              <CheckBox layoutX="23.0" layoutY="235.0" mnemonicParsing="false" text="Completed Orders" />
+                              <Button layoutX="218.0" layoutY="231.0" mnemonicParsing="false" text="Search" />
                            </children>
                         </Pane>
                         <Label layoutX="60.0" layoutY="31.0" text="Search Current or Stored Orders?" />
