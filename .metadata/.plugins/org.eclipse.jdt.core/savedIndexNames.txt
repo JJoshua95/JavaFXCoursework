@@ -1,5 +1,4 @@
 INDEX VERSION 1.129+/Users/jcjoshua/Documents/JavaFXCoursework/.metadata/.plugins/org.eclipse.jdt.core
-1685181550.index
 646634288.index
 4232048337.index
 1456874680.index

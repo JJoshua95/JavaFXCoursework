@@ -1,0 +1,27 @@
+package application;
+
+import javafx.beans.property.*;
+
+public class Order {
+	
+	private final SimpleStringProperty tableNo;
+	private final SimpleStringProperty orderList;
+	private final SimpleStringProperty totalPrice;
+	private final SimpleStringProperty specialRequests;
+	private final SimpleStringProperty comments;
+	private final SimpleStringProperty completed;
+	private final SimpleStringProperty date;
+	private final SimpleStringProperty time;
+	
+	public Order(String tableNo, String orderList, String totalPrice, String specialRequests, String comments, String completed, String date, String time) {
+		this.tableNo = new SimpleStringProperty(tableNo);
+		this.orderList = new SimpleStringProperty(orderList);
+		this.totalPrice = new SimpleStringProperty(totalPrice);
+		this.specialRequests = new SimpleStringProperty(specialRequests);
+		this.comments = new SimpleStringProperty(comments);
+		this.completed = new SimpleStringProperty(completed);
+		this.date = new SimpleStringProperty(date);
+		this.time = new SimpleStringProperty(time);
+	}
+
+}

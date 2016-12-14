@@ -1,0 +1,147 @@
+package application;
+
+import javafx.beans.property.*;
+
+public class Order {
+	
+	private final SimpleStringProperty tableNo;
+	private final SimpleStringProperty orderList;
+	private final SimpleStringProperty totalPrice;
+	private final SimpleStringProperty specialRequests;
+	private final SimpleStringProperty comments;
+	private final SimpleStringProperty completed;
+	private final SimpleStringProperty date;
+	private final SimpleStringProperty time;
+	
+	public Order(String tableNo, String orderList, String totalPrice, String specialRequests, String comments, String completed, String date, String time) {
+		this.tableNo = new SimpleStringProperty(tableNo);
+		this.orderList = new SimpleStringProperty(orderList);
+		this.totalPrice = new SimpleStringProperty(totalPrice);
+		this.specialRequests = new SimpleStringProperty(specialRequests);
+		this.comments = new SimpleStringProperty(comments);
+		this.completed = new SimpleStringProperty(completed);
+		this.date = new SimpleStringProperty(date);
+		this.time = new SimpleStringProperty(time);
+	}
+
+	public SimpleStringProperty tableNoProperty() {
+		return this.tableNo;
+	}
+	
+
+	public String getTableNo() {
+		return this.tableNoProperty().get();
+	}
+	
+
+	public void setTableNo(final String tableNo) {
+		this.tableNoProperty().set(tableNo);
+	}
+	
+
+	public SimpleStringProperty orderListProperty() {
+		return this.orderList;
+	}
+	
+
+	public String getOrderList() {
+		return this.orderListProperty().get();
+	}
+	
+
+	public void setOrderList(final String orderList) {
+		this.orderListProperty().set(orderList);
+	}
+	
+
+	public SimpleStringProperty totalPriceProperty() {
+		return this.totalPrice;
+	}
+	
+
+	public String getTotalPrice() {
+		return this.totalPriceProperty().get();
+	}
+	
+
+	public void setTotalPrice(final String totalPrice) {
+		this.totalPriceProperty().set(totalPrice);
+	}
+	
+
+	public SimpleStringProperty specialRequestsProperty() {
+		return this.specialRequests;
+	}
+	
+
+	public String getSpecialRequests() {
+		return this.specialRequestsProperty().get();
+	}
+	
+
+	public void setSpecialRequests(final String specialRequests) {
+		this.specialRequestsProperty().set(specialRequests);
+	}
+	
+
+	public SimpleStringProperty commentsProperty() {
+		return this.comments;
+	}
+	
+
+	public String getComments() {
+		return this.commentsProperty().get();
+	}
+	
+
+	public void setComments(final String comments) {
+		this.commentsProperty().set(comments);
+	}
+	
+
+	public SimpleStringProperty completedProperty() {
+		return this.completed;
+	}
+	
+
+	public String getCompleted() {
+		return this.completedProperty().get();
+	}
+	
+
+	public void setCompleted(final String completed) {
+		this.completedProperty().set(completed);
+	}
+	
+
+	public SimpleStringProperty dateProperty() {
+		return this.date;
+	}
+	
+
+	public String getDate() {
+		return this.dateProperty().get();
+	}
+	
+
+	public void setDate(final String date) {
+		this.dateProperty().set(date);
+	}
+	
+
+	public SimpleStringProperty timeProperty() {
+		return this.time;
+	}
+	
+
+	public String getTime() {
+		return this.timeProperty().get();
+	}
+	
+
+	public void setTime(final String time) {
+		this.timeProperty().set(time);
+	}
+	
+
+}

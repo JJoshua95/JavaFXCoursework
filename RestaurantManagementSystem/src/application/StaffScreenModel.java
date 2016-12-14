@@ -188,7 +188,7 @@ public class StaffScreenModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 		return totalFromDB;
 	}
 
@@ -330,16 +330,33 @@ public class StaffScreenModel {
 													// orders
 
 				}
+				
 		  } catch(SQLException e) {
 			  e.printStackTrace();
 		  }
 	}
 
-	// --------------------------------------------- Deal with TableView queries
-	// -------------------------------------------------
+	// ------------------------------ Deal with TableView queries ------------------------
 
-	void GetAllOrdersForTable() {
-
+	ArrayList<Order> searchByTableNo(String group, int tableNum) {
+		ArrayList<Order> targetOrders = new ArrayList<Order>();
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		
+		String query = "SELECT * FROM ? WHERE tableNo = ?";
+		
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setString(1, group);
+			prepStmt.setInt(2, tableNum);
+			resSet = prepStmt.executeQuery();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 }

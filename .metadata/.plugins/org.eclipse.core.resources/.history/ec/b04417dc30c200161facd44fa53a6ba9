@@ -1,0 +1,57 @@
+package application;
+
+import javafx.beans.property.*;
+
+public class Order {
+	
+	private SimpleStringProperty tableNo;
+	private final SimpleStringProperty orderList;
+	private final SimpleStringProperty totalPrice;
+	private final SimpleStringProperty specialRequests;
+	private final SimpleStringProperty comments;
+	private final SimpleStringProperty completed;
+	private final SimpleStringProperty date;
+	private final SimpleStringProperty time;
+	public Order(SimpleStringProperty tableNo, SimpleStringProperty orderList, SimpleStringProperty totalPrice,
+			SimpleStringProperty specialRequests, SimpleStringProperty comments, SimpleStringProperty completed,
+			SimpleStringProperty date, SimpleStringProperty time) {
+		super();
+		this.tableNo = tableNo;
+		this.orderList = orderList;
+		this.totalPrice = totalPrice;
+		this.specialRequests = specialRequests;
+		this.comments = comments;
+		this.completed = completed;
+		this.date = date;
+		this.time = time;
+	}
+	// Setting done within the constructor
+	public SimpleStringProperty getTableNo() {
+		return tableNo;
+	}
+	public void setTableNo(SimpleStringProperty tableNo) {
+		this.tableNo = tableNo;
+	}
+	public SimpleStringProperty getOrderList() {
+		return orderList;
+	}
+	public SimpleStringProperty getTotalPrice() {
+		return totalPrice;
+	}
+	public SimpleStringProperty getSpecialRequests() {
+		return specialRequests;
+	}
+	public SimpleStringProperty getComments() {
+		return comments;
+	}
+	public SimpleStringProperty getCompleted() {
+		return completed;
+	}
+	public SimpleStringProperty getDate() {
+		return date;
+	}
+	public SimpleStringProperty getTime() {
+		return time;
+	}
+	
+}

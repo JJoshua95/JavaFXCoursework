@@ -24,10 +24,15 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
@@ -105,7 +110,38 @@ public class StaffScreenController implements Initializable {
 	private int sixClickCount;
 	
 	// TableView and Searching orders variables;
+	@FXML
+	private TableView<Order> orderTableView;
+	@FXML
+	private TableColumn<Order, String> tableNoCol;
+	@FXML
+	private TableColumn<Order, String> orderListCol;
+	@FXML
+	private TableColumn<Order, String> totalBillCol;
+	@FXML
+	private TableColumn<Order, String> specialReqsCol;
+	@FXML
+	private TableColumn<Order, String> commentsCol;
+	@FXML
+	private TableColumn<Order, String> completedCol;
+	@FXML
+	private TableColumn<Order, String> dateCol;
+	@FXML
+	private TableColumn<Order, String> timeCol;
 	
+	@FXML
+	private Pane searchPane;
+	@FXML
+	private Label searchStatus;
+	@FXML
+	private ComboBox<String> orderGroupComboBox;
+	@FXML
+	private TextField searchTableNoTxt;
+	@FXML
+	private Button searchTableNoBtn;
+	
+	private ObservableList<Order> tableViewOrdersObservableList; // Observable List which will populate the TableView
+	private String orderGroup; // Indicates which table in the database to search.
 		
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -180,6 +216,32 @@ public class StaffScreenController implements Initializable {
 		specialRequestsTxt.setEditable(false);
 		commentsTxt.setEditable(false);
 		
+		// TableView initialisation
+		
+		tableViewOrdersObservableList = FXCollections.observableArrayList();
+		
+		//tableViewOrdersObservableList.clear();
+		tableViewOrdersObservableList.addAll(
+				new Order("1","[OrderList]","£TotalPrice","Special Requests", "Comments", "Completed?", "Date", "Time"),
+				new Order("2","[OrderList]","£TotalPrice","Special Requests", "Comments", "Completed?", "Date", "Time")
+				);
+		
+		tableNoCol.setCellValueFactory(new PropertyValueFactory<Order, String>("tableNo"));
+		orderListCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderList"));
+		totalBillCol.setCellValueFactory(new PropertyValueFactory<Order, String>("totalPrice"));
+		specialReqsCol.setCellValueFactory(new PropertyValueFactory<Order, String>("specialRequests"));
+		commentsCol.setCellValueFactory(new PropertyValueFactory<Order, String>("comments"));
+		completedCol.setCellValueFactory(new PropertyValueFactory<Order, String>("completed"));
+		dateCol.setCellValueFactory(new PropertyValueFactory<Order, String>("date"));
+		timeCol.setCellValueFactory(new PropertyValueFactory<Order, String>("time"));
+		
+		orderTableView.setItems(tableViewOrdersObservableList);
+		
+		ObservableList<String> orderGroupComboBoxObsList = FXCollections.observableArrayList("Current Orders", "Stored Orders");
+		orderGroupComboBox.setItems(orderGroupComboBoxObsList);
+		
+		searchPane.setDisable(true); // disable search by default
+		
 	}
 	
 	// ------------------------------------------------------- Current Order GUI Controls ----------------------------------------------
@@ -236,7 +298,7 @@ public class StaffScreenController implements Initializable {
 		
 		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
 		DecimalFormat df = new DecimalFormat("#.00");
-		totalPriceLbl.setText(df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
+		totalPriceLbl.setText("£" + df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
 		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
 		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
 		
@@ -282,7 +344,7 @@ public class StaffScreenController implements Initializable {
 		currentOrderListView.setItems(currentOrderObservableList);
 		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
 		DecimalFormat df = new DecimalFormat("#.00");
-		totalPriceLbl.setText(df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
+		totalPriceLbl.setText("£" + df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
 		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
 		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
 		
@@ -330,7 +392,7 @@ public class StaffScreenController implements Initializable {
 		currentOrderListView.setItems(currentOrderObservableList);
 		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
 		DecimalFormat df = new DecimalFormat("#.00");
-		totalPriceLbl.setText(df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
+		totalPriceLbl.setText("£" + df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
 		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
 		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
 		
@@ -377,7 +439,7 @@ public class StaffScreenController implements Initializable {
 		currentOrderListView.setItems(currentOrderObservableList);
 		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
 		DecimalFormat df = new DecimalFormat("#.00");
-		totalPriceLbl.setText(df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
+		totalPriceLbl.setText("£" + df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
 		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
 		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
 		
@@ -423,7 +485,7 @@ public class StaffScreenController implements Initializable {
 		currentOrderListView.setItems(currentOrderObservableList);
 		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
 		DecimalFormat df = new DecimalFormat("#.00");
-		totalPriceLbl.setText(df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
+		totalPriceLbl.setText("£" + df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
 		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
 		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
 		
@@ -470,7 +532,7 @@ public class StaffScreenController implements Initializable {
 		currentOrderListView.setItems(currentOrderObservableList);
 		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
 		DecimalFormat df = new DecimalFormat("#.00");
-		totalPriceLbl.setText(df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
+		totalPriceLbl.setText("£" + df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
 		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
 		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
 		
@@ -593,6 +655,45 @@ public class StaffScreenController implements Initializable {
 		}
 	}
 	
-	// -------------------------------------------- Search current orders or past orders and deal with TableView ----------------------------------
+
+	// -------------------------------------------- Search current orders or past
+	// orders and deal with TableView ----------------------------------
+	
+	/*
+	public void testTableClearing() {
+		tableViewOrdersObservableList.clear();
+		tableViewOrdersObservableList.addAll(
+				new Order("1testing","[OrderList]","£TotalPrice","Special Requests", "Comments", "Completed?", "Date", "Time"),
+				new Order("2testing","[OrderList]","£TotalPrice","Special Requests", "Comments", "Completed?", "Date", "Time"),
+				new Order("2testing","[OrderList]","£TotalPrice","Special Requests", "Comments", "Completed?", "Date", "Time"),
+				new Order("2testing","[OrderList]","£TotalPrice","Special Requests", "Comments", "Completed?", "Date", "Time")
+				);
+		orderTableView.setItems(tableViewOrdersObservableList);
+	}
+	*/
+	
+	// "Current Orders", "Stored Orders"
+	
+	public void enableSearch() {
+		searchPane.setDisable(false);
+	}
+	
+	public void searchForTableNum() {
+		int tableNum = Integer.parseInt(searchTableNoTxt.getText());
+		if (tableNum < 7 || tableNum > 0) { // as long as the number is within
+											// bounds of our tables
+			orderGroup = orderGroupComboBox.getValue();
+			String orderTableName;
+			if (orderGroup.equals("Current Orders")) {
+				orderTableName = "orders";
+				searchStatus.setText("Searching");
+			} else if (orderGroup.equals("Stored Orders")) {
+				orderTableName = "storedOrders";
+				searchStatus.setText("Searching");
+			}
+		} else {
+			searchStatus.setText("Invalid table");
+		}
+	}
 
 }

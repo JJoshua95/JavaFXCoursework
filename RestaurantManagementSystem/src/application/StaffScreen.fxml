@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Circle?>
 
-<AnchorPane prefHeight="609.0" prefWidth="1215.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StaffScreenController">
+<AnchorPane prefHeight="623.0" prefWidth="1218.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StaffScreenController">
    <children>
       <Button layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#SignOut" text="Sign Out" textFill="#f50303" />
       <Label fx:id="lblUser" alignment="CENTER_RIGHT" layoutX="1078.0" layoutY="9.0" prefHeight="27.0" prefWidth="129.0" text="Username Label" textFill="#1ad324" />
@@ -110,41 +110,41 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="551.0" prefWidth="810.0">
                      <children>
-                        <TableView layoutX="317.0" layoutY="31.0" prefHeight="468.0" prefWidth="884.0">
+                        <TableView fx:id="orderTableView" layoutX="317.0" layoutY="31.0" prefHeight="468.0" prefWidth="884.0">
                           <columns>
-                            <TableColumn prefWidth="96.0" text="Table Number" />
-                            <TableColumn prefWidth="172.0" text="Order list" />
-                              <TableColumn prefWidth="66.0" text="Total Bill" />
-                              <TableColumn prefWidth="87.0" text="Date" />
-                              <TableColumn prefWidth="106.0" text="Time of Order" />
-                              <TableColumn prefWidth="137.0" text="Special Requests" />
-                              <TableColumn prefWidth="125.0" text="Comments" />
-                              <TableColumn prefWidth="94.0" text="Completed" />
+                            <TableColumn fx:id="tableNoCol" prefWidth="96.0" text="Table Number" />
+                            <TableColumn fx:id="orderListCol" prefWidth="172.0" text="Order list" />
+                              <TableColumn fx:id="totalBillCol" prefWidth="66.0" text="Total (£)" />
+                              <TableColumn fx:id="dateCol" prefWidth="87.0" text="Date" />
+                              <TableColumn fx:id="timeCol" prefWidth="106.0" text="Time of Order" />
+                              <TableColumn fx:id="specialReqsCol" prefWidth="137.0" text="Special Requests" />
+                              <TableColumn fx:id="commentsCol" prefWidth="125.0" text="Comments" />
+                              <TableColumn fx:id="completedCol" prefWidth="94.0" text="Completed" />
                           </columns>
                         </TableView>
-                        <Pane layoutX="14.0" layoutY="11.0" prefHeight="516.0" prefWidth="299.0">
+                        <Pane fx:id="searchPane" layoutX="14.0" layoutY="106.0" prefHeight="393.0" prefWidth="299.0">
                            <children>
-                              <Button layoutX="217.0" layoutY="107.0" mnemonicParsing="false" text="Search" />
-                              <TextField layoutX="23.0" layoutY="107.0" promptText="Table Number" />
-                              <TextField layoutX="20.0" layoutY="151.0" promptText="Food Item" />
-                              <Button layoutX="217.0" layoutY="151.0" mnemonicParsing="false" text="Search" />
-                              <Button layoutX="217.0" layoutY="199.0" mnemonicParsing="false" text="Search" />
-                              <TextField layoutX="20.0" layoutY="199.0" promptText="Comments" />
-                              <Button layoutX="217.0" layoutY="241.0" mnemonicParsing="false" text="Search" />
-                              <TextField layoutX="20.0" layoutY="241.0" promptText="Special Requests" />
-                              <ChoiceBox layoutX="130.0" layoutY="366.0" prefWidth="150.0" />
-                              <ChoiceBox layoutX="130.0" layoutY="403.0" prefWidth="150.0" />
-                              <DatePicker layoutX="27.0" layoutY="295.0" prefHeight="27.0" prefWidth="245.0" promptText="Pick a date" />
-                              <Label layoutX="43.0" layoutY="329.0" prefHeight="27.0" prefWidth="235.0" text="And choose a time interval:" />
-                              <Label layoutX="21.0" layoutY="371.0" prefHeight="17.0" prefWidth="44.0" text="From:" />
-                              <Label layoutX="21.0" layoutY="408.0" prefHeight="17.0" prefWidth="44.0" text="To:" />
-                              <Button layoutX="94.0" layoutY="442.0" mnemonicParsing="false" text="Search by date" />
-                              <Label layoutX="14.0" layoutY="479.0" text="Search Status:" />
-                              <Label alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="111.0" layoutY="480.0" prefHeight="17.0" prefWidth="182.0" text="SearchStatus" />
-                              <ComboBox layoutX="74.0" layoutY="51.0" prefWidth="150.0" />
-                              <Label layoutX="26.0" layoutY="19.0" text="Search Current or Stored Orders?" />
+                              <Button fx:id="searchTableNoBtn" layoutX="217.0" layoutY="14.0" mnemonicParsing="false" onAction="#searchForTableNum" text="Search" />
+                              <TextField fx:id="searchTableNoTxt" layoutX="20.0" layoutY="14.0" promptText="Table Number" />
+                              <TextField layoutX="20.0" layoutY="50.0" promptText="Food Item" />
+                              <Button layoutX="217.0" layoutY="50.0" mnemonicParsing="false" text="Search" />
+                              <Button layoutX="217.0" layoutY="85.0" mnemonicParsing="false" text="Search" />
+                              <TextField layoutX="20.0" layoutY="85.0" promptText="Comments" />
+                              <Button layoutX="217.0" layoutY="122.0" mnemonicParsing="false" text="Search" />
+                              <TextField layoutX="20.0" layoutY="122.0" promptText="Special Requests" />
+                              <ChoiceBox layoutX="127.0" layoutY="235.0" prefWidth="150.0" />
+                              <ChoiceBox layoutX="127.0" layoutY="274.0" prefWidth="150.0" />
+                              <DatePicker layoutX="27.0" layoutY="163.0" prefHeight="27.0" prefWidth="245.0" promptText="Pick a date" />
+                              <Label layoutX="50.0" layoutY="203.0" prefHeight="27.0" prefWidth="179.0" text="And choose a time interval:" />
+                              <Label layoutX="21.0" layoutY="240.0" prefHeight="17.0" prefWidth="44.0" text="From:" />
+                              <Label layoutX="21.0" layoutY="279.0" prefHeight="17.0" prefWidth="44.0" text="To:" />
+                              <Button layoutX="94.0" layoutY="323.0" mnemonicParsing="false" text="Search by date" />
+                              <Label layoutX="14.0" layoutY="364.0" text="Search Status:" />
+                              <Label fx:id="searchStatus" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="111.0" layoutY="364.0" prefHeight="17.0" prefWidth="182.0" />
                            </children>
                         </Pane>
+                        <Label layoutX="60.0" layoutY="31.0" text="Search Current or Stored Orders?" />
+                        <ComboBox fx:id="orderGroupComboBox" layoutX="89.0" layoutY="56.0" onAction="#enableSearch" prefWidth="150.0" promptText="Order Group" />
                      </children>
                   </AnchorPane>
             </content>
