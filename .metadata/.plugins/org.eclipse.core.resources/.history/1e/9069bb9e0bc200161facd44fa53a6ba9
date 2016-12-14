@@ -185,7 +185,9 @@ public class StaffScreenModel {
 		}
 		return totalFromDB;
 	}
-		
+	
+	// tableNo, orderList, totalPrice, specialRequests, comments, isComplete, date, time
+	
 	String getSpecialRequestsFromDB(int tableNum) {
 		String specialReqs = null;
 		PreparedStatement prepStmt = null;
@@ -202,62 +204,7 @@ public class StaffScreenModel {
 		}
 		return specialReqs;
 	}
-	
-	String getCommentsFromDB(int tableNum) {
-		String comment = null;
-		PreparedStatement prepStmt = null;
-		ResultSet resSet = null;
-		String query = "SELECT comments FROM orders WHERE tableNo = ?";
-		try {
-			prepStmt = connection.prepareStatement(query);
-			prepStmt.setInt(1, tableNum);
-			resSet = prepStmt.executeQuery();
-			comment = resSet.getString("comments");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return comment;
-	}
-	
-	// tableNo, orderList, totalPrice, specialRequests, comments, isComplete, date, time
-	
-	String getIsComplete(int tableNum) {
-		String complete = null;
-		PreparedStatement prepStmt = null;
-		ResultSet resSet = null;
-		String query = "SELECT isComplete FROM orders WHERE tableNo = ?";
-		try {
-			prepStmt = connection.prepareStatement(query);
-			prepStmt.setInt(1, tableNum);
-			resSet = prepStmt.executeQuery();
-			complete = resSet.getString("isComplete");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return complete;
-	}
-	
-	String getDateToDisplay(int tableNum) {
-		String dateStringForLabel = null;
-		PreparedStatement prepStmt = null;
-		ResultSet resSet = null;
-		String query = "SELECT date, time FROM orders WHERE tableNo = ?";
-		try {
-			prepStmt = connection.prepareStatement(query);
-			prepStmt.setInt(1, tableNum);
-			resSet = prepStmt.executeQuery();
-			String dateStr = resSet.getString("date");
-			String timeStr = resSet.getString("time");
-			dateStringForLabel = "" + dateStr + " " + timeStr;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return dateStringForLabel;
-	}
-	
+
 	void DeleteCurrentOrderFromDB(int tableNum) {
 		PreparedStatement prepStmt = null;
 

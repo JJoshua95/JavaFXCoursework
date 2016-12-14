@@ -277,12 +277,6 @@ public class StaffScreenController implements Initializable {
 		ArrayList<Food> arr2 = staffModel.RetrieveATableOrderFromDB(2);
 		currentOrderObservableList.addAll(arr2);
 		currentOrderListView.setItems(currentOrderObservableList);
-		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
-		DecimalFormat df = new DecimalFormat("#.00");
-		totalPriceLbl.setText(df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
-		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
-		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
-		
 		twoClickCount++;
 		if (twoClickCount > 1) {
 			// enable editing
@@ -325,12 +319,6 @@ public class StaffScreenController implements Initializable {
 		ArrayList<Food> arr3 = staffModel.RetrieveATableOrderFromDB(3);
 		currentOrderObservableList.addAll(arr3);
 		currentOrderListView.setItems(currentOrderObservableList);
-		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
-		DecimalFormat df = new DecimalFormat("#.00");
-		totalPriceLbl.setText(df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
-		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
-		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
-		
 		threeClickCount++;
 		if (threeClickCount > 1) {
 			// enable editing
@@ -372,12 +360,6 @@ public class StaffScreenController implements Initializable {
 		ArrayList<Food> arr4 = staffModel.RetrieveATableOrderFromDB(4);
 		currentOrderObservableList.addAll(arr4);
 		currentOrderListView.setItems(currentOrderObservableList);
-		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
-		DecimalFormat df = new DecimalFormat("#.00");
-		totalPriceLbl.setText(df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
-		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
-		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
-		
 		fourClickCount++;
 		if (fourClickCount > 1) {
 			// enable editing
@@ -418,12 +400,6 @@ public class StaffScreenController implements Initializable {
 		ArrayList<Food> arr5 = staffModel.RetrieveATableOrderFromDB(5);
 		currentOrderObservableList.addAll(arr5);
 		currentOrderListView.setItems(currentOrderObservableList);
-		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
-		DecimalFormat df = new DecimalFormat("#.00");
-		totalPriceLbl.setText(df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
-		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
-		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
-		
 		fiveClickCount++;
 		if (fiveClickCount > 1) {
 			// enable editing
@@ -465,12 +441,6 @@ public class StaffScreenController implements Initializable {
 		ArrayList<Food> arr6 = staffModel.RetrieveATableOrderFromDB(6);
 		currentOrderObservableList.addAll(arr6);
 		currentOrderListView.setItems(currentOrderObservableList);
-		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
-		DecimalFormat df = new DecimalFormat("#.00");
-		totalPriceLbl.setText(df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
-		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
-		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
-		
 		sixClickCount++;
 		if (sixClickCount > 1) {
 			// enable editing

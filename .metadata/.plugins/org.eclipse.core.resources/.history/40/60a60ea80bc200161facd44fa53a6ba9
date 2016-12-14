@@ -239,7 +239,7 @@ public class StaffScreenModel {
 		return complete;
 	}
 	
-	String getDateToDisplay(int tableNum) {
+	String getDateToDisplay() {
 		String dateStringForLabel = null;
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;

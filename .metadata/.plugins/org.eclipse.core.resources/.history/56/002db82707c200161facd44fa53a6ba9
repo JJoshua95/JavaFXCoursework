@@ -53,7 +53,7 @@ public class StaffScreenModel {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String dateString = dateFormat.format(inDate);
 		DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-		String timeString = timeFormat.format(inDate);
+		String timeString = dateFormat.format(inDate);
 
 		PreparedStatement preparedStatement = null; // to hold the query
 		ResultSet resultSet = null;
@@ -87,12 +87,10 @@ public class StaffScreenModel {
 				preparedStatement.execute();
 			
 			} else { // If there is already a record for this table update all but the time and date
-				System.out.println("Table order exists, updating it now");
-				
+				System.out.println("Table order exists, updating");
 				query = "UPDATE orders "
 						+ "SET orderList = ?, totalPrice = ?, specialRequests = ?, comments = ?, isComplete = ? "
 						+ "WHERE tableNo = ?";
-				
 				preparedStatement = connection.prepareStatement(query);
 				preparedStatement.setString(1, foodItemList.toString());
 				preparedStatement.setDouble(2, totalBill);
@@ -109,6 +107,37 @@ public class StaffScreenModel {
 			preparedStatement.close();
 			resultSet.close();
 		}
+	}
+
+	void saveTimeOfOrder(int tabNum, Date inputDate) {
+		try {
+
+			PreparedStatement prepStmt;
+			ResultSet resSet;
+
+			String query = "SELECT dateTime FROM orders WHERE tableNo = ?";
+
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tabNum);
+			resSet = prepStmt.executeQuery();
+			System.out.println(resSet.getString("dateTime"));
+			System.out.println(resSet.wasNull());
+			if (resSet.wasNull()) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				String dateString = dateFormat.format(inputDate);
+				String query2 = "UPDATE orders SET dateTime = ? WHERE tableNo = ?";
+				prepStmt = connection.prepareStatement(query2);
+				prepStmt.setString(1, dateString);
+				prepStmt.setInt(2, tabNum);
+				System.out.println("was null and wrote a new date");
+				prepStmt.execute();
+			} else {
+				System.out.println("A date has already been written here");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
 
 	ArrayList<Food> RetrieveATableOrderFromDB(int tableNoVal) throws SQLException {
@@ -168,96 +197,7 @@ public class StaffScreenModel {
 		return orderArrayList;
 
 	}
-	
-	Double getTotalPriceFromDB(int tableNum) {
-		double totalFromDB = 0.0;
-		PreparedStatement prepStmt = null;
-		ResultSet resSet = null;
-		String query = "SELECT totalPrice FROM orders WHERE tableNo = ?";
-		try {
-			prepStmt = connection.prepareStatement(query);
-			prepStmt.setInt(1, tableNum);
-			resSet = prepStmt.executeQuery();
-			totalFromDB = resSet.getDouble("totalPrice");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return totalFromDB;
-	}
-		
-	String getSpecialRequestsFromDB(int tableNum) {
-		String specialReqs = null;
-		PreparedStatement prepStmt = null;
-		ResultSet resSet = null;
-		String query = "SELECT specialRequests FROM orders WHERE tableNo = ?";
-		try {
-			prepStmt = connection.prepareStatement(query);
-			prepStmt.setInt(1, tableNum);
-			resSet = prepStmt.executeQuery();
-			specialReqs = resSet.getString("specialRequests");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return specialReqs;
-	}
-	
-	String getCommentsFromDB(int tableNum) {
-		String comment = null;
-		PreparedStatement prepStmt = null;
-		ResultSet resSet = null;
-		String query = "SELECT comments FROM orders WHERE tableNo = ?";
-		try {
-			prepStmt = connection.prepareStatement(query);
-			prepStmt.setInt(1, tableNum);
-			resSet = prepStmt.executeQuery();
-			comment = resSet.getString("comments");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return comment;
-	}
-	
-	// tableNo, orderList, totalPrice, specialRequests, comments, isComplete, date, time
-	
-	String getIsComplete(int tableNum) {
-		String complete = null;
-		PreparedStatement prepStmt = null;
-		ResultSet resSet = null;
-		String query = "SELECT isComplete FROM orders WHERE tableNo = ?";
-		try {
-			prepStmt = connection.prepareStatement(query);
-			prepStmt.setInt(1, tableNum);
-			resSet = prepStmt.executeQuery();
-			complete = resSet.getString("isComplete");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return complete;
-	}
-	
-	String getDateToDisplay(int tableNum) {
-		String dateStringForLabel = null;
-		PreparedStatement prepStmt = null;
-		ResultSet resSet = null;
-		String query = "SELECT date, time FROM orders WHERE tableNo = ?";
-		try {
-			prepStmt = connection.prepareStatement(query);
-			prepStmt.setInt(1, tableNum);
-			resSet = prepStmt.executeQuery();
-			String dateStr = resSet.getString("date");
-			String timeStr = resSet.getString("time");
-			dateStringForLabel = "" + dateStr + " " + timeStr;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return dateStringForLabel;
-	}
-	
+
 	void DeleteCurrentOrderFromDB(int tableNum) {
 		PreparedStatement prepStmt = null;
 
