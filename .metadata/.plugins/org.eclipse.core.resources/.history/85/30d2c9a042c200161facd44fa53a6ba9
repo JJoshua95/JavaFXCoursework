@@ -222,8 +222,8 @@ public class StaffScreenController implements Initializable {
 		
 		//tableViewOrdersObservableList.clear();
 		tableViewOrdersObservableList.addAll(
-				new Order(1,"[OrderList]","£TotalPrice","Special Requests", "Comments", "Completed?", "Date", "Time"),
-				new Order(2,"[OrderList]","£TotalPrice","Special Requests", "Comments", "Completed?", "Date", "Time")
+				new Order("1","[OrderList]","£TotalPrice","Special Requests", "Comments", "Completed?", "Date", "Time"),
+				new Order("2","[OrderList]","£TotalPrice","Special Requests", "Comments", "Completed?", "Date", "Time")
 				);
 		
 		tableNoCol.setCellValueFactory(new PropertyValueFactory<Order, String>("tableNo"));
@@ -683,18 +683,13 @@ public class StaffScreenController implements Initializable {
 		if (tableNum < 7 || tableNum > 0) { // as long as the number is within
 											// bounds of our tables
 			orderGroup = orderGroupComboBox.getValue();
+			String orderTableName;
 			if (orderGroup.equals("Current Orders")) {
+				orderTableName = "orders";
 				searchStatus.setText("Searching");
-				tableViewOrdersObservableList.clear();
-				tableViewOrdersObservableList.addAll(staffModel.searchByTableNo(orderGroup, tableNum));
-				orderTableView.setItems(tableViewOrdersObservableList);
-				searchStatus.setText("Results Found");
 			} else if (orderGroup.equals("Stored Orders")) {
+				orderTableName = "storedOrders";
 				searchStatus.setText("Searching");
-				tableViewOrdersObservableList.clear();
-				tableViewOrdersObservableList.addAll(staffModel.searchByTableNo(orderGroup, tableNum));
-				orderTableView.setItems(tableViewOrdersObservableList);
-				searchStatus.setText("Results Found");
 			}
 		} else {
 			searchStatus.setText("Invalid table");

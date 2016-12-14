@@ -1,11 +1,10 @@
 package application;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Order {
 	
-	private final SimpleIntegerProperty tableNo;
+	private final SimpleStringProperty tableNo;
 	private final SimpleStringProperty orderList;
 	private final SimpleStringProperty totalPrice;
 	private final SimpleStringProperty specialRequests;
@@ -15,10 +14,10 @@ public class Order {
 	private final SimpleStringProperty time;
 	// private final SimpleStringProperty orderNo; Needed if we implement replacing current orders with stored orders
 	
-	public Order(int tableNo, String orderList, String totalPrice, String specialRequests, String comments,
+	public Order(String tableNo, String orderList, String totalPrice, String specialRequests, String comments,
 			String completed, String date, String time /*,String orderNo*/) {
 		super();
-		this.tableNo = new SimpleIntegerProperty(tableNo);
+		this.tableNo = new SimpleStringProperty(tableNo);
 		this.orderList = new SimpleStringProperty(orderList);
 		this.totalPrice = new SimpleStringProperty(totalPrice);
 		this.specialRequests = new SimpleStringProperty(specialRequests);
@@ -29,7 +28,7 @@ public class Order {
 		//this.orderNo = new SimpleStringProperty(orderNo);
 	}
 
-	public int getTableNo() {
+	public String getTableNo() {
 		return tableNo.get();
 	}
 
