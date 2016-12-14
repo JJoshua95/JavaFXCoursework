@@ -1,6 +1,9 @@
 package application;
 import java.sql.*;
+import java.util.Date;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javafx.collections.ObservableList;
@@ -26,7 +29,9 @@ public class StaffScreenModel {
 		}
 	}
 	
-	void SaveCurrentOrderToDatabase(int tableNum, ObservableList<Food> orderList) throws SQLException {
+	void SaveCurrentOrderToDatabase(int tableNum, ObservableList<Food> orderList, double totalBill, 
+			String specialReqs, 
+			String comments, String isComplete) throws SQLException {
 		
 		//String[] foodItemArr; // array to hold strings of the items in the form [name:cost, name:cost, ... ]
 		ArrayList<String> foodItemList = new ArrayList<String>();
@@ -40,25 +45,23 @@ public class StaffScreenModel {
 			foodPriceString = df.format(f.getPrice());
 			foodItemList.add("" + foodNameString + ":" + foodPriceString);
 		}
-		//foodItemList.toString();
-		//System.out.println(foodItemList.toString());
-		/*
-		for (String s: foodItemList) {
-			System.out.println(s);
-		}
-		*/
-		
-		//String query = "INSERT INTO orders (tableNo, orderList) VALUES (1, ?) ";
 		
 		PreparedStatement preparedStatement = null; // to hold the query
 		
 		try {
 			
-			String query = "INSERT OR REPLACE INTO orders (tableNo, orderList) VALUES (?, ?)";
+			String query = "INSERT OR REPLACE INTO orders "
+					+ "(tableNo, orderList, totalPrice, specialRequests, comments, isComplete) "
+					+ "VALUES (?, ?, ?, ?, ?, ?)";
 			
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, tableNum);
 			preparedStatement.setString(2, foodItemList.toString());
+			preparedStatement.setDouble(3, totalBill);
+			preparedStatement.setString(4, specialReqs);
+			preparedStatement.setString(5, comments);
+			preparedStatement.setString(6, isComplete);
+			
 			preparedStatement.execute();
 			
 			// Handle overwriting of tables already written
@@ -68,7 +71,37 @@ public class StaffScreenModel {
 		} finally {
 			preparedStatement.close();
 		}
-		
+	}
+	
+	void saveTimeOfOrder(int tabNum, Date inputDate) {
+		try {
+			
+			PreparedStatement prepStmt;
+			ResultSet resSet;
+			
+			String query = "SELECT dateTime FROM orders WHERE tableNo = ?";
+			
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tabNum);
+			resSet = prepStmt.executeQuery();
+			System.out.println(resSet.getString("dateTime"));
+			System.out.println(resSet.wasNull());
+			if (resSet.wasNull()) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				String dateString = dateFormat.format(inputDate);
+				String query2 = "UPDATE orders SET dateTime = ? WHERE tableNo = ?";
+				prepStmt = connection.prepareStatement(query2);
+				prepStmt.setString(1, dateString);
+				prepStmt.setInt(2, tabNum);
+				System.out.println("was null and wrote a new date");
+				prepStmt.execute();
+			} else {
+				System.out.println("A date has already been written here");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	ArrayList<Food> RetrieveATableOrderFromDB(int tableNoVal) throws SQLException {

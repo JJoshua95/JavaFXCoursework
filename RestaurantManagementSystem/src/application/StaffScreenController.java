@@ -1,6 +1,7 @@
 package application;
 
 import java.net.URL;
+
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -66,8 +67,6 @@ public class StaffScreenController implements Initializable {
 	private Label lblCurrentTable;
 	@FXML 
 	private Button deleteCurrentOrderBtn;
-	@FXML 
-	private Label timestampLbl;
 	@FXML
 	private TextArea specialRequestsTxt;
 	@FXML
@@ -78,6 +77,8 @@ public class StaffScreenController implements Initializable {
 	private Label totalPriceLbl;
 	@FXML
 	private Button calculateTotalBtn;
+	@FXML
+	private Label timeLbl;
 	
 	// Data holder variables
 	private ObservableList<Food> menuObservableList; // Menu list of all possible food options
@@ -126,7 +127,7 @@ public class StaffScreenController implements Initializable {
 						super.updateItem(f, bool);
 						if (f != null) {
 							DecimalFormat df = new DecimalFormat("#.00"); // to print the price to 2dp i.e. to the nearest penny
-							setText(f.getMenuItemName() + " : £" + df.format(f.getPrice()));
+							setText(f.getMenuItemName() + " : £ " + df.format(f.getPrice()));
 						} else {
 							setText(null);
 						}
@@ -146,7 +147,7 @@ public class StaffScreenController implements Initializable {
 						super.updateItem(f, bool);
 						if (f != null) {
 							DecimalFormat df = new DecimalFormat("#.00"); // to print the price to 2dp i.e. to the nearest penny
-							setText(f.getMenuItemName() + " : £" + df.format(f.getPrice()));
+							setText(f.getMenuItemName() + " : £ " + df.format(f.getPrice()));
 						} else {
 							setText(null);
 						}
@@ -160,7 +161,7 @@ public class StaffScreenController implements Initializable {
 		currentOrderObservableList = FXCollections.observableArrayList(); // initialise the current order list view
 		
 		lblCurrentTable.setText("");
-		timestampLbl.setText("");
+		//timestampLbl.setText("");
 		totalPriceLbl.setText("");
 		
 		// set buttons to uneditable to begin until a table is selected.
@@ -450,7 +451,7 @@ public class StaffScreenController implements Initializable {
 		// save all the important variables
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		dateTimeOfCurrentOrder = new Date();
-		timestampLbl.setText(dateFormat.format(dateTimeOfCurrentOrder));
+		timeLbl.setText(dateFormat.format(dateTimeOfCurrentOrder));
 		//System.out.println(dateFormat.format(dateTimeOfCurrentOrder));
 		specialRequestsString = specialRequestsTxt.getText();
 		commentsString = commentsTxt.getText();
@@ -462,7 +463,13 @@ public class StaffScreenController implements Initializable {
 			isOrderCompleteString = "false";
 		}
 		
-		staffModel.SaveCurrentOrderToDatabase(currentTableNo,currentOrderObservableList);
+		//System.out.println(dateTimeOfCurrentOrder);
+		
+		
+		staffModel.SaveCurrentOrderToDatabase(currentTableNo,currentOrderObservableList,
+				orderTotalPrice, specialRequestsString, commentsString,
+				isOrderCompleteString); 
+		//staffModel.saveTimeOfOrder(currentTableNo, dateTimeOfCurrentOrder); 
 
 	}
 	
@@ -491,7 +498,7 @@ public class StaffScreenController implements Initializable {
 		DecimalFormat df = new DecimalFormat("#.00"); // to print the price to 2dp i.e. to the nearest penny		
 		totalPriceLbl.setText("£" + df.format(total));
 		orderTotalPrice = total;
-		System.out.println(total);
+		//System.out.println(total);
 		return total;
 	}
 	

@@ -40,7 +40,7 @@
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints maxHeight="155.0" minHeight="0.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                  <RowConstraints maxHeight="325.0" minHeight="0.0" prefHeight="41.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="155.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                   <RowConstraints maxHeight="370.0" minHeight="0.0" prefHeight="181.0" vgrow="SOMETIMES" />
                                     <RowConstraints maxHeight="370.0" minHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
                                     <RowConstraints maxHeight="370.0" minHeight="0.0" prefHeight="50.0" vgrow="SOMETIMES" />
@@ -51,7 +51,6 @@
                                  <children>
                                     <Label fx:id="editPane" text="Table:" />
                                     <Label fx:id="lblCurrentTable" text="TableNum" GridPane.columnIndex="1" />
-                                    <Label text="Time of Order:" GridPane.rowIndex="1" />
                                     <Label text="Items Ordered:" GridPane.rowIndex="2" />
                                     <Label text="Special Requests:" GridPane.rowIndex="4" />
                                     <Label text="Comments:" GridPane.rowIndex="5" />
@@ -61,10 +60,11 @@
                                     <CheckBox fx:id="orderCompleteCheckBox" mnemonicParsing="false" text="Order Complete?" GridPane.rowIndex="7" />
                                     <Button fx:id="removeFoodItemFromOrder" mnemonicParsing="false" onAction="#RemoveItemFromOrder" text="Remove Item" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                     <Label fx:id="totalPriceLbl" text="TotalValue" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                    <Label fx:id="timestampLbl" text="TimeStamp" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <Button fx:id="deleteCurrentOrderBtn" mnemonicParsing="false" onAction="#DeleteCurrentOrder" text="Delete" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
                                     <ListView fx:id="currentOrderListView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <Button fx:id="calculateTotalBtn" mnemonicParsing="false" onAction="#getOrderPriceTotal" text="Calculate Total" GridPane.rowIndex="6" />
+                                    <Label text="Time of order:" GridPane.rowIndex="1" />
+                                    <Label fx:id="timeLbl" text="Time" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                  </children>
                               </GridPane>
                               <Separator layoutX="375.0" orientation="VERTICAL" prefHeight="532.0" prefWidth="15.0" />
