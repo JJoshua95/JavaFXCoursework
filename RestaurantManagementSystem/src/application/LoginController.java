@@ -51,6 +51,7 @@ public class LoginController implements Initializable {
 				Pane root = loader.load(getClass().getResource("/application/StaffScreen.fxml").openStream());
 				StaffScreenController staffController = (StaffScreenController)loader.getController();
 				staffController.GetUser(txtUsername.getText());
+				staffController.StoreTemporaryCredentials(txtUsername.getText(), txtPassword.getText());
 				Scene scene = new Scene(root);
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				primaryStage.setScene(scene);
@@ -64,6 +65,7 @@ public class LoginController implements Initializable {
 				Pane root = loader.load(getClass().getResource("/application/ManagerScreen.fxml").openStream());
 				ManagerScreenController managerController = (ManagerScreenController)loader.getController();
 				managerController.GetUser(txtUsername.getText());
+				managerController.StoreTemporaryCredentials(txtUsername.getText(), txtPassword.getText());
 				Scene scene = new Scene(root);
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				primaryStage.setScene(scene);

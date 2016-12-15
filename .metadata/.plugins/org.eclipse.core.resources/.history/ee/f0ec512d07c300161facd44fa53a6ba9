@@ -1,0 +1,56 @@
+package application;
+
+import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+public class ManagerScreenModel extends StaffScreenModel {
+	
+private Connection connection;
+	
+	ManagerScreenModel() {
+		connection = SqliteConnection.Connector();
+		if (connection == null) {
+			System.exit(1);
+		}
+	}
+	
+	boolean isDbConnected() {
+		try {
+			return !connection.isClosed();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	ArrayList<Staff> getAllEmployeesFromDB() {
+		ArrayList<Staff> targetStaff = new ArrayList<Staff>();
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		
+		String query = "SELECT * FROM staff";
+		
+		try {
+			prepStmt = connection.prepareStatement(query);
+			resSet = prepStmt.executeQuery();
+			
+			while (resSet.next()) {
+				targetStaff.add(new Staff(resSet.getInt("id"), resSet.getString("username"), 
+						resSet.getString("password"), resSet.getString("isManager")) );
+			}
+			
+			prepStmt.close();
+			resSet.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return targetStaff;
+	}
+	
+}

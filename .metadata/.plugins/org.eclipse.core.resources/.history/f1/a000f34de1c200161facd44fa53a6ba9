@@ -1,0 +1,21 @@
+package application;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
+public class Employee {
+	
+	private SimpleIntegerProperty StaffID;
+	private SimpleStringProperty username;
+	private SimpleStringProperty password;
+	private SimpleStringProperty isManager;
+	
+	public Employee(int staffID, String username, String password, String isManager) {
+		super();
+		this.StaffID = new SimpleIntegerProperty(staffID);
+		this.username = new SimpleStringProperty(username);
+		this.password = new SimpleStringPropert(password);
+		this.isManager = new SimpleStringPropert(isManager);
+	}
+
+}

@@ -1,7 +1,5 @@
 package application;
 
-import java.text.DecimalFormat;
-
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -15,7 +13,7 @@ public class Order {
 	private final SimpleStringProperty completed;
 	private final SimpleStringProperty date;
 	private final SimpleStringProperty time;
-	// private final SimpleStringProperty orderNo; Needed if we implement replacing current orders with stored orders
+	// private final SimpleStringProperty orderNo; // Needed if we implement replacing current orders with stored orders
 	
 	public Order(int tableNo, String orderList, String totalPrice, String specialRequests, String comments,
 			String completed, String date, String time /*,String orderNo*/) {

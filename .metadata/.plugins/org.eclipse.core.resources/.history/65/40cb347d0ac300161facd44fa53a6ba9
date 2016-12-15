@@ -1,0 +1,170 @@
+package application;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
+public class ManagerScreenController implements Initializable {
+	
+	public ManagerScreenModel managerModel = new ManagerScreenModel();
+	
+	// Hold login details of current user 
+	private String usernameStr;
+	private String passwordStr;
+	
+	@FXML 
+	private Label lblUser;
+	@FXML 
+	private Button switchToStaffBtn;
+	@FXML
+	private TableView<Staff> staffTableView;
+	@FXML
+	private TableColumn<Staff, Integer> staffIdCol;
+	@FXML
+	private TableColumn<Staff, String> usernameCol;
+	@FXML
+	private TableColumn<Staff, String> passwordCol;
+	@FXML
+	private TableColumn<Staff, String> managerColumn;
+	@FXML 
+	private TextField manageUsernameTxt;
+	@FXML
+	private TextField managePasswordTxt;
+	@FXML
+	private TextField manageStaffIdTxt;
+	@FXML
+	private ComboBox isManagerCB;
+	@FXML
+	private Button addStaffBtn;
+	@FXML
+	private Button removeStaffbtn;
+	@FXML
+	private TextArea manageStaffStatus;
+	
+	// variables for the staff table
+	private ObservableList<Staff> staffTableViewObsList;
+	
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		// Set up the TableView first
+		staffTableViewObsList = FXCollections.observableArrayList();
+		staffIdCol.setCellValueFactory(new PropertyValueFactory<Staff, Integer>("staffID"));
+		usernameCol.setCellValueFactory(new PropertyValueFactory<Staff, String>("username"));
+		passwordCol.setCellValueFactory(new PropertyValueFactory<Staff, String>("password"));
+		managerColumn.setCellValueFactory(new PropertyValueFactory<Staff, String>("isManager"));
+		
+		staffTableViewObsList.addAll(managerModel.getAllEmployeesFromDB());
+		
+		staffTableView.setItems(staffTableViewObsList);
+		
+		// Set up the ComboBox for giving manager status
+		ObservableList<String> isManagerComboBoxObsList = FXCollections.observableArrayList("true",
+				"false");
+		
+		isManagerCB.setItems(isManagerComboBoxObsList);
+		
+		//addStaffBtn.setDisable(true); 
+		//removeStaffbtn.setDisable(true); // disable both add and remove buttons until user selects appropriate items.
+		
+	}
+	
+	// Handle managing staff accounts
+	
+	public void enableAddAccount() {
+		addStaffBtn.setDisable(false);
+		// System.out.println(isManagerCB.getValue());
+	}
+	
+	public void addNewStaffAccount() {
+		
+		String newUsername = manageUsernameTxt.getText();
+		String newPassword = managePasswordTxt.getText();
+		int newStaffID = Integer.parseInt(manageStaffIdTxt.getText());
+		String managerLevel = isManagerCB.getValue().toString();
+		
+		// check that there are username and password entered that aren't empty
+		// check that the id is an int greater than 0
+		if (newUsername != "" && newPassword != "" && newStaffID > 0) {
+			System.out.println("OK fields entered");
+			managerModel.AddStaffAccountIntoDB(newStaffID, newUsername, newPassword, managerLevel);
+			staffTableViewObsList.clear();
+			staffTableViewObsList.addAll(managerModel.getAllEmployeesFromDB());
+			staffTableView.setItems(staffTableViewObsList);
+			manageStaffStatus.setText("Account saved into database");
+		} else {
+			manageStaffStatus.setText("Please fill all the fields before trying to add a new staff account");
+		}
+	}
+	
+	// ======================= Log outs etc switching screens etc ========================
+	
+	void GetUser(String user) {
+		lblUser.setText(user);
+		//System.out.println(user);
+	}
+	
+	void StoreTemporaryCredentials(String user, String pw) {
+		usernameStr = user;
+		passwordStr = pw;
+	}
+	
+	// to allow manager to use staff screen no verification needed from this direction
+	public void SwitchToStaffScreen(ActionEvent event) {
+		try {
+			((Node)event.getSource()).getScene().getWindow().hide();
+			Stage primaryStage = new Stage();
+			FXMLLoader loader = new FXMLLoader();
+			Pane root = loader.load(getClass().getResource("/application/StaffScreen.fxml").openStream());
+			StaffScreenController staffController = (StaffScreenController)loader.getController();
+			staffController.GetUser(usernameStr);
+			staffController.StoreTemporaryCredentials(usernameStr, passwordStr);
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		} catch (Exception e) {
+			System.err.println("Exception Caught");
+			e.printStackTrace();
+		}
+	}
+	
+	public void SignOut(ActionEvent event) {
+		try {
+			((Node)event.getSource()).getScene().getWindow().hide();
+			Stage primaryStage = new Stage();
+			FXMLLoader loader = new FXMLLoader();
+			Pane root = loader.load(getClass().getResource("/application/Login.fxml").openStream());
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setScene(scene);
+			primaryStage.show();
+			
+			// switch current user global variable to none for logging activity purposes
+			
+		} catch (Exception e) {
+			System.err.println("Exception Caught");
+			e.printStackTrace();
+			
+		}
+	}
+	
+	
+}

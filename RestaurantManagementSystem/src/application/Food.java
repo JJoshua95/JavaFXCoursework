@@ -1,7 +1,5 @@
 package application;
 
-// import javafx.beans.property.*;
-
 public class Food {
 	
 	private String menuItem;

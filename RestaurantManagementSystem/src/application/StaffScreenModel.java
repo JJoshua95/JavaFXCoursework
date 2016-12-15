@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import javafx.collections.ObservableList;
 
-public class StaffScreenModel {
+public class StaffScreenModel extends LoginModel {
 
 	private Connection connection;
 
@@ -336,8 +336,7 @@ public class StaffScreenModel {
 		}
 	}
 
-	// ------------------------------ Deal with TableView queries
-	// ------------------------
+	// ------------------------------ Deal with TableView queries ------------------------
 
 	ArrayList<Order> searchByTableNo(String group, int tableNum) {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
@@ -471,7 +470,7 @@ public class StaffScreenModel {
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
 		String targetString = "%" + inputComment + "%";
-		System.out.println(targetString);
+		//System.out.println(targetString);
 		try {
 			if (group.equals("Current Orders")) {
 				String query = "SELECT * FROM orders WHERE comments LIKE ?";
@@ -505,9 +504,6 @@ public class StaffScreenModel {
 			e.printStackTrace();
 		}
 		
-		for (Order o: targetOrders) {
-			System.out.println("" + o.getTableNo() + o.getCompleted());
-		}
 		return targetOrders;
 
 	}
@@ -636,6 +632,13 @@ public class StaffScreenModel {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
+		// SQLite queries won't work with 1:00 for instance it needs to be in the form 01:00 etc
+		if (beginHour.length() < 2) {
+			beginHour = "0" + beginHour;
+		} else if (endHour.length() < 2) {
+			endHour = "0" + endHour;
+		} 
+		
 		String beginTime = "" + beginHour + ":" + beginMinute;
 		String endTime = "" + endHour + ":" + endMinute;
 		try {

@@ -1,0 +1,10 @@
+package application;
+
+public class Employee {
+	
+	private int StaffID;
+	private String username;
+	private String password;
+	private String isManager;
+
+}
