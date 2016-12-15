@@ -779,6 +779,7 @@ public class StaffScreenController implements Initializable {
 	public void searchByPrice() {
 		String inputPriceBeginStr = searchPriceBeginTxt.getText();
 		String inputPriceEndStr = searchPriceEndTxt.getText();
+		//if ((inputPriceBeginStr.equals("") || inputPriceEndStr.equals(""))) { // handle either empty input
 		try {
 			orderGroup = orderGroupComboBox.getValue();
 			if (orderGroup.equals("Current Orders")) {
@@ -802,8 +803,10 @@ public class StaffScreenController implements Initializable {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			searchStatus.setText("Invalid search");
 		}
+		//} else {
+		//	searchStatus.setText("Enter two price values");
+		//}
 	}
 
 }

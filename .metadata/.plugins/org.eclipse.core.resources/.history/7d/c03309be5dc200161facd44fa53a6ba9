@@ -3,7 +3,9 @@ package application;
 import java.net.URL;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
@@ -164,7 +166,7 @@ public class StaffScreenController implements Initializable {
 	@FXML
 	private CheckBox searchIncompleteOrdersCheckBox;
 	@FXML
-	private Button searchIncompleteOrdersBtn;
+	private Button searchIncompleteOrderBtn;
 	@FXML
 	private CheckBox searchCompletedOrdersCheckBox;
 	@FXML
@@ -586,7 +588,7 @@ public class StaffScreenController implements Initializable {
 
 	public void SaveCurrentOrder() throws SQLException {
 		// save all the important variables
-		//DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		dateTimeOfCurrentOrder = new Date();
 		//timeLbl.setText(dateFormat.format(dateTimeOfCurrentOrder)); // this displays even when overwriting 
 		// System.out.println(dateFormat.format(dateTimeOfCurrentOrder));
@@ -777,33 +779,9 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	public void searchByPrice() {
-		String inputPriceBeginStr = searchPriceBeginTxt.getText();
-		String inputPriceEndStr = searchPriceEndTxt.getText();
-		try {
-			orderGroup = orderGroupComboBox.getValue();
-			if (orderGroup.equals("Current Orders")) {
-				Double inputPriceBegin = Double.parseDouble(inputPriceBeginStr);
-				Double inputPriceEnd = Double.parseDouble(inputPriceEndStr);
-				searchStatus.setText("Searching");
-				tableViewOrdersObservableList.clear();
-				tableViewOrdersObservableList.addAll(staffModel.searchByPrice(orderGroup, inputPriceBegin, inputPriceEnd));
-				orderTableView.setItems(tableViewOrdersObservableList);
-				searchStatus.setText("Results Found");
-			} else if (orderGroup.equals("Stored Orders")) {
-				Double inputPriceBegin = Double.parseDouble(inputPriceBeginStr);
-				Double inputPriceEnd = Double.parseDouble(inputPriceEndStr);
-				searchStatus.setText("Searching");
-				tableViewOrdersObservableList.clear();
-				tableViewOrdersObservableList.addAll(staffModel.searchByPrice(orderGroup, inputPriceBegin, inputPriceEnd));
-				orderTableView.setItems(tableViewOrdersObservableList);
-				searchStatus.setText("Results Found");
-			} else {
-				searchStatus.setText("Invalid entry");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			searchStatus.setText("Invalid search");
-		}
+		orderGroup = orderGroupComboBox.getValue();
+		String inputPriceBegin;
+		String inputPriceEnd;
 	}
 
 }

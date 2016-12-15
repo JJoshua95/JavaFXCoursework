@@ -123,37 +123,38 @@
                               <TableColumn fx:id="completedCol" prefWidth="94.0" text="Completed" />
                           </columns>
                         </TableView>
-                        <Pane fx:id="searchPane" layoutX="14.0" layoutY="106.0" prefHeight="470.0" prefWidth="299.0">
+                        <Pane fx:id="searchPane" layoutX="14.0" layoutY="70.0" prefHeight="506.0" prefWidth="299.0">
                            <children>
                               <Button fx:id="searchTableNoBtn" layoutX="217.0" layoutY="14.0" mnemonicParsing="false" onAction="#searchForTableNum" text="Search" />
                               <TextField fx:id="searchTableNoTxt" layoutX="20.0" layoutY="14.0" promptText="Table Number" />
                               <TextField fx:id="searchFoodItemTxt" layoutX="20.0" layoutY="50.0" promptText="Food Item" />
                               <Button fx:id="searchFoodBtn" layoutX="217.0" layoutY="50.0" mnemonicParsing="false" onAction="#searchForFoodItem" text="Search" />
-                              <Button fx:id="searchSpecialReqsBtn" layoutX="217.0" layoutY="85.0" mnemonicParsing="false" text="Search" />
+                              <Button fx:id="searchSpecialReqsBtn" layoutX="217.0" layoutY="85.0" mnemonicParsing="false" onAction="#searchForSpecialRequest" text="Search" />
                               <TextField fx:id="searchCommentsTxt" layoutX="20.0" layoutY="122.0" promptText="Comments" />
-                              <Button fx:id="searchCommentsBtn" layoutX="217.0" layoutY="122.0" mnemonicParsing="false" text="Search" />
+                              <Button fx:id="searchCommentsBtn" layoutX="217.0" layoutY="122.0" mnemonicParsing="false" onAction="#searchForComment" text="Search" />
                               <TextField fx:id="searchSpecialReqsTxt" layoutX="20.0" layoutY="85.0" promptText="Special Requests" />
                               <ChoiceBox layoutX="127.0" layoutY="330.0" prefWidth="150.0" />
                               <ChoiceBox layoutX="127.0" layoutY="366.0" prefWidth="150.0" />
-                              <DatePicker layoutX="27.0" layoutY="262.0" prefHeight="27.0" prefWidth="245.0" promptText="Pick a date" />
-                              <Label layoutX="60.0" layoutY="289.0" prefHeight="27.0" prefWidth="179.0" text="And choose a time interval:" />
+                              <DatePicker layoutX="27.0" layoutY="269.0" prefHeight="27.0" prefWidth="245.0" promptText="Pick a date" />
+                              <Label layoutX="60.0" layoutY="297.0" prefHeight="27.0" prefWidth="179.0" text="And choose a time interval:" />
                               <Label layoutX="21.0" layoutY="335.0" prefHeight="17.0" prefWidth="44.0" text="From:" />
                               <Label layoutX="21.0" layoutY="371.0" prefHeight="17.0" prefWidth="44.0" text="To:" />
                               <Button layoutX="86.0" layoutY="407.0" mnemonicParsing="false" text="Search by date" />
                               <Label layoutX="10.0" layoutY="448.0" text="Search Status:" />
                               <Label fx:id="searchStatus" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="106.0" layoutY="448.0" prefHeight="17.0" prefWidth="182.0" />
-                              <Button layoutX="218.0" layoutY="160.0" mnemonicParsing="false" text="Search" />
-                              <TextField layoutX="34.0" layoutY="160.0" prefHeight="27.0" prefWidth="63.0" promptText="Price" />
-                              <TextField layoutX="123.0" layoutY="160.0" prefHeight="27.0" prefWidth="63.0" promptText="Price" />
+                              <Button fx:id="searchPriceBtn" layoutX="218.0" layoutY="160.0" mnemonicParsing="false" onAction="#searchByPrice" text="Search" />
+                              <TextField fx:id="searchPriceBeginTxt" layoutX="34.0" layoutY="160.0" prefHeight="27.0" prefWidth="63.0" promptText="Price" />
+                              <TextField fx:id="searchPriceEndTxt" layoutX="123.0" layoutY="160.0" prefHeight="27.0" prefWidth="63.0" promptText="Price" />
                               <Label layoutX="103.0" layoutY="165.0" text="to" />
                               <Label layoutX="10.0" layoutY="165.0" text="(£)" />
-                              <Label layoutX="101.0" layoutY="235.0" text="Search by date:" />
-                              <CheckBox layoutX="23.0" layoutY="200.0" mnemonicParsing="false" text="Uncompleted Orders" />
-                              <Button layoutX="217.0" layoutY="196.0" mnemonicParsing="false" text="Search" />
+                              <CheckBox fx:id="searchIncompleteOrdersCheckBox" layoutX="23.0" layoutY="201.0" mnemonicParsing="false" text="Incomplete Orders" />
+                              <Button fx:id="searchIncompleteOrdersBtn" layoutX="218.0" layoutY="196.0" mnemonicParsing="false" text="Search" />
+                              <CheckBox fx:id="searchCompletedOrdersCheckBox" layoutX="23.0" layoutY="235.0" mnemonicParsing="false" text="Completed Orders" />
+                              <Button fx:id="searchCompletedOrdersBtn" layoutX="218.0" layoutY="231.0" mnemonicParsing="false" text="Search" />
                            </children>
                         </Pane>
-                        <Label layoutX="60.0" layoutY="31.0" text="Search Current or Stored Orders?" />
-                        <ComboBox fx:id="orderGroupComboBox" layoutX="89.0" layoutY="56.0" onAction="#enableSearch" prefWidth="150.0" promptText="Order Group" />
+                        <Label layoutX="60.0" layoutY="14.0" text="Search Current or Stored Orders" />
+                        <ComboBox fx:id="orderGroupComboBox" layoutX="89.0" layoutY="39.0" onAction="#enableSearch" prefWidth="150.0" promptText="Order Group" />
                      </children>
                   </AnchorPane>
             </content>

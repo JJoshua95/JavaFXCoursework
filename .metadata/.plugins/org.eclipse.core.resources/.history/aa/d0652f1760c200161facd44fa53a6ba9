@@ -3,7 +3,9 @@ package application;
 import java.net.URL;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
@@ -586,7 +588,7 @@ public class StaffScreenController implements Initializable {
 
 	public void SaveCurrentOrder() throws SQLException {
 		// save all the important variables
-		//DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		dateTimeOfCurrentOrder = new Date();
 		//timeLbl.setText(dateFormat.format(dateTimeOfCurrentOrder)); // this displays even when overwriting 
 		// System.out.println(dateFormat.format(dateTimeOfCurrentOrder));
@@ -779,6 +781,7 @@ public class StaffScreenController implements Initializable {
 	public void searchByPrice() {
 		String inputPriceBeginStr = searchPriceBeginTxt.getText();
 		String inputPriceEndStr = searchPriceEndTxt.getText();
+		if ((inputPriceBeginStr.equals("") || inputPriceEndStr.equals(""))) { // handle either empty input
 		try {
 			orderGroup = orderGroupComboBox.getValue();
 			if (orderGroup.equals("Current Orders")) {
@@ -802,7 +805,9 @@ public class StaffScreenController implements Initializable {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			searchStatus.setText("Invalid search");
+		}
+		} else {
+			searchStatus.setText("Enter two price values");
 		}
 	}
 
