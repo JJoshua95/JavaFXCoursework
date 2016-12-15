@@ -1,0 +1,346 @@
+package application;
+
+import java.sql.*;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
+import javafx.collections.ObservableList;
+
+public class StaffScreenModel {
+
+	private Connection connection;
+
+	StaffScreenModel() {
+		connection = SqliteConnection.Connector();
+		if (connection == null) {
+			System.exit(1);
+		}
+	}
+
+	boolean isDbConnected() {
+		try {
+			return !connection.isClosed();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	void SaveCurrentOrderToDatabase(int tableNum, ObservableList<Food> orderList, double totalBill, String specialReqs,
+			String comments, String isComplete, Date inDate) throws SQLException {
+
+		// String[] foodItemArr; // array to hold strings of the items in the
+		// form [name:cost, name:cost, ... ]
+		ArrayList<String> foodItemList = new ArrayList<String>();
+
+		// Store the food price and costs into a single array that we will write
+		// to a database cell as a string
+		for (Food f : orderList) {
+			String foodNameString;
+			String foodPriceString;
+			foodNameString = f.getMenuItemName();
+			DecimalFormat df = new DecimalFormat("#.00"); // to print the price
+															// to 2dp i.e. to
+															// the nearest penny
+			foodPriceString = df.format(f.getPrice());
+			foodItemList.add("" + foodNameString + ":" + foodPriceString);
+		}
+
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String dateString = dateFormat.format(inDate);
+		DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+		String timeString = timeFormat.format(inDate);
+
+		PreparedStatement preparedStatement = null; // to hold the query
+		ResultSet resultSet = null;
+		String query;
+
+		try {
+			// find if record does not exist
+
+			query = "SELECT * FROM orders WHERE tableNo = ?";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, tableNum);
+			resultSet = preparedStatement.executeQuery();
+			
+
+			// if there is no record for this table insert one
+			if (!resultSet.next()) {
+				preparedStatement.close();
+				System.out.println("No order for this table was found so new record created");
+
+				query = "INSERT INTO orders "
+						+ "(tableNo, orderList, totalPrice, specialRequests, comments, isComplete, date, time) "
+						+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+				preparedStatement = connection.prepareStatement(query);
+				preparedStatement.setInt(1, tableNum);
+				preparedStatement.setString(2, foodItemList.toString());
+				preparedStatement.setDouble(3, totalBill);
+				preparedStatement.setString(4, specialReqs);
+				preparedStatement.setString(5, comments);
+				preparedStatement.setString(6, isComplete);
+				preparedStatement.setString(7, dateString);
+				preparedStatement.setString(8, timeString);
+
+				preparedStatement.execute();
+
+			} else { // If there is already a record for this table update
+						// all but the time and date
+				System.out.println("Table order exists, updating it now");
+				preparedStatement.close();
+
+				query = "UPDATE orders "
+						+ "SET orderList = ?, totalPrice = ?, specialRequests = ?, comments = ?, isComplete = ? "
+						+ "WHERE tableNo = ?";
+
+				preparedStatement = connection.prepareStatement(query);
+				preparedStatement.setString(1, foodItemList.toString());
+				preparedStatement.setDouble(2, totalBill);
+				preparedStatement.setString(3, specialReqs);
+				preparedStatement.setString(4, comments);
+				preparedStatement.setString(5, isComplete);
+				preparedStatement.setInt(6, tableNum);
+
+				preparedStatement.execute();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			preparedStatement.close();
+			resultSet.close();
+		}
+
+	}
+
+	ArrayList<Food> RetrieveATableOrderFromDB(int tableNoVal) throws SQLException {
+		String targetOrder = null;
+		String[] stringOrderArray = null;
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		ArrayList<Food> orderArrayList = new ArrayList<Food>();
+
+		try {
+
+			String query = "SELECT orderList FROM orders WHERE tableNo = ?";
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tableNoVal);
+			resSet = prepStmt.executeQuery();
+
+			if (resSet.next()) {
+
+				// System.out.println(resSet.getString(1));
+				targetOrder = resSet.getString("orderList"); // .getString(1);
+																// // get the
+																// first string
+																// in the column
+																// as there
+																// should only
+																// be a single
+																// string there
+				targetOrder = targetOrder.replace("[", "");
+				targetOrder = targetOrder.replace("]", ""); // get rid of square
+															// brackets
+				stringOrderArray = targetOrder.split(","); // split the string
+															// into individual
+															// name:price pairs
+				//System.out.println(targetOrder);
+
+				for (int i = 0; i < stringOrderArray.length; i++) {
+					String words[];
+					words = stringOrderArray[i].split(":");
+					String loopName = words[0];
+					double loopPrice = Double.parseDouble(words[1]);
+					Food f = new Food(loopName, loopPrice);
+					orderArrayList.add(f);
+				}
+
+			} else {
+				System.out.println("No order found for that table");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			prepStmt.close();
+			resSet.close();
+		}
+
+		return orderArrayList;
+
+	}
+
+	Double getTotalPriceFromDB(int tableNum) {
+		double totalFromDB = 0.0;
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		String query = "SELECT totalPrice FROM orders WHERE tableNo = ?";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tableNum);
+			resSet = prepStmt.executeQuery();
+			totalFromDB = resSet.getDouble("totalPrice");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return totalFromDB;
+	}
+
+	String getSpecialRequestsFromDB(int tableNum) {
+		String specialReqs = null;
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		String query = "SELECT specialRequests FROM orders WHERE tableNo = ?";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tableNum);
+			resSet = prepStmt.executeQuery();
+			specialReqs = resSet.getString("specialRequests");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return specialReqs;
+	}
+
+	String getCommentsFromDB(int tableNum) {
+		String comment = null;
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		String query = "SELECT comments FROM orders WHERE tableNo = ?";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tableNum);
+			resSet = prepStmt.executeQuery();
+			comment = resSet.getString("comments");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return comment;
+	}
+
+	String getIsComplete(int tableNum) {
+		String complete = null;
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		String query = "SELECT isComplete FROM orders WHERE tableNo = ?";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tableNum);
+			resSet = prepStmt.executeQuery();
+			complete = resSet.getString("isComplete");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return complete;
+	}
+
+	String getDateToDisplay(int tableNum) {
+		String dateStringForLabel = null;
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		String query = "SELECT date, time FROM orders WHERE tableNo = ?";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tableNum);
+			resSet = prepStmt.executeQuery();
+			String dateStr = resSet.getString("date");
+			String timeStr = resSet.getString("time");
+			dateStringForLabel = "" + dateStr + " " + timeStr;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return dateStringForLabel;
+	}
+
+	void DeleteCurrentOrderFromDB(int tableNum) {
+		PreparedStatement prepStmt = null;
+
+		String query = "DELETE FROM orders WHERE tableNo = ?";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tableNum);
+			prepStmt.execute();
+			// connection.commit();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Failed to delete record");
+			e.printStackTrace();
+
+		}
+
+	}
+	
+	void moveCurrentOrderToStorage(int tableNum, ObservableList<Food> orderList, double totalBill, String specialReqs,
+			String comments, String isComplete, Date inDate) throws SQLException {
+
+		// String[] foodItemArr; // array to hold strings of the items in the
+		// form [name:cost, name:cost, ... ]
+		ArrayList<String> foodItemList = new ArrayList<String>();
+
+		// Store the food price and costs into a single array that we will write
+		// to a database cell as a string
+		for (Food f : orderList) {
+			String foodNameString;
+			String foodPriceString;
+			foodNameString = f.getMenuItemName();
+			DecimalFormat df = new DecimalFormat("#.00"); // to print the price
+															// to 2dp i.e. to
+															// the nearest penny
+			foodPriceString = df.format(f.getPrice());
+			foodItemList.add("" + foodNameString + ":" + foodPriceString);
+		}
+
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String dateString = dateFormat.format(inDate);
+		DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+		String timeString = timeFormat.format(inDate);
+
+		PreparedStatement preparedStatement = null; // to hold the query
+
+		String query;
+		// if the order is marked as complete we can move it out from the current orders and store it
+		try {
+				if (isComplete.equals("true")) {
+					query = "INSERT INTO storedOrders "
+							+ "(tableNo, orderList, totalPrice, specialRequests, comments, isComplete, date, time) "
+							+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+					preparedStatement = connection.prepareStatement(query);
+					preparedStatement.setInt(1, tableNum);
+					preparedStatement.setString(2, foodItemList.toString());
+					preparedStatement.setDouble(3, totalBill);
+					preparedStatement.setString(4, specialReqs);
+					preparedStatement.setString(5, comments);
+					preparedStatement.setString(6, isComplete);
+					preparedStatement.setString(7, dateString);
+					preparedStatement.setString(8, timeString);
+
+					preparedStatement.execute(); // store the order into the stored
+													// orders
+
+				}
+				
+		  } catch(SQLException e) {
+			  e.printStackTrace();
+		  }
+	}
+
+	// --------------------------------------------- Deal with TableView queries
+	// -------------------------------------------------
+
+	void GetAllOrdersForTable() {
+
+	}
+
+}

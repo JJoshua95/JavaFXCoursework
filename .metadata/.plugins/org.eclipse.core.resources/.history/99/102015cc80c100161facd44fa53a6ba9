@@ -1,0 +1,168 @@
+package application;
+import java.sql.*;
+import java.util.Date;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import javafx.collections.ObservableList;
+
+public class StaffScreenModel {
+	
+	private Connection connection;
+	
+	StaffScreenModel() {
+		connection = SqliteConnection.Connector();
+		if (connection == null) {
+			System.exit(1);
+		}
+	}
+	
+	boolean isDbConnected() {
+		try {
+			return !connection.isClosed();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	void SaveCurrentOrderToDatabase(int tableNum, ObservableList<Food> orderList, double totalBill, 
+			String specialReqs, 
+			String comments, String isComplete) throws SQLException {
+		
+		//String[] foodItemArr; // array to hold strings of the items in the form [name:cost, name:cost, ... ]
+		ArrayList<String> foodItemList = new ArrayList<String>();
+		
+		// Store the food price and costs into a single array that we will write to a database cell as a string
+		for (Food f : orderList) {
+			String foodNameString;
+			String foodPriceString;
+			foodNameString = f.getMenuItemName();
+			DecimalFormat df = new DecimalFormat("#.00"); // to print the price to 2dp i.e. to the nearest penny
+			foodPriceString = df.format(f.getPrice());
+			foodItemList.add("" + foodNameString + ":" + foodPriceString);
+		}
+		
+		PreparedStatement preparedStatement = null; // to hold the query
+		
+		try {
+			
+			String query = "INSERT OR REPLACE INTO orders "
+					+ "(tableNo, orderList, totalPrice, specialRequests, comments, isComplete) "
+					+ "VALUES (?, ?, ?, ?, ?, ?)";
+			
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, tableNum);
+			preparedStatement.setString(2, foodItemList.toString());
+			preparedStatement.setDouble(3, totalBill);
+			preparedStatement.setString(4, specialReqs);
+			preparedStatement.setString(5, comments);
+			preparedStatement.setString(6, isComplete);
+			
+			preparedStatement.execute();
+			
+			// Handle overwriting of tables already written
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			preparedStatement.close();
+		}
+	}
+	
+	void saveTimeOfOrder(int tabNum, Date inputDate) {
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		String query = "SELECT dateTime FROM orders WHERE tableNo = ?";
+		String dateString = inputDate.toString();
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tabNum);
+			resSet = prepStmt.executeQuery();
+			resSet.getString(1);
+			if (resSet.wasNull()) {
+				query = "UPDATE orders SET dateTime = ? WHERE tableNo = ?";
+				prepStmt = connection.prepareStatement(query);
+				prepStmt.setString(1, dateString);
+				prepStmt.setInt(2, tabNum);
+				System.out.println("was null and wrote a new date");
+				prepStmt.execute();
+			} else {
+				System.out.println("A date has already been written here");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	ArrayList<Food> RetrieveATableOrderFromDB(int tableNoVal) throws SQLException {
+		String targetOrder = null;
+		String[] stringOrderArray = null;
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		ArrayList<Food> orderArrayList = new ArrayList<Food>();
+		
+		try {
+			
+			String query = "SELECT orderList FROM orders WHERE tableNo = ?";
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tableNoVal);
+			resSet = prepStmt.executeQuery();
+			
+			if (resSet.next()) {
+				
+				//System.out.println(resSet.getString(1));
+				targetOrder = resSet.getString("orderList"); //.getString(1); // get the first string in the column as there should only be a single string there
+				targetOrder = targetOrder.replace("[", ""); 
+				targetOrder = targetOrder.replace("]", ""); // get rid of square brackets
+				stringOrderArray = targetOrder.split(","); // split the string into individual name:price pairs
+				//System.out.println(targetOrder);
+				
+				for (int i = 0; i < stringOrderArray.length; i++) {
+					String words[];
+					words = stringOrderArray[i].split(":");
+					String loopName = words[0];
+					double loopPrice = Double.parseDouble(words[1]);
+					Food f = new Food(loopName, loopPrice);
+					orderArrayList.add(f);
+				}
+				
+			} else {
+				System.out.println("No order found for that table");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally { 
+			prepStmt.close();
+			resSet.close();
+		}
+		
+		return orderArrayList;
+		
+	}
+	
+	void DeleteCurrentOrderFromDB(int tableNum) {
+		PreparedStatement prepStmt = null;
+		
+		String query = "DELETE FROM orders WHERE tableNo = ?";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setInt(1, tableNum);
+			prepStmt.execute();
+			//connection.commit();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Failed to delete record");
+			e.printStackTrace();
+			
+		}
+		
+	}
+	
+
+}
