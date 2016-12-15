@@ -1,7 +1,6 @@
 package application;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -15,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -24,7 +22,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 public class ManagerScreenController implements Initializable {
 	
@@ -75,8 +72,6 @@ public class ManagerScreenController implements Initializable {
 	
 	// variables for the staff table
 	private ObservableList<Staff> staffTableViewObsList;
-	// variables for the editable food list
-	private ObservableList<Food> editableMenuObsList;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -97,34 +92,8 @@ public class ManagerScreenController implements Initializable {
 		
 		isManagerCB.setItems(isManagerComboBoxObsList);
 		
-		addStaffBtn.setDisable(true); // disable the add until the ComboBox is selected
-		
-		// Set up the editable menu
-		
-		editableMenuObsList = FXCollections.observableArrayList();
-		managerMenuListView.setCellFactory(new Callback<ListView<Food>, ListCell<Food>>() {
-			@Override
-			public ListCell<Food> call(ListView<Food> p) {
-				ListCell<Food> cell = new ListCell<Food>() {
-					@Override
-					protected void updateItem(Food f, boolean bool) {
-						super.updateItem(f, bool);
-						if (f != null) {
-							DecimalFormat df = new DecimalFormat("#.00");
-							// to print the price to 2dp i.e. to the nearest
-							// penny
-							setText(f.getMenuItemName() + " : £" + df.format(f.getPrice()));
-						} else {
-							setText(null);
-						}
-					}
-				};
-
-				return cell;
-			}
-		});
-		editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
-		managerMenuListView.setItems(editableMenuObsList);
+		addStaffBtn.setDisable(true); // disable the add until the combobox is selected
+		//removeStaffbtn.setDisable(true); 
 		
 	}
 	

@@ -123,8 +123,8 @@ public class ManagerScreenController implements Initializable {
 				return cell;
 			}
 		});
-		editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
-		managerMenuListView.setItems(editableMenuObsList);
+		
+		
 		
 	}
 	

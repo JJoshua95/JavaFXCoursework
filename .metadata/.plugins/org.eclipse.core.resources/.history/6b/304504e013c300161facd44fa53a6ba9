@@ -105,14 +105,11 @@ private Connection connection;
 			while (resSet.next()) {
 				targetFoods.add(new Food(resSet.getString("menuItem"), resSet.getDouble("price")));
 			}
-			prepStmt.close();
-			resSet.close();
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			
-		} 
+		}
 		
 		return targetFoods;
 	}
