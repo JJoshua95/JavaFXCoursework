@@ -177,24 +177,17 @@ public class ManagerScreenController implements Initializable {
 	// =========================== Handle editing menu ===================================
 	
 	public void saveNewDishToMenu() {
-		try {
-			String newItemName = manageItemNameTxt.getText();
-			double newItemPrice = Double.parseDouble(manageItemCostTxt.getText());
-			// carry on if name isn't an empty string or if the price is not a
-			// negative double
-
-			if (newItemName != "" && newItemPrice > 0.0) {
-				managerModel.AddNewDishToMenuDB(newItemName, newItemPrice);
-				editableMenuObsList.clear();
-				editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
-				managerMenuListView.setItems(editableMenuObsList);
-				manageMenuStatus.setText("New dish added.");
-			} else {
-				manageMenuStatus
-						.setText("Invalid dish fields entered, please enter a normal name and a reasonable price");
-			}
-		} catch (NumberFormatException e) {
-			manageMenuStatus.setText("Invalid name or price entered");
+		String newItemName = manageItemNameTxt.getText();
+		double newItemPrice = Double.parseDouble(manageItemCostTxt.getText());
+		// carry on if name isn't an empty string or if the price is not a negative double
+		if (newItemName != "" && newItemPrice > 0.0) {
+			managerModel.AddNewDishToMenuDB(newItemName, newItemPrice);
+			editableMenuObsList.clear();
+			editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
+			managerMenuListView.setItems(editableMenuObsList);
+			manageMenuStatus.setText("New dish added.");
+		} else {
+			manageMenuStatus.setText("Invalid dish fields entered, please enter a normal name and a reasonable price");
 		}
 	}
 	
@@ -204,13 +197,6 @@ public class ManagerScreenController implements Initializable {
 					+ " press delete again to remove it from the system");
 		} else { 
 			Food foodToDelete = managerMenuListView.getSelectionModel().getSelectedItem();
-			String targetFoodName = foodToDelete.getMenuItemName();
-			Double targetFoodPrice = foodToDelete.getPrice();
-			managerModel.DeleteDishFromMenuDB(targetFoodName, targetFoodPrice);
-			editableMenuObsList.clear();
-			editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
-			managerMenuListView.setItems(editableMenuObsList);
-			manageMenuStatus.setText("Dish was removed.");
 		}
 	}
 	

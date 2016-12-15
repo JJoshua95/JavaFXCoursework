@@ -6,12 +6,19 @@ public class LoginModel {
 	
 	private Connection connection;
 	
+	void closeConnection() {
+		try {
+			this.connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			}
+	}
+	
 	LoginModel() {
 		connection = SqliteConnection.Connector();
 		if (connection == null) {
 			System.exit(1);
 		}
-		// Create tables if they don't exist
 	}
 	
 	boolean isDbConnected() {

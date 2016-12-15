@@ -677,33 +677,5 @@ public class StaffScreenModel extends LoginModel {
 		}
 		return targetOrders;
 	}
-	
-	// Menu queries
-	
-	ArrayList<Food> getAllFoodFromMenu() {
-		ArrayList<Food> targetFoods = new ArrayList<Food>();
-		PreparedStatement prepStmt = null;
-		ResultSet resSet = null;
-		
-		String query = "SELECT * FROM menu";
-		
-		try {
-			prepStmt = connection.prepareStatement(query);
-			resSet = prepStmt.executeQuery();
-			
-			while (resSet.next()) {
-				targetFoods.add(new Food(resSet.getString("menuItem"), resSet.getDouble("price")));
-			}
-			prepStmt.close();
-			resSet.close();
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-		} 
-		
-		return targetFoods;
-	}
 
 }

@@ -14,7 +14,6 @@ private Connection connection;
 		if (connection == null) {
 			System.exit(1);
 		}
-		
 	}
 	
 	boolean isDbConnected() {

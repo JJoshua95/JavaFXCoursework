@@ -14,7 +14,6 @@ private Connection connection;
 		if (connection == null) {
 			System.exit(1);
 		}
-		
 	}
 	
 	boolean isDbConnected() {
@@ -92,36 +91,30 @@ private Connection connection;
 	
 	// ========================= Menu queries ==================================
 	
-	void AddNewDishToMenuDB(String name, double cost) {
+	ArrayList<Food> getAllFoodFromMenu() {
+		ArrayList<Food> targetFoods = new ArrayList<Food>();
 		PreparedStatement prepStmt = null;
-		String query = "INSERT OR REPLACE INTO menu (menuItem, price) VALUES (?, ?)";
+		ResultSet resSet = null;
+		
+		String query = "SELECT * FROM menu";
 		
 		try {
 			prepStmt = connection.prepareStatement(query);
-			prepStmt.setString(1, name);
-			prepStmt.setDouble(2, cost);
-			prepStmt.execute();
+			resSet = prepStmt.executeQuery();
+			
+			while (resSet.next()) {
+				targetFoods.add(new Food(resSet.getString("menuItem"), resSet.getDouble("price")));
+			}
 			prepStmt.close();
+			resSet.close();
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-	}
-	
-	void DeleteDishFromMenuDB(String name, double cost) {
-		PreparedStatement prepStmt = null;
-		String query = "DELETE FROM menu WHERE menuItem = ? AND price = ?";
-		try {
-			prepStmt = connection.prepareStatement(query);
-			prepStmt.setString(1, name);
-			prepStmt.setDouble(2, cost);
-			prepStmt.execute();
-			prepStmt.close();
-			System.out.println("Record deleted");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			
+		} 
+		
+		return targetFoods;
 	}
 	
 }

@@ -198,7 +198,7 @@ public class StaffScreenController implements Initializable {
 
 		menuObservableList = FXCollections.observableArrayList();
 		// add some food to the menu
-		menuObservableList.addAll(staffModel.getAllFoodFromMenu());
+		menuObservableList.addAll(new Food("Chicken", 3.60), new Food("Beef", 4.30), new Food("Lamb", 5.00));
 
 		menuListView.setItems(menuObservableList);
 		menuListView.setCellFactory(new Callback<ListView<Food>, ListCell<Food>>() {

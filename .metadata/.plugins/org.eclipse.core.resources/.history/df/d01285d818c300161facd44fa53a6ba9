@@ -14,7 +14,6 @@ private Connection connection;
 		if (connection == null) {
 			System.exit(1);
 		}
-		
 	}
 	
 	boolean isDbConnected() {
@@ -111,6 +110,7 @@ private Connection connection;
 	void DeleteDishFromMenuDB(String name, double cost) {
 		PreparedStatement prepStmt = null;
 		String query = "DELETE FROM menu WHERE menuItem = ? AND price = ?";
+		
 		try {
 			prepStmt = connection.prepareStatement(query);
 			prepStmt.setString(1, name);

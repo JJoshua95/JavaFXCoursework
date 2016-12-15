@@ -177,41 +177,19 @@ public class ManagerScreenController implements Initializable {
 	// =========================== Handle editing menu ===================================
 	
 	public void saveNewDishToMenu() {
-		try {
-			String newItemName = manageItemNameTxt.getText();
-			double newItemPrice = Double.parseDouble(manageItemCostTxt.getText());
-			// carry on if name isn't an empty string or if the price is not a
-			// negative double
-
-			if (newItemName != "" && newItemPrice > 0.0) {
-				managerModel.AddNewDishToMenuDB(newItemName, newItemPrice);
-				editableMenuObsList.clear();
-				editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
-				managerMenuListView.setItems(editableMenuObsList);
-				manageMenuStatus.setText("New dish added.");
-			} else {
-				manageMenuStatus
-						.setText("Invalid dish fields entered, please enter a normal name and a reasonable price");
-			}
-		} catch (NumberFormatException e) {
-			manageMenuStatus.setText("Invalid name or price entered");
-		}
-	}
-	
-	public void DeleteDishFromMenu() {
-		if (managerMenuListView.getSelectionModel().getSelectedItem() == null) {
-			manageMenuStatus.setText("No item was selected from the menu, please click a row from the list and"
-					+ " press delete again to remove it from the system");
-		} else { 
-			Food foodToDelete = managerMenuListView.getSelectionModel().getSelectedItem();
-			String targetFoodName = foodToDelete.getMenuItemName();
-			Double targetFoodPrice = foodToDelete.getPrice();
-			managerModel.DeleteDishFromMenuDB(targetFoodName, targetFoodPrice);
+		
+		String newItemName = manageItemNameTxt.getText();
+		double newItemPrice = Double.parseDouble(manageItemCostTxt.getText());
+		// carry on if name isn't an empty string or if the price is not a negative double
+		if (newItemName != "" && newItemPrice > 0.0) {
+			managerModel.AddNewDishToMenuDB(newItemName, newItemPrice);
 			editableMenuObsList.clear();
 			editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
 			managerMenuListView.setItems(editableMenuObsList);
-			manageMenuStatus.setText("Dish was removed.");
+		} else {
+			
 		}
+		
 	}
 	
 	// ======================= Log outs etc switching screens etc ========================
@@ -262,6 +240,9 @@ public class ManagerScreenController implements Initializable {
 		} catch (Exception e) {
 			System.err.println("Exception Caught");
 			e.printStackTrace();
+			
 		}
 	}
+	
+	
 }
