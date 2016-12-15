@@ -557,11 +557,15 @@ public class StaffScreenModel {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
+		String completedStr;
+		switch (completedStr) {
+		case: inputWhetherComplete.equals("")
+		}
 		try {
 			if (group.equals("Current Orders")) {
 				String query = "SELECT * FROM orders WHERE isComplete = ?";
 				prepStmt = connection.prepareStatement(query);
-				prepStmt.setString(1, inputWhetherComplete);
+				prepStmt.setString("");
 				resSet = prepStmt.executeQuery();
 				while (resSet.next()) {
 					targetOrders.add(new Order(resSet.getInt("tableNo"), resSet.getString("orderList"),
@@ -574,47 +578,7 @@ public class StaffScreenModel {
 			} else {
 				String query = "SELECT * FROM storedOrders WHERE isComplete = ?";
 				prepStmt = connection.prepareStatement(query);
-				prepStmt.setString(1, inputWhetherComplete);
-				resSet = prepStmt.executeQuery();
-				while (resSet.next()) {
-					targetOrders.add(new Order(resSet.getInt("tableNo"), resSet.getString("orderList"),
-							resSet.getString("totalPrice"), resSet.getString("specialRequests"),
-							resSet.getString("comments"), resSet.getString("isComplete"), resSet.getString("date"),
-							resSet.getString("time")));
-				}
-				prepStmt.close();
-				resSet.close();
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return targetOrders;
-	}
-	
-	ArrayList<Order> searchByDate(String group, String inputDate) {
-		ArrayList<Order> targetOrders = new ArrayList<Order>();
-		PreparedStatement prepStmt = null;
-		ResultSet resSet = null;
-		try {
-			if (group.equals("Current Orders")) {
-				String query = "SELECT * FROM orders WHERE date = ?";
-				prepStmt = connection.prepareStatement(query);
-				prepStmt.setString(1, inputDate);
-				resSet = prepStmt.executeQuery();
-				while (resSet.next()) {
-					targetOrders.add(new Order(resSet.getInt("tableNo"), resSet.getString("orderList"),
-							resSet.getString("totalPrice"), resSet.getString("specialRequests"),
-							resSet.getString("comments"), resSet.getString("isComplete"), resSet.getString("date"),
-							resSet.getString("time")));
-				}
-				prepStmt.close();
-				resSet.close();
-			} else {
-				String query = "SELECT * FROM storedOrders WHERE date = ?";
-				prepStmt = connection.prepareStatement(query);
-				prepStmt.setString(1, inputDate);
+				
 				resSet = prepStmt.executeQuery();
 				while (resSet.next()) {
 					targetOrders.add(new Order(resSet.getInt("tableNo"), resSet.getString("orderList"),
@@ -630,49 +594,7 @@ public class StaffScreenModel {
 			e.printStackTrace();
 		}
 		return targetOrders;
-	}
-	
-	ArrayList<Order> searchByTime(String group, String beginHour, String beginMinute, String endHour, String endMinute) {
-		ArrayList<Order> targetOrders = new ArrayList<Order>();
-		PreparedStatement prepStmt = null;
-		ResultSet resSet = null;
-		String beginTime = "" + beginHour + ":" + beginMinute;
-		String endTime = "" + endHour + ":" + endMinute;
-		try {
-			if (group.equals("Current Orders")) {
-				String query = "SELECT * FROM orders WHERE time BETWEEN ? AND ?";
-				prepStmt = connection.prepareStatement(query);
-				prepStmt.setString(1, beginTime);
-				prepStmt.setString(2, endTime);
-				resSet = prepStmt.executeQuery();
-				while (resSet.next()) {
-					targetOrders.add(new Order(resSet.getInt("tableNo"), resSet.getString("orderList"),
-							resSet.getString("totalPrice"), resSet.getString("specialRequests"),
-							resSet.getString("comments"), resSet.getString("isComplete"), resSet.getString("date"),
-							resSet.getString("time")));
-				}
-				prepStmt.close();
-				resSet.close();
-			} else {
-				String query = "SELECT * FROM storedOrders WHERE time BETWEEN ? AND ?";
-				prepStmt = connection.prepareStatement(query);
-				prepStmt.setString(1, beginTime);
-				prepStmt.setString(2, endTime);
-				resSet = prepStmt.executeQuery();
-				while (resSet.next()) {
-					targetOrders.add(new Order(resSet.getInt("tableNo"), resSet.getString("orderList"),
-							resSet.getString("totalPrice"), resSet.getString("specialRequests"),
-							resSet.getString("comments"), resSet.getString("isComplete"), resSet.getString("date"),
-							resSet.getString("time")));
-				}
-				prepStmt.close();
-				resSet.close();
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return targetOrders;
+
 	}
 
 }
