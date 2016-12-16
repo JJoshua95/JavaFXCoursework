@@ -134,8 +134,10 @@
                               <TableColumn fx:id="exportCompletedCol" prefWidth="108.0" text="Completed" />
                           </columns>
                         </TableView>
-                        <TextArea fx:id="exportStatusTxt" editable="false" layoutX="48.0" layoutY="129.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
-                        <Button fx:id="exportSelectionBtn" layoutX="119.0" layoutY="53.0" mnemonicParsing="false" text="Export" />
+                        <TextArea fx:id="exportStatusTxt" editable="false" layoutX="48.0" layoutY="234.0" prefHeight="242.0" prefWidth="200.0" wrapText="true" />
+                        <Button fx:id="exportSelectionBtn" layoutX="120.0" layoutY="155.0" mnemonicParsing="false" onAction="#exportSelectedOrders" text="Export" />
+                        <Label layoutX="20.0" layoutY="40.0" text="Enter a valid filename to export orders as:" />
+                        <TextField fx:id="exportFilenameTxt" layoutX="65.0" layoutY="93.0" promptText="filename" text="export" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -155,8 +157,9 @@
                               <TableColumn fx:id="importCompletedCol" prefWidth="108.0" text="Completed" />
                            </columns>
                         </TableView>
-                        <Button fx:id="importCsvBtn" layoutX="112.0" layoutY="99.0" mnemonicParsing="false" text="Import" />
-                        <TextArea fx:id="importStatusTxt" editable="false" layoutX="41.0" layoutY="150.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
+                        <Button fx:id="importCsvBtn" layoutX="87.0" layoutY="47.0" mnemonicParsing="false" text="Import CSV file" />
+                        <TextArea fx:id="importStatusTxt" editable="false" layoutX="43.0" layoutY="252.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
+                        <Button layoutX="70.0" layoutY="149.0" mnemonicParsing="false" text="Save imported Order" />
                      </children>
                   </AnchorPane>
               </content>

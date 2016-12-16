@@ -369,14 +369,12 @@ public class ManagerScreenController implements Initializable {
 	public void exportSelectedOrders() {
 		
 		ObservableList<Order> selectedOrders;
-		String userFilename = exportFilenameTxt.getText();
-		if (userFilename.equals("")) {
-			exportStatusTxt.setText("Invalid filename, please enter another.");
-		} else if (exportTableView.getSelectionModel().getSelectedItem() == null || 
+		if (exportTableView.getSelectionModel().getSelectedItem() == null || 
 				exportTableView.getSelectionModel().getSelectedItems() == null) {
 			exportStatusTxt.setText("No orders selected to export, please select some rows.");
 		} else {
 			try {
+				String userFilename = exportFilenameTxt.getText();
 				selectedOrders = exportTableView.getSelectionModel().getSelectedItems();
 				String lineToWrite;
 				FileWriter fw = new FileWriter(userFilename + ".csv");
@@ -398,12 +396,6 @@ public class ManagerScreenController implements Initializable {
 			}
 			
 		}
-		
-	}
-	
-	// Import Orders handling ============================================================
-	
-	public void importCsvformattedOrder() {
 		
 	}
 	

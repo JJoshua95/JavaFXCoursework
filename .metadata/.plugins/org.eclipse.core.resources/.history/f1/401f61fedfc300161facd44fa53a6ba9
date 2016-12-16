@@ -401,12 +401,6 @@ public class ManagerScreenController implements Initializable {
 		
 	}
 	
-	// Import Orders handling ============================================================
-	
-	public void importCsvformattedOrder() {
-		
-	}
-	
 	// ======================= Log outs etc switching screens etc ========================
 	
 	void GetUser(String user) {

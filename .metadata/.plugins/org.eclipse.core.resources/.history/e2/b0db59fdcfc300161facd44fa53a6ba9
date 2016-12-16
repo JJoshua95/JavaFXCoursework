@@ -1,8 +1,5 @@
 package application;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -23,7 +20,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -127,8 +123,6 @@ public class ManagerScreenController implements Initializable {
 	private Button exportSelectionBtn;
 	@FXML 
 	private TextArea exportStatusTxt;
-	@FXML
-	private TextField exportFilenameTxt;
 	
 	// variables for exporting orders to CSV
 	private ObservableList<Order> ordersForPossibleExport; // all the stored and current orders from database (can export anything)
@@ -250,7 +244,6 @@ public class ManagerScreenController implements Initializable {
 		exportDateCol.setCellValueFactory(new PropertyValueFactory<Order, String>("date"));
 		exportTimeCol.setCellValueFactory(new PropertyValueFactory<Order, String>("time"));
 		
-		exportTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // can select multiple rows
 		ordersForPossibleExport.addAll(managerModel.getAllOrders());
 		exportTableView.setItems(ordersForPossibleExport);
 		
@@ -362,49 +355,6 @@ public class ManagerScreenController implements Initializable {
 			manageMenuStatus.setText("Dish was removed.");
 			saveActivityLog("Removed a dish from the menu: " + targetFoodName);
 		}
-	}
-	
-	// Export handling ===================================================================
-	
-	public void exportSelectedOrders() {
-		
-		ObservableList<Order> selectedOrders;
-		String userFilename = exportFilenameTxt.getText();
-		if (userFilename.equals("")) {
-			exportStatusTxt.setText("Invalid filename, please enter another.");
-		} else if (exportTableView.getSelectionModel().getSelectedItem() == null || 
-				exportTableView.getSelectionModel().getSelectedItems() == null) {
-			exportStatusTxt.setText("No orders selected to export, please select some rows.");
-		} else {
-			try {
-				selectedOrders = exportTableView.getSelectionModel().getSelectedItems();
-				String lineToWrite;
-				FileWriter fw = new FileWriter(userFilename + ".csv");
-				BufferedWriter bw = new BufferedWriter(fw);
-				for (Order o : selectedOrders) {
-					// replace commas in order list with plus signs to separate food:price pairs 
-					// otherwise csv parsing will separate all order items
-					lineToWrite = o.getTableNo() + " , " + o.getOrderList().replaceAll(",", "+") + " , " + o.getTotalPrice() 
-					+ " , " + o.getDate() + " , " + o.getTime() + " , " + o.getSpecialRequests() 
-					+ " , " + o.getComments() + " , " + o.getCompleted() ; 
-					bw.write(lineToWrite);
-					bw.newLine(); // new line for next order
-				}
-				bw.close();
-				exportStatusTxt.setText("Selection of orders exported.");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		
-	}
-	
-	// Import Orders handling ============================================================
-	
-	public void importCsvformattedOrder() {
-		
 	}
 	
 	// ======================= Log outs etc switching screens etc ========================

@@ -370,9 +370,10 @@ public class ManagerScreenController implements Initializable {
 		
 		ObservableList<Order> selectedOrders;
 		String userFilename = exportFilenameTxt.getText();
-		if (userFilename.equals("")) {
+		if (userFilename.equals("") || userFilename.matches("[.\\/]") ) {
 			exportStatusTxt.setText("Invalid filename, please enter another.");
-		} else if (exportTableView.getSelectionModel().getSelectedItem() == null || 
+		}
+		if (exportTableView.getSelectionModel().getSelectedItem() == null || 
 				exportTableView.getSelectionModel().getSelectedItems() == null) {
 			exportStatusTxt.setText("No orders selected to export, please select some rows.");
 		} else {
@@ -398,12 +399,6 @@ public class ManagerScreenController implements Initializable {
 			}
 			
 		}
-		
-	}
-	
-	// Import Orders handling ============================================================
-	
-	public void importCsvformattedOrder() {
 		
 	}
 	
