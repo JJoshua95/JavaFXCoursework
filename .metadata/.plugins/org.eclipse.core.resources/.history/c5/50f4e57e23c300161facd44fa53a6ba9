@@ -188,8 +188,8 @@ public class StaffScreenController implements Initializable {
 	private String orderGroup;
 	// Indicates which table in the database to search.
 
-	// store username and password for possible verification if switching between manager and staff screen
-	private String usernameStr;
+	// store username and password for possible verification
+	//public String usernameStr;
 	private String passwordStr;
 	
 	@FXML
@@ -198,8 +198,8 @@ public class StaffScreenController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		System.out.println(LoginController.currentUser);
-		LOGGER.log(Level.INFO, LoginController.currentUser + " logged in");
+		System.out.println(usernameStr);
+		LOGGER.log(Level.INFO, usernameStr + "logged in at");
 		
 		// TODO Auto-generated method stub
 

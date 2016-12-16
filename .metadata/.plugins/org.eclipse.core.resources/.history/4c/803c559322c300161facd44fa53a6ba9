@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -44,8 +42,6 @@ public class StaffScreenController implements Initializable {
 
 	public StaffScreenModel staffModel = new StaffScreenModel();
 
-	private final static Logger LOGGER = Logger.getLogger(StaffScreenController.class.getName());
-	
 	// UI Components
 	@FXML
 	private Label lblUser;
@@ -188,7 +184,7 @@ public class StaffScreenController implements Initializable {
 	private String orderGroup;
 	// Indicates which table in the database to search.
 
-	// store username and password for possible verification if switching between manager and staff screen
+	// store username and password for possible verification
 	private String usernameStr;
 	private String passwordStr;
 	
@@ -197,10 +193,7 @@ public class StaffScreenController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
-		System.out.println(LoginController.currentUser);
-		LOGGER.log(Level.INFO, LoginController.currentUser + " logged in");
-		
+
 		// TODO Auto-generated method stub
 
 		menuObservableList = FXCollections.observableArrayList();
