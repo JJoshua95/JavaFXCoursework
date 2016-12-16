@@ -101,7 +101,7 @@
                               <Separator layoutX="774.0" layoutY="-2.0" orientation="VERTICAL" prefHeight="591.0" prefWidth="15.0" />
                               <Label layoutX="950.0" layoutY="14.0" text="View/Edit Order:" />
                               <Label layoutX="567.0" layoutY="437.0" text="Status" />
-                              <TextArea editable="false" layoutX="412.0" layoutY="463.0" prefHeight="103.0" prefWidth="347.0" wrapText="true" />
+                              <TextArea fx:id="workStatus" editable="false" layoutX="412.0" layoutY="463.0" prefHeight="103.0" prefWidth="347.0" wrapText="true" />
                            </children>
                         </Pane>
                      </children>
@@ -135,25 +135,24 @@
                               <Button fx:id="searchCommentsBtn" layoutX="217.0" layoutY="122.0" mnemonicParsing="false" onAction="#searchForComment" text="Search" />
                               <TextField fx:id="searchSpecialReqsTxt" layoutX="20.0" layoutY="85.0" promptText="Special Requests" />
                               <DatePicker fx:id="datePickTxt" editable="false" layoutX="27.0" layoutY="279.0" onAction="#searchForDate" prefHeight="27.0" prefWidth="245.0" promptText="Pick a date" showWeekNumbers="true" />
-                              <Label layoutX="43.0" layoutY="335.0" prefHeight="17.0" prefWidth="44.0" text="From:" />
-                              <Label layoutX="43.0" layoutY="371.0" prefHeight="17.0" prefWidth="44.0" text="To:" />
-                              <Button fx:id="searchTimeBtn" layoutX="218.0" layoutY="410.0" mnemonicParsing="false" onAction="#searchForTimeInterval" text="Search" />
-                              <Label layoutX="10.0" layoutY="457.0" text="Search Status:" />
-                              <Label fx:id="searchStatus" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="106.0" layoutY="457.0" prefHeight="17.0" prefWidth="182.0" />
+                              <Label layoutX="43.0" layoutY="319.0" prefHeight="17.0" prefWidth="44.0" text="From:" />
+                              <Label layoutX="43.0" layoutY="355.0" prefHeight="17.0" prefWidth="44.0" text="To:" />
+                              <Button fx:id="searchTimeBtn" layoutX="217.0" layoutY="388.0" mnemonicParsing="false" onAction="#searchForTimeInterval" text="Search" />
                               <Button fx:id="searchPriceBtn" layoutX="218.0" layoutY="195.0" mnemonicParsing="false" onAction="#searchByPrice" text="Search" />
                               <TextField fx:id="searchPriceBeginTxt" layoutX="21.0" layoutY="160.0" prefHeight="27.0" prefWidth="110.0" promptText="Low Price" />
                               <TextField fx:id="searchPriceEndTxt" layoutX="164.0" layoutY="160.0" prefHeight="27.0" prefWidth="115.0" promptText="High Price" />
                               <Label layoutX="141.0" layoutY="165.0" text="to" />
                               <CheckBox fx:id="searchIncompleteOrdersCheckBox" layoutX="28.0" layoutY="240.0" mnemonicParsing="false" text="Incomplete Orders" />
                               <Button fx:id="searchIncompleteOrdersBtn" layoutX="218.0" layoutY="235.0" mnemonicParsing="false" onAction="#searchByWhetherOrderComplete" text="Search" />
-                              <TextField fx:id="searchTimeBeginMinuteTxt" layoutX="197.0" layoutY="330.0" prefHeight="27.0" prefWidth="39.0" promptText="mm" />
-                              <TextField fx:id="searchTimeBeginHourTxt" layoutX="130.0" layoutY="330.0" prefHeight="27.0" prefWidth="35.0" promptText="hh" />
-                              <TextField fx:id="searchTimeEndHourTxt" layoutX="131.0" layoutY="366.0" prefHeight="27.0" prefWidth="34.0" promptText="hh" />
-                              <TextField fx:id="searchTimeEndMinuteTxt" layoutX="197.0" layoutY="366.0" prefHeight="27.0" prefWidth="39.0" promptText="mm" />
-                              <Label layoutX="11.0" layoutY="415.0" text="Find orders in this time interval:" />
-                              <Label layoutX="179.0" layoutY="335.0" text=":" />
-                              <Label layoutX="179.0" layoutY="371.0" prefHeight="17.0" prefWidth="4.0" text=":" />
+                              <TextField fx:id="searchTimeBeginMinuteTxt" layoutX="197.0" layoutY="314.0" prefHeight="27.0" prefWidth="39.0" promptText="mm" />
+                              <TextField fx:id="searchTimeBeginHourTxt" layoutX="130.0" layoutY="314.0" prefHeight="27.0" prefWidth="35.0" promptText="hh" />
+                              <TextField fx:id="searchTimeEndHourTxt" layoutX="131.0" layoutY="350.0" prefHeight="27.0" prefWidth="34.0" promptText="hh" />
+                              <TextField fx:id="searchTimeEndMinuteTxt" layoutX="197.0" layoutY="350.0" prefHeight="27.0" prefWidth="39.0" promptText="mm" />
+                              <Label layoutX="17.0" layoutY="393.0" text="Find orders in this time interval:" />
+                              <Label layoutX="179.0" layoutY="319.0" text=":" />
+                              <Label layoutX="179.0" layoutY="354.0" prefHeight="17.0" prefWidth="4.0" text=":" />
                               <Label layoutX="21.0" layoutY="202.0" text="Orders within this price range:" />
+                              <TextArea fx:id="searchStatus" editable="false" layoutX="23.0" layoutY="430.0" prefHeight="64.0" prefWidth="250.0" wrapText="true" />
                            </children>
                         </Pane>
                         <Label layoutX="31.0" layoutY="14.0" text="Search Currently Working or Stored Orders" />

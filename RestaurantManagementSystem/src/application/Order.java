@@ -13,10 +13,9 @@ public class Order {
 	private final SimpleStringProperty completed;
 	private final SimpleStringProperty date;
 	private final SimpleStringProperty time;
-	// private final SimpleStringProperty orderNo; // Needed if we implement replacing current orders with stored orders
-	
+		
 	public Order(int tableNo, String orderList, String totalPrice, String specialRequests, String comments,
-			String completed, String date, String time /*,String orderNo*/) {
+			String completed, String date, String time) {
 		super();
 		this.tableNo = new SimpleIntegerProperty(tableNo);
 		this.orderList = new SimpleStringProperty(orderList);
@@ -26,7 +25,6 @@ public class Order {
 		this.completed = new SimpleStringProperty(completed);
 		this.date = new SimpleStringProperty(date);
 		this.time = new SimpleStringProperty(time);
-		//this.orderNo = new SimpleStringProperty(orderNo);
 	}
 
 	public int getTableNo() {
@@ -60,10 +58,5 @@ public class Order {
 	public String getTime() {
 		return time.get();
 	}
-	
-	/*
-	public String getOrderNo() {
-		return time.get();
-	}
-	*/
+
 }

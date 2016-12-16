@@ -1,7 +1,10 @@
 package application;
 
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -74,14 +77,84 @@ public class ManagerScreenController implements Initializable {
 	private Button removeItemBtn;
 	@FXML
 	private TextArea manageMenuStatus;
+	@FXML
+	private ListView<Staff> staffUsernameListView;
+	@FXML 
+	private Button searchSelectedActivityBtn;
+	@FXML
+	private TableView<ActivityLog> activityLogTableView;
+	@FXML
+	private TableColumn<ActivityLog, String> activityUsernameTableColumn;
+	@FXML
+	private TableColumn<ActivityLog, String> activityEntryTableColumn;
+	@FXML
+	private TableColumn<ActivityLog, String> activityTimeTableColumn;
+	@FXML
+	private TextArea activitySearchStatus;
 	
 	// variables for the staff table
 	private ObservableList<Staff> staffTableViewObsList;
 	// variables for the editable food list
 	private ObservableList<Food> editableMenuObsList;
+	// variables for the activity log lists
+	private ObservableList<ActivityLog> activityLogObsList;
+	
+	// Export Orders Variables ====================================================================
+	
+	@FXML
+	private TableView<Order> exportTableView;
+	@FXML
+	private TableColumn<Order, String> exportTableNoCol;
+	@FXML
+	private TableColumn<Order, String> exportOrderListCol;
+	@FXML
+	private TableColumn<Order, String> exportTotalBillCol;
+	@FXML
+	private TableColumn<Order, String> exportSpecialReqsCol;
+	@FXML
+	private TableColumn<Order, String> exportCommentsCol;
+	@FXML
+	private TableColumn<Order, String> exportCompletedCol;
+	@FXML
+	private TableColumn<Order, String> exportDateCol;
+	@FXML
+	private TableColumn<Order, String> exportTimeCol;
+	@FXML
+	private Button exportSelectionBtn;
+	@FXML 
+	private TextArea exportStatusTxt;
+	
+	// variables for exporting orders to CSV
+	private ObservableList<Order> ordersForPossibleExport; // all the stored and current orders from database (can export anything)
+	
+	// Import Orders Variables ======================================================================
+	
+	@FXML
+	private TableView<Order> importTableView;
+	@FXML
+	private TableColumn<Order, String> importTableNoCol;
+	@FXML
+	private TableColumn<Order, String> importOrderListCol;
+	@FXML
+	private TableColumn<Order, String> importTotalBillCol;
+	@FXML
+	private TableColumn<Order, String> importSpecialReqsCol;
+	@FXML
+	private TableColumn<Order, String> importCommentsCol;
+	@FXML
+	private TableColumn<Order, String> importCompletedCol;
+	@FXML
+	private TableColumn<Order, String> importDateCol;
+	@FXML
+	private TableColumn<Order, String> importTimeCol;
+	@FXML
+	private Button importCsvBtn;
+	@FXML 
+	private TextArea importStatusTxt;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
 		// Set up the TableView first
 		staffTableViewObsList = FXCollections.observableArrayList();
 		staffIdCol.setCellValueFactory(new PropertyValueFactory<Staff, Integer>("staffID"));
@@ -128,8 +201,54 @@ public class ManagerScreenController implements Initializable {
 		editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
 		managerMenuListView.setItems(editableMenuObsList);
 		
+		// set up the staff name ListView
+		
+		staffUsernameListView.setCellFactory(new Callback<ListView<Staff>, ListCell<Staff>>() {
+			@Override
+			public ListCell<Staff> call(ListView<Staff> p) {
+				ListCell<Staff> cell = new ListCell<Staff>() {
+					@Override
+					protected void updateItem(Staff s, boolean bool) {
+						super.updateItem(s, bool);
+						if (s != null) {
+							setText(s.getUsername());
+						} else {
+							setText(null);
+						}
+					}
+				};
+
+				return cell;
+			}
+		});
+		staffUsernameListView.setItems(staffTableViewObsList);
+		
+		// set up the activity table view next
+		
+		activityLogObsList = FXCollections.observableArrayList();
+		activityUsernameTableColumn.setCellValueFactory(new PropertyValueFactory<ActivityLog, String>("username"));
+		activityEntryTableColumn.setCellValueFactory(new PropertyValueFactory<ActivityLog, String>("activityEntry"));
+		activityTimeTableColumn.setCellValueFactory(new PropertyValueFactory<ActivityLog, String>("time"));
+		
+		activityLogTableView.setItems(activityLogObsList);
+		
+		// Set up exporting table
+		
+		ordersForPossibleExport = FXCollections.observableArrayList();
+		exportTableNoCol.setCellValueFactory(new PropertyValueFactory<Order, String>("tableNo"));
+		exportOrderListCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderList"));
+		exportTotalBillCol.setCellValueFactory(new PropertyValueFactory<Order, String>("totalPrice"));
+		exportSpecialReqsCol.setCellValueFactory(new PropertyValueFactory<Order, String>("specialRequests"));
+		exportCommentsCol.setCellValueFactory(new PropertyValueFactory<Order, String>("comments"));
+		exportCompletedCol.setCellValueFactory(new PropertyValueFactory<Order, String>("completed"));
+		exportDateCol.setCellValueFactory(new PropertyValueFactory<Order, String>("date"));
+		exportTimeCol.setCellValueFactory(new PropertyValueFactory<Order, String>("time"));
+		
+		ordersForPossibleExport.addAll(managerModel.getAllOrders());
+		exportTableView.setItems(ordersForPossibleExport);
+		
 	}
-	
+		
 	// Handle managing staff accounts
 	
 	public void enableAddAccount() {
@@ -153,6 +272,8 @@ public class ManagerScreenController implements Initializable {
 			staffTableViewObsList.addAll(managerModel.getAllEmployeesFromDB());
 			staffTableView.setItems(staffTableViewObsList);
 			manageStaffStatus.setText("Account saved into database");
+			saveActivityLog("Created/Updated an account: " + newUsername);
+			staffUsernameListView.setItems(staffTableViewObsList);
 		} else {
 			manageStaffStatus.setText("Please fill all the fields before trying to add a new staff account");
 		}
@@ -171,7 +292,27 @@ public class ManagerScreenController implements Initializable {
 			staffTableViewObsList.clear();
 			staffTableViewObsList.addAll(managerModel.getAllEmployeesFromDB());
 			staffTableView.setItems(staffTableViewObsList);
+			saveActivityLog("Removed a staff account from the records : " +  targetUser);
+			staffUsernameListView.setItems(staffTableViewObsList);
+			activityLogTableView.setItems(activityLogObsList);
+			manageStaffStatus.setText("Account removed");
 		}
+	}
+	
+	// View activity logs
+	
+	public void getSelectedEmployeeActivity() {
+		if (staffUsernameListView.getSelectionModel().getSelectedItem() == null) {
+			activitySearchStatus.setText("No staff account selected from listview");
+		} else {
+			Staff listViewSelectedStaff = staffUsernameListView.getSelectionModel().getSelectedItem();
+			String selectedStaffName = listViewSelectedStaff.getUsername();
+			activityLogObsList.clear();
+			activityLogObsList.addAll(managerModel.GetActivityLogForEmployee(selectedStaffName));
+			activitySearchStatus.setText(selectedStaffName + " activity log found");
+			
+		}
+		
 	}
 	
 	// =========================== Handle editing menu ===================================
@@ -189,6 +330,7 @@ public class ManagerScreenController implements Initializable {
 				editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
 				managerMenuListView.setItems(editableMenuObsList);
 				manageMenuStatus.setText("New dish added.");
+				saveActivityLog("Created/Updated a dish: " + newItemName);
 			} else {
 				manageMenuStatus
 						.setText("Invalid dish fields entered, please enter a normal name and a reasonable price");
@@ -211,6 +353,7 @@ public class ManagerScreenController implements Initializable {
 			editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
 			managerMenuListView.setItems(editableMenuObsList);
 			manageMenuStatus.setText("Dish was removed.");
+			saveActivityLog("Removed a dish from the menu: " + targetFoodName);
 		}
 	}
 	
@@ -248,6 +391,8 @@ public class ManagerScreenController implements Initializable {
 	
 	public void SignOut(ActionEvent event) {
 		try {
+			saveActivityLog("Logged out");
+			LoginController.currentUser = null; // no user logged in now
 			((Node)event.getSource()).getScene().getWindow().hide();
 			Stage primaryStage = new Stage();
 			FXMLLoader loader = new FXMLLoader();
@@ -263,5 +408,12 @@ public class ManagerScreenController implements Initializable {
 			System.err.println("Exception Caught");
 			e.printStackTrace();
 		}
+	}
+	
+	public void saveActivityLog(String activity) {
+		Date timeObject = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String dateStr = dateFormat.format(timeObject);
+		managerModel.saveActivityEntryToDB(LoginController.currentUser, activity, dateStr);
 	}
 }

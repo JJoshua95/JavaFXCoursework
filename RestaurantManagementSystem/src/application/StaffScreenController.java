@@ -3,13 +3,13 @@ package application;
 import java.net.URL;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -43,8 +43,6 @@ import javafx.util.Callback;
 public class StaffScreenController implements Initializable {
 
 	public StaffScreenModel staffModel = new StaffScreenModel();
-
-	private final static Logger LOGGER = Logger.getLogger(StaffScreenController.class.getName());
 	
 	// UI Components
 	@FXML
@@ -87,6 +85,8 @@ public class StaffScreenController implements Initializable {
 	private Button calculateTotalBtn;
 	@FXML
 	private Label timeLbl;
+	@FXML
+	private TextArea workStatus;
 
 	// Data holder variables
 	private ObservableList<Food> menuObservableList; // Menu list of all
@@ -141,7 +141,7 @@ public class StaffScreenController implements Initializable {
 	@FXML
 	private Pane searchPane;
 	@FXML
-	private Label searchStatus;
+	private TextArea searchStatus;
 	@FXML
 	private ComboBox<String> orderGroupComboBox;
 	@FXML
@@ -197,11 +197,6 @@ public class StaffScreenController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
-		System.out.println(LoginController.currentUser);
-		LOGGER.log(Level.INFO, LoginController.currentUser + " logged in");
-		
-		// TODO Auto-generated method stub
 
 		menuObservableList = FXCollections.observableArrayList();
 		// add some food to the menu
@@ -315,7 +310,6 @@ public class StaffScreenController implements Initializable {
 		currentItemToRemove = currentOrderListView.getSelectionModel().getSelectedItem();
 		currentOrderObservableList.remove(currentItemToRemove);
 		currentOrderListView.setItems(currentOrderObservableList);
-
 		// Deal with errors if nothing to remove
 	}
 
@@ -639,6 +633,7 @@ public class StaffScreenController implements Initializable {
 				clearOrderListView();
 				orderCompleteCheckBox.setSelected(false);
 				staffModel.DeleteCurrentOrderFromDB(currentTableNo);
+				saveActivityLog("Completed a working order and moved it to stored orders records. Table: " + currentTableNo);
 			} else {
 				alert.close();
 			}
@@ -646,6 +641,8 @@ public class StaffScreenController implements Initializable {
 			isOrderCompleteString = "false";
 			staffModel.SaveCurrentOrderToDatabase(currentTableNo, currentOrderObservableList, orderTotalPrice,
 					specialRequestsString, commentsString, isOrderCompleteString, dateTimeOfCurrentOrder);
+			System.out.println("Saved");
+			saveActivityLog("Created/Updated a working order: Table: " + currentTableNo);
 		}
 
 	}
@@ -665,6 +662,7 @@ public class StaffScreenController implements Initializable {
 			specialRequestsTxt.setText("");
 			commentsTxt.setText("");
 			clearOrderListView();
+			saveActivityLog("Deleted a working order: Table " + currentTableNo );
 		} else {
 			alert.close();
 		}
@@ -710,6 +708,7 @@ public class StaffScreenController implements Initializable {
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				primaryStage.setScene(scene);
 				primaryStage.show();
+				
 			} catch (Exception e) {
 				System.err.println("Exception Caught");
 				e.printStackTrace();
@@ -721,6 +720,8 @@ public class StaffScreenController implements Initializable {
 
 	public void SignOut(ActionEvent event) {
 		try {
+			saveActivityLog("Logged out of system");
+			LoginController.currentUser = null;
 			((Node) event.getSource()).getScene().getWindow().hide();
 			Stage primaryStage = new Stage();
 			FXMLLoader loader = new FXMLLoader();
@@ -729,6 +730,7 @@ public class StaffScreenController implements Initializable {
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
+			
 
 		} catch (Exception e) {
 			System.err.println("Exception Caught");
@@ -967,9 +969,19 @@ public class StaffScreenController implements Initializable {
 			} else {
 				searchStatus.setText("Invalid entry");
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			searchStatus.setText("Invalid Times");
 		}
+	}
+	
+	// Activity recording
+	
+	public void saveActivityLog(String activity) {
+		Date timeObject = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String dateStr = dateFormat.format(timeObject);
+		staffModel.saveActivityEntryToDB(LoginController.currentUser, activity, dateStr);
 	}
 }

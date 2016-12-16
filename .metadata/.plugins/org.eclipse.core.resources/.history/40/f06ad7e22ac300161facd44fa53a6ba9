@@ -1,0 +1,973 @@
+package application;
+
+import java.net.URL;
+
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+
+public class StaffScreenController implements Initializable {
+
+	public StaffScreenModel staffModel = new StaffScreenModel();
+	
+	// UI Components
+	@FXML
+	private Label lblUser;
+	@FXML
+	private Circle circleTable1;
+	@FXML
+	private Circle circleTable2;
+	@FXML
+	private Circle circleTable3;
+	@FXML
+	private Circle circleTable4;
+	@FXML
+	private Circle circleTable5;
+	@FXML
+	private Circle circleTable6;
+	@FXML
+	private ListView<Food> menuListView;
+	@FXML
+	private Button addFoodItemBtn;
+	@FXML
+	private ListView<Food> currentOrderListView;
+	@FXML
+	private Button removeFoodItemFromOrder;
+	@FXML
+	private Button saveOrderBtn;
+	@FXML
+	private Label lblCurrentTable;
+	@FXML
+	private Button deleteCurrentOrderBtn;
+	@FXML
+	private TextArea specialRequestsTxt;
+	@FXML
+	private TextArea commentsTxt;
+	@FXML
+	private CheckBox orderCompleteCheckBox;
+	@FXML
+	private Label totalPriceLbl;
+	@FXML
+	private Button calculateTotalBtn;
+	@FXML
+	private Label timeLbl;
+
+	// Data holder variables
+	private ObservableList<Food> menuObservableList; // Menu list of all
+														// possible food options
+	private ObservableList<Food> currentOrderObservableList;
+	// Order list of the orders of the currently selected order be it stored in
+	// a table or from history
+	private Food currentItemToAdd; // Currently selected food item
+	private Food currentItemToRemove; // Two variables needed for selecting
+										// items to add or to remove
+	// Or there is possible ambiguity when both items are selected on the lists
+	// and add or remove are pressed.
+	private Date dateTimeOfCurrentOrder;
+	private String specialRequestsString;
+	private String commentsString;
+	private String isOrderCompleteString;
+	private double orderTotalPrice;
+
+	// Current status variables like which table is being focused on at a
+	// particular time
+	private int currentTableNo;
+
+	// click count variables to reset the table editing status when clicking a
+	// new table
+	private int oneClickCount;
+	private int twoClickCount;
+	private int threeClickCount;
+	private int fourClickCount;
+	private int fiveClickCount;
+	private int sixClickCount;
+
+	// TableView and Searching orders variables;
+	@FXML
+	private TableView<Order> orderTableView;
+	@FXML
+	private TableColumn<Order, String> tableNoCol;
+	@FXML
+	private TableColumn<Order, String> orderListCol;
+	@FXML
+	private TableColumn<Order, String> totalBillCol;
+	@FXML
+	private TableColumn<Order, String> specialReqsCol;
+	@FXML
+	private TableColumn<Order, String> commentsCol;
+	@FXML
+	private TableColumn<Order, String> completedCol;
+	@FXML
+	private TableColumn<Order, String> dateCol;
+	@FXML
+	private TableColumn<Order, String> timeCol;
+
+	@FXML
+	private Pane searchPane;
+	@FXML
+	private Label searchStatus;
+	@FXML
+	private ComboBox<String> orderGroupComboBox;
+	@FXML
+	private TextField searchTableNoTxt;
+	@FXML
+	private Button searchTableNoBtn;
+	@FXML
+	private TextField searchFoodItemTxt;
+	@FXML
+	private Button searchFoodBtn;
+	@FXML
+	private TextField searchSpecialReqsTxt;
+	@FXML
+	private Button searchSpecialReqsBtn;
+	@FXML
+	private TextField searchCommentsTxt;
+	@FXML
+	private Button searchCommentsBtn;
+	@FXML
+	private TextField searchPriceBeginTxt;
+	@FXML
+	private TextField searchPriceEndTxt;
+	@FXML
+	private Button searchPriceBtn;
+	@FXML
+	private CheckBox searchIncompleteOrdersCheckBox;
+	@FXML
+	private Button searchIncompleteOrdersBtn;
+	@FXML
+	private DatePicker datePickTxt;
+	@FXML
+	private Button searchTimeBtn;
+	@FXML
+	private TextField searchTimeBeginHourTxt;
+	@FXML
+	private TextField searchTimeBeginMinuteTxt;
+	@FXML
+	private TextField searchTimeEndHourTxt;
+	@FXML
+	private TextField searchTimeEndMinuteTxt;
+
+	private ObservableList<Order> tableViewOrdersObservableList;
+	// Observable List which will populate the TableView
+	private String orderGroup;
+	// Indicates which table in the database to search.
+
+	// store username and password for possible verification if switching between manager and staff screen
+	private String usernameStr;
+	private String passwordStr;
+	
+	@FXML
+	private Button switchToManageBtn;
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+	
+		LOGGER.log(Level.INFO, LoginController.currentUser + " logged in");
+		
+		// TODO Auto-generated method stub
+
+		menuObservableList = FXCollections.observableArrayList();
+		// add some food to the menu
+		menuObservableList.addAll(staffModel.getAllFoodFromMenu());
+
+		menuListView.setItems(menuObservableList);
+		menuListView.setCellFactory(new Callback<ListView<Food>, ListCell<Food>>() {
+			@Override
+			public ListCell<Food> call(ListView<Food> p) {
+				ListCell<Food> cell = new ListCell<Food>() {
+					@Override
+					protected void updateItem(Food f, boolean bool) {
+						super.updateItem(f, bool);
+						if (f != null) {
+							DecimalFormat df = new DecimalFormat("#.00");
+							// to print the price to 2dp i.e. to the nearest
+							// penny
+							setText(f.getMenuItemName() + " : £ " + df.format(f.getPrice()));
+						} else {
+							setText(null);
+						}
+					}
+				};
+
+				return cell;
+			}
+		});
+
+		currentOrderListView.setCellFactory(new Callback<ListView<Food>, ListCell<Food>>() {
+			@Override
+			public ListCell<Food> call(ListView<Food> p) {
+				ListCell<Food> cell = new ListCell<Food>() {
+					@Override
+					protected void updateItem(Food f, boolean bool) {
+						super.updateItem(f, bool);
+						if (f != null) {
+							DecimalFormat df = new DecimalFormat("#.00");
+							// to print the price to 2dp i.e. to the nearest
+							// penny
+							setText(f.getMenuItemName() + " : £ " + df.format(f.getPrice()));
+						} else {
+							setText(null);
+						}
+					}
+				};
+
+				return cell;
+			}
+		});
+
+		currentOrderObservableList = FXCollections.observableArrayList();
+		// initialise the current order list view
+
+		lblCurrentTable.setText("");
+		timeLbl.setText("");
+		totalPriceLbl.setText("");
+		specialRequestsTxt.setText("");
+		commentsTxt.setText("");
+
+		// set buttons to uneditable to begin until a table is selected.
+		addFoodItemBtn.setDisable(true);
+		removeFoodItemFromOrder.setDisable(true);
+		saveOrderBtn.setDisable(true);
+		deleteCurrentOrderBtn.setDisable(true);
+		calculateTotalBtn.setDisable(true);
+		orderCompleteCheckBox.setDisable(true);
+		// make the text areas uneditable
+		specialRequestsTxt.setEditable(false);
+		commentsTxt.setEditable(false);
+
+		// TableView initialisation
+
+		tableViewOrdersObservableList = FXCollections.observableArrayList();
+
+		tableNoCol.setCellValueFactory(new PropertyValueFactory<Order, String>("tableNo"));
+		orderListCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderList"));
+		totalBillCol.setCellValueFactory(new PropertyValueFactory<Order, String>("totalPrice"));
+		specialReqsCol.setCellValueFactory(new PropertyValueFactory<Order, String>("specialRequests"));
+		commentsCol.setCellValueFactory(new PropertyValueFactory<Order, String>("comments"));
+		completedCol.setCellValueFactory(new PropertyValueFactory<Order, String>("completed"));
+		dateCol.setCellValueFactory(new PropertyValueFactory<Order, String>("date"));
+		timeCol.setCellValueFactory(new PropertyValueFactory<Order, String>("time"));
+
+		orderTableView.setItems(tableViewOrdersObservableList);
+
+		ObservableList<String> orderGroupComboBoxObsList = FXCollections.observableArrayList("Current Orders",
+				"Stored Orders");
+		orderGroupComboBox.setItems(orderGroupComboBoxObsList);
+
+		searchPane.setDisable(true); // disable search by default
+
+	}
+
+	// --------------------------- Current Order GUI Controls
+	// --------------------------------------
+
+	public void AddItemToOrder(ActionEvent event) {
+		currentItemToAdd = menuListView.getSelectionModel().getSelectedItem();
+		currentOrderObservableList.add(currentItemToAdd);
+		currentOrderListView.setItems(currentOrderObservableList);
+	}
+
+	public void clearOrderListView() {
+		currentOrderObservableList.clear();
+		currentOrderListView.setItems(currentOrderObservableList);
+		// clear the comments and set the CheckBox to null
+	}
+
+	public void RemoveItemFromOrder(ActionEvent event) {
+
+		currentItemToRemove = currentOrderListView.getSelectionModel().getSelectedItem();
+		currentOrderObservableList.remove(currentItemToRemove);
+		currentOrderListView.setItems(currentOrderObservableList);
+		// Deal with errors if nothing to remove
+	}
+
+	// condense some of the following into smaller component methods to be
+	// called repeatedly
+	public void getTableOneOrder(MouseEvent mouseEvent) throws SQLException {
+		// oneClickCount = 0;
+		twoClickCount = 0;
+		threeClickCount = 0;
+		fourClickCount = 0;
+		fiveClickCount = 0;
+		sixClickCount = 0;
+		currentTableNo = 1;
+
+		// reset all click counts of other tables to avoid confusing editable
+		// statuses when switching tables
+		// or else you may click back on a new table one and it is immediately
+		// editable
+		// stop editing of orders on 1st click (enable editing of orders after a
+		// second click)
+		addFoodItemBtn.setDisable(true);
+		removeFoodItemFromOrder.setDisable(true);
+		saveOrderBtn.setDisable(true);
+		deleteCurrentOrderBtn.setDisable(true);
+		calculateTotalBtn.setDisable(true);
+		orderCompleteCheckBox.setDisable(true);
+		specialRequestsTxt.setEditable(false);
+		commentsTxt.setEditable(false);
+
+		// Display the order details in the edit panels
+		lblCurrentTable.setText("Table " + currentTableNo);
+		clearOrderListView();
+		ArrayList<Food> arr1 = staffModel.RetrieveATableOrderFromDB(1);
+		currentOrderObservableList.addAll(arr1);
+		currentOrderListView.setItems(currentOrderObservableList);
+
+		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
+		DecimalFormat df = new DecimalFormat("#.00");
+		totalPriceLbl.setText("£" + df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
+		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
+		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
+
+		oneClickCount++;
+		if (oneClickCount > 1) {
+			// on second click
+			// enable editing
+			addFoodItemBtn.setDisable(false);
+			removeFoodItemFromOrder.setDisable(false);
+			saveOrderBtn.setDisable(false);
+			deleteCurrentOrderBtn.setDisable(false);
+			calculateTotalBtn.setDisable(false);
+			orderCompleteCheckBox.setDisable(false);
+			specialRequestsTxt.setEditable(true);
+			commentsTxt.setEditable(true);
+			mouseEvent.consume();
+			// oneClickCount = 0; // can add this and remove consume method to
+			// allow switching of editable status on subsequent clicks
+		}
+
+	}
+
+	public void getTableTwoOrder(MouseEvent mouseEvent) throws SQLException {
+		currentTableNo = 2;
+		oneClickCount = 0;
+		// twoClickCount = 0;
+		threeClickCount = 0;
+		fourClickCount = 0;
+		fiveClickCount = 0;
+		sixClickCount = 0;
+
+		addFoodItemBtn.setDisable(true);
+		removeFoodItemFromOrder.setDisable(true);
+		saveOrderBtn.setDisable(true);
+		deleteCurrentOrderBtn.setDisable(true);
+		calculateTotalBtn.setDisable(true);
+		orderCompleteCheckBox.setDisable(true);
+		specialRequestsTxt.setEditable(false);
+		commentsTxt.setEditable(false);
+		lblCurrentTable.setText("Table " + currentTableNo);
+		clearOrderListView();
+		ArrayList<Food> arr2 = staffModel.RetrieveATableOrderFromDB(2);
+		currentOrderObservableList.addAll(arr2);
+		currentOrderListView.setItems(currentOrderObservableList);
+		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
+		DecimalFormat df = new DecimalFormat("#.00");
+		totalPriceLbl.setText("£" + df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
+		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
+		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
+
+		twoClickCount++;
+		if (twoClickCount > 1) {
+			// enable editing
+			addFoodItemBtn.setDisable(false);
+			removeFoodItemFromOrder.setDisable(false);
+			saveOrderBtn.setDisable(false);
+			deleteCurrentOrderBtn.setDisable(false);
+			calculateTotalBtn.setDisable(false);
+			orderCompleteCheckBox.setDisable(false);
+			specialRequestsTxt.setEditable(true);
+			commentsTxt.setEditable(true);
+			mouseEvent.consume();
+			// twoClickCount = 0; // can add this and remove consume method to
+			// allow switching of editable status on subsequent clicks
+		}
+
+	}
+
+	public void getTableThreeOrder(MouseEvent mouseEvent) throws SQLException {
+		currentTableNo = 3;
+
+		// count resetting
+		oneClickCount = 0;
+		twoClickCount = 0;
+		// threeClickCount = 0;
+		fourClickCount = 0;
+		fiveClickCount = 0;
+		sixClickCount = 0;
+		// change working table
+
+		addFoodItemBtn.setDisable(true);
+		removeFoodItemFromOrder.setDisable(true);
+		saveOrderBtn.setDisable(true);
+		deleteCurrentOrderBtn.setDisable(true);
+		calculateTotalBtn.setDisable(true);
+		orderCompleteCheckBox.setDisable(true);
+		specialRequestsTxt.setEditable(false);
+		commentsTxt.setEditable(false);
+		lblCurrentTable.setText("Table " + currentTableNo);
+		clearOrderListView();
+		ArrayList<Food> arr3 = staffModel.RetrieveATableOrderFromDB(3);
+		currentOrderObservableList.addAll(arr3);
+		currentOrderListView.setItems(currentOrderObservableList);
+		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
+		DecimalFormat df = new DecimalFormat("#.00");
+		totalPriceLbl.setText("£" + df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
+		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
+		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
+
+		threeClickCount++;
+		if (threeClickCount > 1) {
+			// enable editing
+			addFoodItemBtn.setDisable(false);
+			removeFoodItemFromOrder.setDisable(false);
+			saveOrderBtn.setDisable(false);
+			deleteCurrentOrderBtn.setDisable(false);
+			calculateTotalBtn.setDisable(false);
+			orderCompleteCheckBox.setDisable(false);
+			specialRequestsTxt.setEditable(true);
+			commentsTxt.setEditable(true);
+			mouseEvent.consume();
+		}
+
+	}
+
+	public void getTableFourOrder(MouseEvent mouseEvent) throws SQLException {
+		currentTableNo = 4;
+
+		// count resetting
+		oneClickCount = 0;
+		twoClickCount = 0;
+		threeClickCount = 0;
+		// fourClickCount = 0;
+		fiveClickCount = 0;
+		sixClickCount = 0;
+		// change working table
+
+		addFoodItemBtn.setDisable(true);
+		removeFoodItemFromOrder.setDisable(true);
+		saveOrderBtn.setDisable(true);
+		deleteCurrentOrderBtn.setDisable(true);
+		calculateTotalBtn.setDisable(true);
+		orderCompleteCheckBox.setDisable(true);
+		specialRequestsTxt.setEditable(false);
+		commentsTxt.setEditable(false);
+		lblCurrentTable.setText("Table " + currentTableNo);
+		clearOrderListView();
+		ArrayList<Food> arr4 = staffModel.RetrieveATableOrderFromDB(4);
+		currentOrderObservableList.addAll(arr4);
+		currentOrderListView.setItems(currentOrderObservableList);
+		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
+		DecimalFormat df = new DecimalFormat("#.00");
+		totalPriceLbl.setText("£" + df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
+		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
+		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
+
+		fourClickCount++;
+		if (fourClickCount > 1) {
+			// enable editing
+			addFoodItemBtn.setDisable(false);
+			removeFoodItemFromOrder.setDisable(false);
+			saveOrderBtn.setDisable(false);
+			deleteCurrentOrderBtn.setDisable(false);
+			calculateTotalBtn.setDisable(false);
+			orderCompleteCheckBox.setDisable(false);
+			specialRequestsTxt.setEditable(true);
+			commentsTxt.setEditable(true);
+			mouseEvent.consume();
+		}
+
+	}
+
+	public void getTableFiveOrder(MouseEvent mouseEvent) throws SQLException {
+		currentTableNo = 5;
+
+		// count resetting
+		oneClickCount = 0;
+		twoClickCount = 0;
+		threeClickCount = 0;
+		fourClickCount = 0;
+		// fiveClickCount = 0;
+		sixClickCount = 0;
+		// change working table
+		addFoodItemBtn.setDisable(true);
+		removeFoodItemFromOrder.setDisable(true);
+		saveOrderBtn.setDisable(true);
+		deleteCurrentOrderBtn.setDisable(true);
+		calculateTotalBtn.setDisable(true);
+		orderCompleteCheckBox.setDisable(true);
+		specialRequestsTxt.setEditable(false);
+		commentsTxt.setEditable(false);
+		lblCurrentTable.setText("Table " + currentTableNo);
+		clearOrderListView();
+		ArrayList<Food> arr5 = staffModel.RetrieveATableOrderFromDB(5);
+		currentOrderObservableList.addAll(arr5);
+		currentOrderListView.setItems(currentOrderObservableList);
+		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
+		DecimalFormat df = new DecimalFormat("#.00");
+		totalPriceLbl.setText("£" + df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
+		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
+		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
+
+		fiveClickCount++;
+		if (fiveClickCount > 1) {
+			// enable editing
+			addFoodItemBtn.setDisable(false);
+			removeFoodItemFromOrder.setDisable(false);
+			saveOrderBtn.setDisable(false);
+			deleteCurrentOrderBtn.setDisable(false);
+			calculateTotalBtn.setDisable(false);
+			orderCompleteCheckBox.setDisable(false);
+			specialRequestsTxt.setEditable(true);
+			commentsTxt.setEditable(true);
+			mouseEvent.consume();
+		}
+
+	}
+
+	public void getTableSixOrder(MouseEvent mouseEvent) throws SQLException {
+		currentTableNo = 6;
+
+		// count resetting
+		oneClickCount = 0;
+		twoClickCount = 0;
+		threeClickCount = 0;
+		fourClickCount = 0;
+		fiveClickCount = 0;
+		// sixClickCount = 0;
+		// change working table
+
+		addFoodItemBtn.setDisable(true);
+		removeFoodItemFromOrder.setDisable(true);
+		saveOrderBtn.setDisable(true);
+		deleteCurrentOrderBtn.setDisable(true);
+		calculateTotalBtn.setDisable(true);
+		orderCompleteCheckBox.setDisable(true);
+		specialRequestsTxt.setEditable(false);
+		commentsTxt.setEditable(false);
+		lblCurrentTable.setText("Table " + currentTableNo);
+		clearOrderListView();
+		ArrayList<Food> arr6 = staffModel.RetrieveATableOrderFromDB(6);
+		currentOrderObservableList.addAll(arr6);
+		currentOrderListView.setItems(currentOrderObservableList);
+		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
+		DecimalFormat df = new DecimalFormat("#.00");
+		totalPriceLbl.setText("£" + df.format(staffModel.getTotalPriceFromDB(currentTableNo)));
+		specialRequestsTxt.setText(staffModel.getSpecialRequestsFromDB(currentTableNo));
+		commentsTxt.setText(staffModel.getCommentsFromDB(currentTableNo));
+
+		sixClickCount++;
+		if (sixClickCount > 1) {
+			// enable editing
+			addFoodItemBtn.setDisable(false);
+			removeFoodItemFromOrder.setDisable(false);
+			saveOrderBtn.setDisable(false);
+			deleteCurrentOrderBtn.setDisable(false);
+			calculateTotalBtn.setDisable(false);
+			orderCompleteCheckBox.setDisable(false);
+			specialRequestsTxt.setEditable(true);
+			commentsTxt.setEditable(true);
+			mouseEvent.consume();
+		}
+
+	}
+
+	public void SaveCurrentOrder() throws SQLException {
+		// save all the important variables
+		// DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		dateTimeOfCurrentOrder = new Date();
+		// timeLbl.setText(dateFormat.format(dateTimeOfCurrentOrder)); // this
+		// displays even when overwriting
+		// System.out.println(dateFormat.format(dateTimeOfCurrentOrder));
+		specialRequestsString = specialRequestsTxt.getText();
+		commentsString = commentsTxt.getText();
+		// compute the total again in case the user forgets to click it
+		orderTotalPrice = getOrderPriceTotal();
+		if (orderCompleteCheckBox.isSelected() == true) {
+			isOrderCompleteString = "true";
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Confirm Completion");
+			alert.setHeaderText("Are you sure this order is completed?");
+			alert.setContentText("This order will be removed and stored into the records");
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.OK) {
+				// move the record and then clear the fields
+				staffModel.moveCurrentOrderToStorage(currentTableNo, currentOrderObservableList, orderTotalPrice,
+						specialRequestsString, commentsString, isOrderCompleteString, dateTimeOfCurrentOrder);
+				timeLbl.setText("");
+				totalPriceLbl.setText("");
+				specialRequestsTxt.setText("");
+				commentsTxt.setText("");
+				clearOrderListView();
+				orderCompleteCheckBox.setSelected(false);
+				staffModel.DeleteCurrentOrderFromDB(currentTableNo);
+			} else {
+				alert.close();
+			}
+		} else {
+			isOrderCompleteString = "false";
+			staffModel.SaveCurrentOrderToDatabase(currentTableNo, currentOrderObservableList, orderTotalPrice,
+					specialRequestsString, commentsString, isOrderCompleteString, dateTimeOfCurrentOrder);
+		}
+
+	}
+
+	public void DeleteCurrentOrder() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Confirm Delete");
+		alert.setHeaderText("Are you sure? Deleting this order cannot be undone");
+		alert.setContentText("Continue with deleting this current order?");
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK) {
+			staffModel.DeleteCurrentOrderFromDB(currentTableNo);
+			// and clear the fields
+			timeLbl.setText("");
+			totalPriceLbl.setText("");
+			specialRequestsTxt.setText("");
+			commentsTxt.setText("");
+			clearOrderListView();
+		} else {
+			alert.close();
+		}
+
+	}
+
+	public Double getOrderPriceTotal() {
+		double total = 0;
+		for (Food f : currentOrderObservableList) {
+			total += f.getPrice();
+		}
+		DecimalFormat df = new DecimalFormat("#.00"); // to print the price to
+														// 2dp i.e. to the
+														// nearest penny
+		totalPriceLbl.setText("£" + df.format(total));
+		orderTotalPrice = total;
+		// System.out.println(total);
+		return total;
+	}
+
+	void GetUser(String user) {
+		lblUser.setText(user);
+	}
+
+	void StoreTemporaryCredentials(String user, String pw) {
+		usernameStr = user;
+		passwordStr = pw;
+	}
+
+	public void SwitchToManagerScreen(ActionEvent event) throws SQLException {
+		// verify current user if manager == true then allow access to manager
+		// screen
+		if (staffModel.verifyManagerLogin(usernameStr, passwordStr)) {
+			try {
+				((Node) event.getSource()).getScene().getWindow().hide();
+				Stage primaryStage = new Stage();
+				FXMLLoader loader = new FXMLLoader();
+				Pane root = loader.load(getClass().getResource("/application/ManagerScreen.fxml").openStream());
+				ManagerScreenController managerController = (ManagerScreenController)loader.getController();
+				managerController.GetUser(usernameStr);
+				managerController.StoreTemporaryCredentials(usernameStr, passwordStr);
+				Scene scene = new Scene(root);
+				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+				primaryStage.setScene(scene);
+				primaryStage.show();
+			} catch (Exception e) {
+				System.err.println("Exception Caught");
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("You can't go there!");
+		}
+	}
+
+	public void SignOut(ActionEvent event) {
+		try {
+			LoginController.currentUser = null;
+			((Node) event.getSource()).getScene().getWindow().hide();
+			Stage primaryStage = new Stage();
+			FXMLLoader loader = new FXMLLoader();
+			Pane root = loader.load(getClass().getResource("/application/Login.fxml").openStream());
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setScene(scene);
+			primaryStage.show();
+
+		} catch (Exception e) {
+			System.err.println("Exception Caught");
+			e.printStackTrace();
+		}
+	}
+
+	// -----------------Search current orders or past orders and deal with
+	// TableView ----------------------------
+
+	public void enableSearch() {
+		searchPane.setDisable(false);
+	}
+
+	public void searchForTableNum() {
+		try {
+			int tableNum = Integer.parseInt(searchTableNoTxt.getText());
+			if (tableNum < 7 || tableNum > 0) { // as long as the number is
+												// within
+												// bounds of our tables
+				orderGroup = orderGroupComboBox.getValue();
+				if (orderGroup.equals("Current Orders")) {
+					searchStatus.setText("Searching");
+					tableViewOrdersObservableList.clear();
+					tableViewOrdersObservableList.addAll(staffModel.searchByTableNo(orderGroup, tableNum));
+					orderTableView.setItems(tableViewOrdersObservableList);
+					searchStatus.setText("Results Found");
+				} else if (orderGroup.equals("Stored Orders")) {
+					searchStatus.setText("Searching");
+					tableViewOrdersObservableList.clear();
+					tableViewOrdersObservableList.addAll(staffModel.searchByTableNo(orderGroup, tableNum));
+					orderTableView.setItems(tableViewOrdersObservableList);
+					searchStatus.setText("Results Found");
+				}
+			} else {
+				searchStatus.setText("Invalid table");
+			}
+		} catch (RuntimeException e) {
+			System.out.println("Most likely non numerical characters entered");
+			e.printStackTrace();
+		}
+	}
+
+	public void searchForFoodItem() {
+		// handle when there is no text or else it just returns everything
+		orderGroup = orderGroupComboBox.getValue();
+		String inputFoodString = searchFoodItemTxt.getText();
+		if (orderGroup.equals("Current Orders")) {
+			searchStatus.setText("Searching");
+			tableViewOrdersObservableList.clear();
+			tableViewOrdersObservableList.addAll(staffModel.searchByFoodItem(orderGroup, inputFoodString));
+			orderTableView.setItems(tableViewOrdersObservableList);
+			searchStatus.setText("Results Found");
+		} else if (orderGroup.equals("Stored Orders")) {
+			searchStatus.setText("Searching");
+			tableViewOrdersObservableList.clear();
+			tableViewOrdersObservableList.addAll(staffModel.searchByFoodItem(orderGroup, inputFoodString));
+			orderTableView.setItems(tableViewOrdersObservableList);
+			searchStatus.setText("Results Found");
+		} else {
+			searchStatus.setText("Invalid entry");
+		}
+	}
+
+	public void searchForSpecialRequest() {
+		orderGroup = orderGroupComboBox.getValue();
+		String inputSpecialRequest = searchSpecialReqsTxt.getText();
+		if (orderGroup.equals("Current Orders")) {
+			searchStatus.setText("Searching");
+			tableViewOrdersObservableList.clear();
+			tableViewOrdersObservableList.addAll(staffModel.searchBySpecialRequest(orderGroup, inputSpecialRequest));
+			orderTableView.setItems(tableViewOrdersObservableList);
+			searchStatus.setText("Results Found");
+		} else if (orderGroup.equals("Stored Orders")) {
+			searchStatus.setText("Searching");
+			tableViewOrdersObservableList.clear();
+			tableViewOrdersObservableList.addAll(staffModel.searchBySpecialRequest(orderGroup, inputSpecialRequest));
+			orderTableView.setItems(tableViewOrdersObservableList);
+			searchStatus.setText("Results Found");
+		} else {
+			searchStatus.setText("Invalid entry");
+		}
+	}
+
+	public void searchForComment() {
+		orderGroup = orderGroupComboBox.getValue();
+		String inputComment = searchCommentsTxt.getText();
+		// System.out.println(inputComment);
+		if (orderGroup.equals("Current Orders")) {
+			searchStatus.setText("Searching");
+			tableViewOrdersObservableList.clear();
+			tableViewOrdersObservableList.addAll(staffModel.searchByComments(orderGroup, inputComment));
+			orderTableView.setItems(tableViewOrdersObservableList);
+			searchStatus.setText("Results Found");
+		} else if (orderGroup.equals("Stored Orders")) {
+			searchStatus.setText("Searching");
+			tableViewOrdersObservableList.clear();
+			tableViewOrdersObservableList.addAll(staffModel.searchByComments(orderGroup, inputComment));
+			orderTableView.setItems(tableViewOrdersObservableList);
+			searchStatus.setText("Results Found");
+		} else {
+			searchStatus.setText("Invalid entry");
+		}
+	}
+
+	public void searchByPrice() {
+		String inputPriceBeginStr = searchPriceBeginTxt.getText();
+		String inputPriceEndStr = searchPriceEndTxt.getText();
+		try {
+			orderGroup = orderGroupComboBox.getValue();
+			if (orderGroup.equals("Current Orders")) {
+				Double inputPriceBegin = Double.parseDouble(inputPriceBeginStr);
+				Double inputPriceEnd = Double.parseDouble(inputPriceEndStr);
+				searchStatus.setText("Searching");
+				tableViewOrdersObservableList.clear();
+				tableViewOrdersObservableList
+						.addAll(staffModel.searchByPrice(orderGroup, inputPriceBegin, inputPriceEnd));
+				orderTableView.setItems(tableViewOrdersObservableList);
+				searchStatus.setText("Results Found");
+			} else if (orderGroup.equals("Stored Orders")) {
+				Double inputPriceBegin = Double.parseDouble(inputPriceBeginStr);
+				Double inputPriceEnd = Double.parseDouble(inputPriceEndStr);
+				searchStatus.setText("Searching");
+				tableViewOrdersObservableList.clear();
+				tableViewOrdersObservableList
+						.addAll(staffModel.searchByPrice(orderGroup, inputPriceBegin, inputPriceEnd));
+				orderTableView.setItems(tableViewOrdersObservableList);
+				searchStatus.setText("Results Found");
+			} else {
+				searchStatus.setText("Invalid entry");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			searchStatus.setText("Invalid search");
+		}
+	}
+
+	public void searchByWhetherOrderComplete() {
+		if (searchIncompleteOrdersCheckBox.isSelected() == true) {
+			String inputCompleteStatus = "false";
+			// return all incomplete records
+			try {
+				orderGroup = orderGroupComboBox.getValue();
+				if (orderGroup.equals("Current Orders")) {
+					searchStatus.setText("Searching");
+					tableViewOrdersObservableList.clear();
+					tableViewOrdersObservableList
+							.addAll(staffModel.searchByIfComplete(orderGroup, inputCompleteStatus));
+					orderTableView.setItems(tableViewOrdersObservableList);
+					searchStatus.setText("Results Found");
+				} else if (orderGroup.equals("Stored Orders")) {
+					searchStatus.setText("Searching");
+					tableViewOrdersObservableList.clear();
+					tableViewOrdersObservableList
+							.addAll(staffModel.searchByIfComplete(orderGroup, inputCompleteStatus));
+					orderTableView.setItems(tableViewOrdersObservableList);
+					searchStatus.setText("Results Found");
+				} else {
+					searchStatus.setText("Invalid entry");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				searchStatus.setText("Invalid search");
+			}
+		} else {
+			String inputCompleteStatus = "true";
+			// return all complete records
+			try {
+				orderGroup = orderGroupComboBox.getValue();
+				if (orderGroup.equals("Current Orders")) {
+					searchStatus.setText("Searching");
+					tableViewOrdersObservableList.clear();
+					tableViewOrdersObservableList
+							.addAll(staffModel.searchByIfComplete(orderGroup, inputCompleteStatus));
+					orderTableView.setItems(tableViewOrdersObservableList);
+					searchStatus.setText("Results Found");
+				} else if (orderGroup.equals("Stored Orders")) {
+					searchStatus.setText("Searching");
+					tableViewOrdersObservableList.clear();
+					tableViewOrdersObservableList
+							.addAll(staffModel.searchByIfComplete(orderGroup, inputCompleteStatus));
+					orderTableView.setItems(tableViewOrdersObservableList);
+					searchStatus.setText("Results Found");
+				} else {
+					searchStatus.setText("Invalid entry");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				searchStatus.setText("Invalid search");
+			}
+		}
+	}
+
+	public void searchForDate() {
+		String DateChosenStr = datePickTxt.getValue().toString();
+		orderGroup = orderGroupComboBox.getValue();
+		if (orderGroup.equals("Current Orders")) {
+			searchStatus.setText("Searching");
+			tableViewOrdersObservableList.clear();
+			tableViewOrdersObservableList.addAll(staffModel.searchByDate(orderGroup, DateChosenStr));
+			orderTableView.setItems(tableViewOrdersObservableList);
+			searchStatus.setText("Results Found");
+		} else if (orderGroup.equals("Stored Orders")) {
+			searchStatus.setText("Searching");
+			tableViewOrdersObservableList.clear();
+			tableViewOrdersObservableList.addAll(staffModel.searchByDate(orderGroup, DateChosenStr));
+			orderTableView.setItems(tableViewOrdersObservableList);
+			searchStatus.setText("Results Found");
+		} else {
+			searchStatus.setText("Invalid entry");
+		}
+
+	}
+
+	public void searchForTimeInterval() {
+		String startTimeHour = searchTimeBeginHourTxt.getText();
+		String startTimeMinute = searchTimeBeginMinuteTxt.getText();
+		String endTimeHour = searchTimeEndHourTxt.getText();
+		String endTimeMinute = searchTimeEndMinuteTxt.getText();
+		try {
+			orderGroup = orderGroupComboBox.getValue();
+			if (orderGroup.equals("Current Orders")) {
+				searchStatus.setText("Searching");
+				tableViewOrdersObservableList.clear();
+				tableViewOrdersObservableList.addAll(staffModel.searchByTime(orderGroup, startTimeHour, startTimeMinute,
+						endTimeHour, endTimeMinute));
+				orderTableView.setItems(tableViewOrdersObservableList);
+				searchStatus.setText("Results Found");
+			} else if (orderGroup.equals("Stored Orders")) {
+				searchStatus.setText("Searching");
+				tableViewOrdersObservableList.clear();
+				tableViewOrdersObservableList.addAll(staffModel.searchByTime(orderGroup, startTimeHour, startTimeMinute,
+						endTimeHour, endTimeMinute));
+				orderTableView.setItems(tableViewOrdersObservableList);
+				searchStatus.setText("Results Found");
+			} else {
+				searchStatus.setText("Invalid entry");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			searchStatus.setText("Invalid Times");
+		}
+	}
+}
