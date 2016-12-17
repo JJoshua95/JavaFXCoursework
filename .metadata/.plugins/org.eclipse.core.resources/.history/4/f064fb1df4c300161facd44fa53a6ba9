@@ -482,7 +482,6 @@ public class ManagerScreenController implements Initializable {
 			csvFileOrders.add(new Order(tableNoInput, orderListInput, totalPriceInput, specReqsInput, commentsInput,
 					isCompInput, dateInput, timeInput));
 		}
-		
 		ordersForPossibleImport.clear();
 		ordersForPossibleImport.addAll(csvFileOrders);
 		importTableView.setItems(ordersForPossibleImport);;
