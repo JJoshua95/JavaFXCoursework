@@ -1,7 +1,19 @@
 package application;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -17,12 +29,14 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -74,14 +88,89 @@ public class ManagerScreenController implements Initializable {
 	private Button removeItemBtn;
 	@FXML
 	private TextArea manageMenuStatus;
+	@FXML
+	private ListView<Staff> staffUsernameListView;
+	@FXML 
+	private Button searchSelectedActivityBtn;
+	@FXML
+	private TableView<ActivityLog> activityLogTableView;
+	@FXML
+	private TableColumn<ActivityLog, String> activityUsernameTableColumn;
+	@FXML
+	private TableColumn<ActivityLog, String> activityEntryTableColumn;
+	@FXML
+	private TableColumn<ActivityLog, String> activityTimeTableColumn;
+	@FXML
+	private TextArea activitySearchStatus;
 	
 	// variables for the staff table
 	private ObservableList<Staff> staffTableViewObsList;
 	// variables for the editable food list
 	private ObservableList<Food> editableMenuObsList;
+	// variables for the activity log lists
+	private ObservableList<ActivityLog> activityLogObsList;
+	
+	// Export Orders Variables ====================================================================
+	
+	@FXML
+	private TableView<Order> exportTableView;
+	@FXML
+	private TableColumn<Order, String> exportTableNoCol;
+	@FXML
+	private TableColumn<Order, String> exportOrderListCol;
+	@FXML
+	private TableColumn<Order, String> exportTotalBillCol;
+	@FXML
+	private TableColumn<Order, String> exportSpecialReqsCol;
+	@FXML
+	private TableColumn<Order, String> exportCommentsCol;
+	@FXML
+	private TableColumn<Order, String> exportCompletedCol;
+	@FXML
+	private TableColumn<Order, String> exportDateCol;
+	@FXML
+	private TableColumn<Order, String> exportTimeCol;
+	@FXML
+	private Button exportSelectionBtn;
+	@FXML 
+	private TextArea exportStatusTxt;
+	@FXML
+	private TextField exportFilenameTxt;
+	
+	// variables for exporting orders to CSV
+	private ObservableList<Order> ordersForPossibleExport; // all the stored and current orders from database (can export anything)
+	
+	// Import Orders Variables ======================================================================
+	private ObservableList<Order> ordersForPossibleImport; // array to hold orders from a csv file, can be saved in stored orders 
+	
+	@FXML
+	private TableView<Order> importTableView;
+	@FXML
+	private TableColumn<Order, String> importTableNoCol;
+	@FXML
+	private TableColumn<Order, String> importOrderListCol;
+	@FXML
+	private TableColumn<Order, String> importTotalBillCol;
+	@FXML
+	private TableColumn<Order, String> importSpecialReqsCol;
+	@FXML
+	private TableColumn<Order, String> importCommentsCol;
+	@FXML
+	private TableColumn<Order, String> importCompletedCol;
+	@FXML
+	private TableColumn<Order, String> importDateCol;
+	@FXML
+	private TableColumn<Order, String> importTimeCol;
+	@FXML
+	private Button importCsvBtn;
+	@FXML 
+	private TextArea importStatusTxt;
+	@FXML
+	private Button saveImportToDbBtn;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
 		// Set up the TableView first
 		staffTableViewObsList = FXCollections.observableArrayList();
 		staffIdCol.setCellValueFactory(new PropertyValueFactory<Staff, Integer>("staffID"));
@@ -128,8 +217,67 @@ public class ManagerScreenController implements Initializable {
 		editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
 		managerMenuListView.setItems(editableMenuObsList);
 		
+		// set up the staff name ListView
+		
+		staffUsernameListView.setCellFactory(new Callback<ListView<Staff>, ListCell<Staff>>() {
+			@Override
+			public ListCell<Staff> call(ListView<Staff> p) {
+				ListCell<Staff> cell = new ListCell<Staff>() {
+					@Override
+					protected void updateItem(Staff s, boolean bool) {
+						super.updateItem(s, bool);
+						if (s != null) {
+							setText(s.getUsername());
+						} else {
+							setText(null);
+						}
+					}
+				};
+
+				return cell;
+			}
+		});
+		staffUsernameListView.setItems(staffTableViewObsList);
+		
+		// set up the activity table view next
+		
+		activityLogObsList = FXCollections.observableArrayList();
+		activityUsernameTableColumn.setCellValueFactory(new PropertyValueFactory<ActivityLog, String>("username"));
+		activityEntryTableColumn.setCellValueFactory(new PropertyValueFactory<ActivityLog, String>("activityEntry"));
+		activityTimeTableColumn.setCellValueFactory(new PropertyValueFactory<ActivityLog, String>("time"));
+		
+		activityLogTableView.setItems(activityLogObsList);
+		
+		// Set up exporting table
+		
+		ordersForPossibleExport = FXCollections.observableArrayList();
+		exportTableNoCol.setCellValueFactory(new PropertyValueFactory<Order, String>("tableNo"));
+		exportOrderListCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderList"));
+		exportTotalBillCol.setCellValueFactory(new PropertyValueFactory<Order, String>("totalPrice"));
+		exportSpecialReqsCol.setCellValueFactory(new PropertyValueFactory<Order, String>("specialRequests"));
+		exportCommentsCol.setCellValueFactory(new PropertyValueFactory<Order, String>("comments"));
+		exportCompletedCol.setCellValueFactory(new PropertyValueFactory<Order, String>("completed"));
+		exportDateCol.setCellValueFactory(new PropertyValueFactory<Order, String>("date"));
+		exportTimeCol.setCellValueFactory(new PropertyValueFactory<Order, String>("time"));
+		
+		exportTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // can select multiple rows
+		ordersForPossibleExport.addAll(managerModel.getAllOrders());
+		exportTableView.setItems(ordersForPossibleExport);
+		
+		// set up import table
+		
+		ordersForPossibleImport = FXCollections.observableArrayList();
+		importTableNoCol.setCellValueFactory(new PropertyValueFactory<Order, String>("tableNo"));
+		importOrderListCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderList"));
+		importTotalBillCol.setCellValueFactory(new PropertyValueFactory<Order, String>("totalPrice"));
+		importSpecialReqsCol.setCellValueFactory(new PropertyValueFactory<Order, String>("specialRequests"));
+		importCommentsCol.setCellValueFactory(new PropertyValueFactory<Order, String>("comments"));
+		importCompletedCol.setCellValueFactory(new PropertyValueFactory<Order, String>("completed"));
+		importDateCol.setCellValueFactory(new PropertyValueFactory<Order, String>("date"));
+		importTimeCol.setCellValueFactory(new PropertyValueFactory<Order, String>("time"));
+		
 	}
-	
+		
 	// Handle managing staff accounts
 	
 	public void enableAddAccount() {
@@ -153,6 +301,8 @@ public class ManagerScreenController implements Initializable {
 			staffTableViewObsList.addAll(managerModel.getAllEmployeesFromDB());
 			staffTableView.setItems(staffTableViewObsList);
 			manageStaffStatus.setText("Account saved into database");
+			saveActivityLog("Created/Updated an account: " + newUsername);
+			staffUsernameListView.setItems(staffTableViewObsList);
 		} else {
 			manageStaffStatus.setText("Please fill all the fields before trying to add a new staff account");
 		}
@@ -171,7 +321,27 @@ public class ManagerScreenController implements Initializable {
 			staffTableViewObsList.clear();
 			staffTableViewObsList.addAll(managerModel.getAllEmployeesFromDB());
 			staffTableView.setItems(staffTableViewObsList);
+			saveActivityLog("Removed a staff account from the records : " +  targetUser);
+			staffUsernameListView.setItems(staffTableViewObsList);
+			activityLogTableView.setItems(activityLogObsList);
+			manageStaffStatus.setText("Account removed");
 		}
+	}
+	
+	// View activity logs
+	
+	public void getSelectedEmployeeActivity() {
+		if (staffUsernameListView.getSelectionModel().getSelectedItem() == null) {
+			activitySearchStatus.setText("No staff account selected from listview");
+		} else {
+			Staff listViewSelectedStaff = staffUsernameListView.getSelectionModel().getSelectedItem();
+			String selectedStaffName = listViewSelectedStaff.getUsername();
+			activityLogObsList.clear();
+			activityLogObsList.addAll(managerModel.GetActivityLogForEmployee(selectedStaffName));
+			activitySearchStatus.setText(selectedStaffName + " activity log found");
+			
+		}
+		
 	}
 	
 	// =========================== Handle editing menu ===================================
@@ -189,6 +359,7 @@ public class ManagerScreenController implements Initializable {
 				editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
 				managerMenuListView.setItems(editableMenuObsList);
 				manageMenuStatus.setText("New dish added.");
+				saveActivityLog("Created/Updated a dish: " + newItemName);
 			} else {
 				manageMenuStatus
 						.setText("Invalid dish fields entered, please enter a normal name and a reasonable price");
@@ -211,7 +382,112 @@ public class ManagerScreenController implements Initializable {
 			editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
 			managerMenuListView.setItems(editableMenuObsList);
 			manageMenuStatus.setText("Dish was removed.");
+			saveActivityLog("Removed a dish from the menu: " + targetFoodName);
 		}
+	}
+	
+	// Export handling ===================================================================
+	
+	public void exportSelectedOrders() {
+		
+		ObservableList<Order> selectedOrders;
+		String userFilename = exportFilenameTxt.getText();
+		if (userFilename.equals("")) {
+			exportStatusTxt.setText("Invalid filename, please enter another.");
+		} else if (exportTableView.getSelectionModel().getSelectedItem() == null || 
+				exportTableView.getSelectionModel().getSelectedItems() == null) {
+			exportStatusTxt.setText("No orders selected to export, please select some rows.");
+		} else {
+			try {
+				selectedOrders = exportTableView.getSelectionModel().getSelectedItems();
+				String lineToWrite;
+				FileWriter fw = new FileWriter(userFilename + ".csv");
+				BufferedWriter bw = new BufferedWriter(fw);
+				for (Order o : selectedOrders) {
+					// replace commas in order list with plus signs to separate food:price pairs 
+					// otherwise csv parsing will separate all order items
+					lineToWrite = o.getTableNo() + " , " + o.getOrderList().replaceAll(",", "/") + " , " + o.getTotalPrice() 
+					+ " , " + o.getDate() + " , " + o.getTime() + " , " + o.getSpecialRequests() 
+					+ " , " + o.getComments() + " , " + o.getCompleted() ; 
+					bw.write(lineToWrite);
+					bw.newLine(); // new line for next order
+				}
+				bw.close();
+				exportStatusTxt.setText("Selection of orders exported.");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+	}
+	
+	// Import Orders handling ============================================================
+	
+	public String turnCsvToString() {
+		String fileToString = null;
+		FileChooser fc = new FileChooser();
+		FileChooser.ExtensionFilter exFilter = new FileChooser.ExtensionFilter("Comma separated value files ( .csv)",
+				"*.csv");
+		fc.getExtensionFilters().add(exFilter);
+		File selectedFile = fc.showOpenDialog(null);
+		if (selectedFile == null) {
+			importStatusTxt.setText("Invalid file chosen.");
+		} else if (selectedFile.exists() && selectedFile.canRead()) {
+			importStatusTxt.setText("Selected " + selectedFile.getName() + " " + selectedFile.getAbsolutePath());
+			Reader reader;
+			try {
+				reader = new FileReader(selectedFile);
+				BufferedReader br = new BufferedReader(reader);
+				StringBuilder sb = new StringBuilder(); // StringBuilder object to hold the file contents
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					sb.append(line).append("~~~~~~~~~~~~~~~~~~~~"); // ~~~~ symbols marks the end of a line, each line encodes an order object
+					// so it will allow us to later split the one big string into several smaller ones each which can be fed into 
+					// an Order constructor method. // its extremely unlikely for someone to enter in that into system as an input in this context.
+				}
+				br.close();
+				
+				fileToString = sb.toString();
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				importStatusTxt.setText("File not found error");
+			}
+		}
+		
+		return fileToString; 
+	}
+	
+	public void importCsvFormattedOrder() {
+		ArrayList<Order> csvFileOrders = new ArrayList<Order>();
+		String csvString = turnCsvToString();
+		//System.out.println(turnCsvToString()); 
+		// Components meaning each of the inputs, like TableNo etc, into Order() constructor
+		String[] orderComponentsStringArray = csvString.split("~~~~~~~~~~~~~~~~~~~~");
+		for (String s : orderComponentsStringArray) {
+			System.out.println(s);
+			// split up components mean we look at each components like TableNo individually
+			String[] splitUpComponents = s.split(",");
+			System.out.println("here");
+			// variables we will pass to an order constructor
+			int tableNoInput = Integer.parseInt(splitUpComponents[0].trim());
+			String orderListInput = splitUpComponents[1].replaceAll("\\+", ",");
+			String totalPriceInput = splitUpComponents[2];
+			String specReqsInput = splitUpComponents[3];
+			String commentsInput = splitUpComponents[4];
+			String dateInput = splitUpComponents[5];
+			String timeInput = splitUpComponents[6];
+			String isCompInput = splitUpComponents[7];
+			csvFileOrders.add(new Order(tableNoInput, orderListInput, totalPriceInput, specReqsInput, commentsInput,
+					isCompInput, dateInput, timeInput));
+		}
+		ordersForPossibleImport.clear();
+		ordersForPossibleImport.addAll(csvFileOrders);
+		importTableView.setItems(ordersForPossibleImport);;
+		
 	}
 	
 	// ======================= Log outs etc switching screens etc ========================
@@ -248,6 +524,8 @@ public class ManagerScreenController implements Initializable {
 	
 	public void SignOut(ActionEvent event) {
 		try {
+			saveActivityLog("Logged out");
+			LoginController.currentUser = null; // no user logged in now
 			((Node)event.getSource()).getScene().getWindow().hide();
 			Stage primaryStage = new Stage();
 			FXMLLoader loader = new FXMLLoader();
@@ -263,5 +541,12 @@ public class ManagerScreenController implements Initializable {
 			System.err.println("Exception Caught");
 			e.printStackTrace();
 		}
+	}
+	
+	public void saveActivityLog(String activity) {
+		Date timeObject = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String dateStr = dateFormat.format(timeObject);
+		managerModel.saveActivityEntryToDB(LoginController.currentUser, activity, dateStr);
 	}
 }

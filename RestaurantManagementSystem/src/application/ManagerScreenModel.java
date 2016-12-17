@@ -1,13 +1,11 @@
 package application;
 
 import java.sql.*;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ManagerScreenModel extends StaffScreenModel {
 	
-private Connection connection;
+	private Connection connection;
 	
 	ManagerScreenModel() {
 		connection = SqliteConnection.Connector();
@@ -90,6 +88,33 @@ private Connection connection;
 		}
 	}
 	
+	ArrayList<ActivityLog> GetActivityLogForEmployee(String user) {
+		ArrayList<ActivityLog> targetActivity = new ArrayList<ActivityLog>();
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		
+		String query = "SELECT * FROM activityLog WHERE username = ?";
+		
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setString(1,user);
+			resSet = prepStmt.executeQuery();
+			while (resSet.next()) {
+				targetActivity.add(new ActivityLog(resSet.getString("username"),
+						resSet.getString("activityEntry"), resSet.getString("time"))
+						);
+			}
+			prepStmt.close();
+			resSet.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return targetActivity;
+	}
+	
 	// ========================= Menu queries ==================================
 	
 	void AddNewDishToMenuDB(String name, double cost) {
@@ -123,5 +148,55 @@ private Connection connection;
 			e.printStackTrace();
 		}
 	}
+	
+	public void saveActivityEntryToDB(String user, String act, String timestamp) {
+		PreparedStatement prepStmt = null;
+		String query = "INSERT INTO activityLog (username, activityEntry, time) VALUES (? ,?, ?)";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setString(1, user);
+			prepStmt.setString(2, act);
+			prepStmt.setString(3, timestamp);
+			prepStmt.execute();
+			prepStmt.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	// Export queries ========================================================
+	
+	ArrayList<Order> getAllOrders() {
+		ArrayList<Order> targetOrders = new ArrayList<Order>();
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		
+		String query = "SELECT * FROM orders UNION ALL SELECT * FROM storedOrders";
+		
+		try {
+			prepStmt = connection.prepareStatement(query);
+			resSet = prepStmt.executeQuery();
+			
+			while (resSet.next()) {
+				targetOrders.add(new Order(resSet.getInt("tableNo"), resSet.getString("orderList"),
+						resSet.getString("totalPrice"), resSet.getString("specialRequests"),
+						resSet.getString("comments"), resSet.getString("isComplete"), resSet.getString("date"),
+						resSet.getString("time")));
+			}
+			
+			prepStmt.close();
+			resSet.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return targetOrders;
+	}
+	
+	// Import Queries =========================================================
 	
 }

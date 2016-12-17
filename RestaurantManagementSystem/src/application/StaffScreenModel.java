@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import javafx.collections.ObservableList;
 
 public class StaffScreenModel extends LoginModel {
-
+	
 	private Connection connection;
 
 	StaffScreenModel() {
@@ -70,6 +70,7 @@ public class StaffScreenModel extends LoginModel {
 			// if there is no record for this table insert one
 			if (!resultSet.next()) {
 				preparedStatement.close();
+				resultSet.close();
 				System.out.println("No order for this table was found so new record created");
 
 				query = "INSERT INTO orders "
@@ -87,11 +88,13 @@ public class StaffScreenModel extends LoginModel {
 				preparedStatement.setString(8, timeString);
 
 				preparedStatement.execute();
+				preparedStatement.close();
 
 			} else { // If there is already a record for this table update
 						// all but the time and date
 				System.out.println("Table order exists, updating it now");
 				preparedStatement.close();
+				resultSet.close();
 
 				query = "UPDATE orders "
 						+ "SET orderList = ?, totalPrice = ?, specialRequests = ?, comments = ?, isComplete = ? "
@@ -106,6 +109,7 @@ public class StaffScreenModel extends LoginModel {
 				preparedStatement.setInt(6, tableNum);
 
 				preparedStatement.execute();
+				preparedStatement.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -700,10 +704,25 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
 		} 
-		
 		return targetFoods;
+	}
+	
+	public void saveActivityEntryToDB(String user, String act, String timestamp) {
+		PreparedStatement prepStmt = null;
+		String query = "INSERT INTO activityLog (username, activityEntry, time) VALUES (? ,?, ?)";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.setString(1, user);
+			prepStmt.setString(2, act);
+			prepStmt.setString(3, timestamp);
+			prepStmt.execute();
+			prepStmt.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
 
 }

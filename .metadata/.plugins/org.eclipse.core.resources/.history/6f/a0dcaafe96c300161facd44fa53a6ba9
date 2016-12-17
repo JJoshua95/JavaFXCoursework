@@ -1,0 +1,24 @@
+package application;
+
+import javafx.beans.property.SimpleStringProperty;
+
+public class ActivityLog {
+	
+	private SimpleStringProperty username;
+	private SimpleStringProperty activityEntry;
+	
+	public ActivityLog(String username, String activityEntry) {
+		super();
+		this.username = new SimpleStringProperty(username);
+		this.activityEntry = new SimpleStringProperty(activityEntry);
+	}
+	
+	public String getUsername() {
+		return username.get();
+	}
+	
+	public String getActivityEntry() {
+		return activityEntry.get();
+	}
+	
+}
