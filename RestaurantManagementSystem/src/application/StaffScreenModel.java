@@ -12,14 +12,21 @@ import javafx.collections.ObservableList;
 public class StaffScreenModel extends LoginModel {
 	
 	private Connection connection;
-
+	
+	/**
+	 * The class constructor checks whether the connection to the database is active, if not the
+	 * program is closed.
+	 */
 	StaffScreenModel() {
 		connection = SqliteConnection.Connector();
 		if (connection == null) {
 			System.exit(1);
 		}
 	}
-
+	
+	/**
+	 * Returns true if the database is connected, false if it is not.
+	 */
 	boolean isDbConnected() {
 		try {
 			return !connection.isClosed();
@@ -29,7 +36,19 @@ public class StaffScreenModel extends LoginModel {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * Checks if the input tableNo already has a working order in the database, if it does it updates all fields apart from the time of order, 
+	 * (and the tableNo as that wouldn't make sense). If there is not working order for the inputted table then the record is simply inserted.
+	 * @param tableNum
+	 * @param orderList
+	 * @param totalBill
+	 * @param specialReqs
+	 * @param comments
+	 * @param isComplete
+	 * @param inDate
+	 * @throws SQLException
+	 */
 	void saveCurrentOrderToDatabase(int tableNum, ObservableList<Food> orderList, double totalBill, String specialReqs,
 			String comments, String isComplete, Date inDate) throws SQLException {
 
@@ -119,7 +138,14 @@ public class StaffScreenModel extends LoginModel {
 		}
 
 	}
-
+	
+	/**
+	 * This takes a table number and queries the database to find the food items saved in that table order and puts them in 
+	 * an ArrayList that can be passed to the listviews and displayed with ease.
+	 * @param tableNoVal
+	 * @return ArrayList<Food> targetOrder
+	 * @throws SQLException
+	 */
 	ArrayList<Food> retrieveATableOrderFromDB(int tableNoVal) throws SQLException {
 		String targetOrder = null;
 		String[] stringOrderArray = null;
@@ -177,7 +203,12 @@ public class StaffScreenModel extends LoginModel {
 		return orderArrayList;
 
 	}
-
+	
+	/**
+	 * Takes a 
+	 * @param tableNum
+	 * @return Double totalFromDB the total price of the orderered items from an order
+	 */
 	Double getTotalPriceFromDB(int tableNum) {
 		double totalFromDB = 0.0;
 		PreparedStatement prepStmt = null;

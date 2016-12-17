@@ -28,7 +28,6 @@ public class SqliteConnection {
 	 * @return connection - A Connection type object - "A connection (session) with a specific database. SQL statements are executed and results 
 	 * are returned within the context of a connection.".
 	 */
-	
 	public static Connection Connector() {
 		try {
 			Class.forName("org.sqlite.JDBC");

@@ -2,6 +2,9 @@ package application;
 
 import java.sql.*; 
 
+//This class makes use of a 3rd party library, the SQLite JDBC Driver 
+//available from https://bitbucket.org/xerial/sqlite-jdbc/downloads
+
 /**
  * The LoginModel class contains all the methods that the LoginScreenController class uses to access and interact with the database, 
  * this class focuses on verifying the login details a potential user may enter, it also initialises the necessary tables that this 
@@ -49,6 +52,16 @@ public class LoginModel {
 		}
 	}
 	
+	/**
+	 * Determines if user has staff level access only.
+	 * This method takes a username password string pair entered into the login GUI and then searches the database to determine if 
+	 * the login input is in the system and if it allows staff level access to the application, i.e. registering orders etc but not manager level 
+	 * admin.
+	 * @param user A string input that will be searched for in 'username' field in the 'staff' table
+	 * @param pass A string input that will be searched for in the 'password' field in the 'staff' table
+	 * @return
+	 * @throws SQLException
+	 */
 	boolean verifyStaffLogin(String user, String pass) throws SQLException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -77,6 +90,16 @@ public class LoginModel {
 		}
 	}
 	
+	/**
+	 * Determines is user has manager access.
+	 * This method takes a username password string pair entered into the login GUI and then searches the database to determine if 
+	 * the login input is in the system and if it allows manager level access to the application, full access to all features of the 
+	 * application
+	 * @param user A string input that will be searched for in 'username' field in the 'staff' table
+	 * @param pass A string input that will be searched for in the 'password' field in the 'staff' table
+	 * @return
+	 * @throws SQLException
+	 */
 	boolean verifyManagerLogin(String user, String pass) throws SQLException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -105,6 +128,14 @@ public class LoginModel {
 		}
 	}
 	
+	/**
+	 * This method saves a record describing an action the currently logged in user has just performed and saves an entry with
+	 * the action, time and username of the currently logged in account into the database
+	 * the managers can look through
+	 * @param user the 'staff'username attribute of the currently logged in user
+	 * @param act a string describing what the current user has just done for tracking user activity in th logs managers see
+	 * @param timestamp a formatted string containing the date and time of the action
+	 */
 	public void saveActivityEntryToDB(String user, String act, String timestamp) {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT INTO activityLog (username, activityEntry, time) VALUES (? ,?, ?)";
@@ -122,7 +153,10 @@ public class LoginModel {
 		} 
 	}
 	
-	
+	/**
+	 * Creates a staff table if one does not already exist and also inserts a record allowing a special admin account user to login
+	 * This is included in case the database file is deleted and there is still an emergency way back into the application.
+	 */
 	void initialiseStaffTable() {
 		PreparedStatement prepStmt = null;
 		try {
@@ -149,6 +183,9 @@ public class LoginModel {
 		}
 	}
 	
+	/**
+	 * Inserts a special admin account into the staff table, allowing access back into the application if the database file is not found
+	 */
 	void insertAdminAccount() {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT INTO staff (id, username, password, isManager) VALUES (99 , 'admin', 'password', 'true')";
@@ -163,6 +200,10 @@ public class LoginModel {
 		} 
 	}
 	
+	/**
+	 * Creates an orders table in case it does not already exist in the event of the database file being lost.
+	 * This table holds working orders of tables currently being served
+	 */
 	void initOrdersTable() {
 		PreparedStatement prepStmt = null;
 		String query = "CREATE TABLE IF NOT EXISTS 'orders' "
@@ -178,6 +219,10 @@ public class LoginModel {
 		} 
 	}
 	
+	/**
+	 * Creates a menu table in case it does not already exist in the event of the database file being lost.
+	 * This table holds the current menu the restaurant offers.
+	 */
 	void initMenuTable() {
 		PreparedStatement prepStmt = null;
 		String query = "CREATE TABLE IF NOT EXISTS 'menu' "
@@ -192,6 +237,12 @@ public class LoginModel {
 		} 
 	} 
 	
+	/**
+	 * Creates an storedOrders table in case it does not already exist in the event of the database file being lost.
+	 * Ths table holds records of prevoisly completed orders or orders imported by managers, they are kept separate from 
+	 * working orders so as to avoid confusion and ambiguity with working orders which are the immediate priority of the 
+	 * staff to deal with.
+	 */
 	void initStoredOrdersTable() {
 		PreparedStatement prepStmt = null;
 		String query = "CREATE TABLE IF NOT EXISTS 'storedOrders' "
@@ -207,6 +258,10 @@ public class LoginModel {
 		} 
 	}
 	
+	/**
+	 * Creates an activityLog table in case it does not already exist in the event of the database file being lost.
+	 * This is where all the user information is stored and managers can track their employees behaviour on the program.
+	 */
 	void initActivityLogTable() {
 		PreparedStatement prepStmt = null;
 		String query = "CREATE TABLE IF NOT EXISTS 'activityLog' "
