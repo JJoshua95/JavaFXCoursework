@@ -3,6 +3,8 @@ package application;
 import java.sql.*;
 import java.util.ArrayList;
 
+import javafx.collections.ObservableList;
+
 public class ManagerScreenModel extends StaffScreenModel {
 	
 	private Connection connection;
@@ -54,7 +56,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 		return targetStaff;
 	}
 	
-	void AddStaffAccountIntoDB(int id, String user, String pw, String managerVerified) {
+	void addStaffAccountIntoDB(int id, String user, String pw, String managerVerified) {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT OR REPLACE INTO staff (id, username, password, isManager) VALUES (?, ?, ?, ?)";
 		try {
@@ -71,7 +73,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 		}
 	}
 	
-	void DeleteStaffAccountFromDB(int id, String user, String pw, String managerVerified) {
+	void deleteStaffAccountFromDB(int id, String user, String pw, String managerVerified) {
 		PreparedStatement prepStmt = null;
 		String query = "DELETE FROM staff WHERE id = ? AND username = ? AND password = ? AND isManager = ?";
 		try {
@@ -88,7 +90,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 		}
 	}
 	
-	ArrayList<ActivityLog> GetActivityLogForEmployee(String user) {
+	ArrayList<ActivityLog> getActivityLogForEmployee(String user) {
 		ArrayList<ActivityLog> targetActivity = new ArrayList<ActivityLog>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -117,7 +119,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 	
 	// ========================= Menu queries ==================================
 	
-	void AddNewDishToMenuDB(String name, double cost) {
+	void addNewDishToMenuDB(String name, double cost) {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT OR REPLACE INTO menu (menuItem, price) VALUES (?, ?)";
 		
@@ -133,7 +135,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 		}
 	}
 	
-	void DeleteDishFromMenuDB(String name, double cost) {
+	void deleteDishFromMenuDB(String name, double cost) {
 		PreparedStatement prepStmt = null;
 		String query = "DELETE FROM menu WHERE menuItem = ? AND price = ?";
 		try {
@@ -198,5 +200,30 @@ public class ManagerScreenModel extends StaffScreenModel {
 	}
 	
 	// Import Queries =========================================================
+	
+	void saveImportToDB(ObservableList<Order> csvImport) {
+		try {
+			for (Order o : csvImport) {
+				PreparedStatement prepStmt = null;
+				String query = "INSERT INTO storedOrders (tableNo, orderList, totalPrice, specialRequests, comments, isComplete,"
+						+ " date, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				prepStmt = connection.prepareStatement(query);
+				prepStmt.setInt(1, o.getTableNo());
+				prepStmt.setString(2, o.getOrderList());
+				prepStmt.setDouble(3, Double.parseDouble(o.getTotalPrice()));
+				prepStmt.setString(4, o.getSpecialRequests());
+				prepStmt.setString(5, o.getComments());
+				prepStmt.setString(6, o.getCompleted());
+				prepStmt.setString(7, o.getDate());
+				prepStmt.setString(8, o.getTime());
+				prepStmt.execute();
+				prepStmt.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 }

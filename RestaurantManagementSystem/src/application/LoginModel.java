@@ -11,6 +11,7 @@ public class LoginModel {
 		if (connection == null) {
 			System.exit(1);
 		}
+		
 		// Create tables if they don't exist
 	}
 	
@@ -96,5 +97,13 @@ public class LoginModel {
 			e.printStackTrace();
 		} 
 	}
+	
+	/*
+	void initialiseStaffTable() {
+		PreparedStatement prepStmt = null;
+		String query = "CREATE IF NOT EXISTS staff "
+				+ "( `username`	TEXT, `password' TEXT, `id`	INTEGER, `isManager' TEXT, PRIMARY KEY(`id`) )";
+	}
+	*/
 	
 }

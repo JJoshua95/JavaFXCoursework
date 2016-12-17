@@ -42,8 +42,8 @@ import javafx.util.Callback;
 
 public class StaffScreenController implements Initializable {
 
-	public StaffScreenModel staffModel = new StaffScreenModel();
-	
+	private StaffScreenModel staffModel = new StaffScreenModel();
+
 	// UI Components
 	@FXML
 	private Label lblUser;
@@ -182,16 +182,19 @@ public class StaffScreenController implements Initializable {
 	private TextField searchTimeEndHourTxt;
 	@FXML
 	private TextField searchTimeEndMinuteTxt;
+	@FXML
+	private Button searchAllOrdersBtn;
 
 	private ObservableList<Order> tableViewOrdersObservableList;
 	// Observable List which will populate the TableView
 	private String orderGroup;
 	// Indicates which table in the database to search.
 
-	// store username and password for possible verification if switching between manager and staff screen
+	// store username and password for possible verification if switching
+	// between manager and staff screen
 	private String usernameStr;
 	private String passwordStr;
-	
+
 	@FXML
 	private Button switchToManageBtn;
 
@@ -287,16 +290,22 @@ public class StaffScreenController implements Initializable {
 		orderGroupComboBox.setItems(orderGroupComboBoxObsList);
 
 		searchPane.setDisable(true); // disable search by default
+		workStatus.setText("Welcome!");
 
 	}
 
 	// --------------------------- Current Order GUI Controls
 	// --------------------------------------
 
-	public void AddItemToOrder(ActionEvent event) {
-		currentItemToAdd = menuListView.getSelectionModel().getSelectedItem();
-		currentOrderObservableList.add(currentItemToAdd);
-		currentOrderListView.setItems(currentOrderObservableList);
+	public void addItemToOrder(ActionEvent event) {
+		if (menuListView.getSelectionModel().getSelectedItem() == null) {
+			workStatus.setText("Please click on an item from the menu before trying to add one.");
+		} else {
+			currentItemToAdd = menuListView.getSelectionModel().getSelectedItem();
+			currentOrderObservableList.add(currentItemToAdd);
+			currentOrderListView.setItems(currentOrderObservableList);
+			workStatus.setText("Item added");
+		}
 	}
 
 	public void clearOrderListView() {
@@ -305,12 +314,15 @@ public class StaffScreenController implements Initializable {
 		// clear the comments and set the CheckBox to null
 	}
 
-	public void RemoveItemFromOrder(ActionEvent event) {
-
-		currentItemToRemove = currentOrderListView.getSelectionModel().getSelectedItem();
-		currentOrderObservableList.remove(currentItemToRemove);
-		currentOrderListView.setItems(currentOrderObservableList);
-		// Deal with errors if nothing to remove
+	public void removeItemFromOrder(ActionEvent event) {
+		if (currentOrderListView.getSelectionModel().getSelectedItem() == null) {
+			workStatus.setText("Please click on an item before trying to remove it");
+		} else {
+			currentItemToRemove = currentOrderListView.getSelectionModel().getSelectedItem();
+			currentOrderObservableList.remove(currentItemToRemove);
+			currentOrderListView.setItems(currentOrderObservableList);
+			workStatus.setText("Item Removed");
+		}
 	}
 
 	// condense some of the following into smaller component methods to be
@@ -342,7 +354,7 @@ public class StaffScreenController implements Initializable {
 		// Display the order details in the edit panels
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
-		ArrayList<Food> arr1 = staffModel.RetrieveATableOrderFromDB(1);
+		ArrayList<Food> arr1 = staffModel.retrieveATableOrderFromDB(1);
 		currentOrderObservableList.addAll(arr1);
 		currentOrderListView.setItems(currentOrderObservableList);
 
@@ -390,7 +402,7 @@ public class StaffScreenController implements Initializable {
 		commentsTxt.setEditable(false);
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
-		ArrayList<Food> arr2 = staffModel.RetrieveATableOrderFromDB(2);
+		ArrayList<Food> arr2 = staffModel.retrieveATableOrderFromDB(2);
 		currentOrderObservableList.addAll(arr2);
 		currentOrderListView.setItems(currentOrderObservableList);
 		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
@@ -439,7 +451,7 @@ public class StaffScreenController implements Initializable {
 		commentsTxt.setEditable(false);
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
-		ArrayList<Food> arr3 = staffModel.RetrieveATableOrderFromDB(3);
+		ArrayList<Food> arr3 = staffModel.retrieveATableOrderFromDB(3);
 		currentOrderObservableList.addAll(arr3);
 		currentOrderListView.setItems(currentOrderObservableList);
 		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
@@ -486,7 +498,7 @@ public class StaffScreenController implements Initializable {
 		commentsTxt.setEditable(false);
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
-		ArrayList<Food> arr4 = staffModel.RetrieveATableOrderFromDB(4);
+		ArrayList<Food> arr4 = staffModel.retrieveATableOrderFromDB(4);
 		currentOrderObservableList.addAll(arr4);
 		currentOrderListView.setItems(currentOrderObservableList);
 		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
@@ -532,7 +544,7 @@ public class StaffScreenController implements Initializable {
 		commentsTxt.setEditable(false);
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
-		ArrayList<Food> arr5 = staffModel.RetrieveATableOrderFromDB(5);
+		ArrayList<Food> arr5 = staffModel.retrieveATableOrderFromDB(5);
 		currentOrderObservableList.addAll(arr5);
 		currentOrderListView.setItems(currentOrderObservableList);
 		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
@@ -579,7 +591,7 @@ public class StaffScreenController implements Initializable {
 		commentsTxt.setEditable(false);
 		lblCurrentTable.setText("Table " + currentTableNo);
 		clearOrderListView();
-		ArrayList<Food> arr6 = staffModel.RetrieveATableOrderFromDB(6);
+		ArrayList<Food> arr6 = staffModel.retrieveATableOrderFromDB(6);
 		currentOrderObservableList.addAll(arr6);
 		currentOrderListView.setItems(currentOrderObservableList);
 		timeLbl.setText(staffModel.getDateToDisplay(currentTableNo));
@@ -604,7 +616,7 @@ public class StaffScreenController implements Initializable {
 
 	}
 
-	public void SaveCurrentOrder() throws SQLException {
+	public void saveCurrentOrder() throws SQLException {
 		// save all the important variables
 		// DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		dateTimeOfCurrentOrder = new Date();
@@ -632,22 +644,27 @@ public class StaffScreenController implements Initializable {
 				commentsTxt.setText("");
 				clearOrderListView();
 				orderCompleteCheckBox.setSelected(false);
-				staffModel.DeleteCurrentOrderFromDB(currentTableNo);
-				saveActivityLog("Completed a working order and moved it to stored orders records. Table: " + currentTableNo);
+				staffModel.deleteCurrentOrderFromDB(currentTableNo);
+				saveActivityLog(
+						"Completed a working order and moved it to stored orders records. Table: " + currentTableNo);
+				workStatus.setText(
+						"You have successfully completed this order and moved it to the stored order records.");
 			} else {
 				alert.close();
+				workStatus.setText("Cancelled save");
 			}
 		} else {
 			isOrderCompleteString = "false";
-			staffModel.SaveCurrentOrderToDatabase(currentTableNo, currentOrderObservableList, orderTotalPrice,
+			staffModel.saveCurrentOrderToDatabase(currentTableNo, currentOrderObservableList, orderTotalPrice,
 					specialRequestsString, commentsString, isOrderCompleteString, dateTimeOfCurrentOrder);
 			System.out.println("Saved");
+			workStatus.setText("Saved/Updated an order.");
 			saveActivityLog("Created/Updated a working order: Table: " + currentTableNo);
 		}
 
 	}
 
-	public void DeleteCurrentOrder() {
+	public void deleteCurrentOrder() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Confirm Delete");
 		alert.setHeaderText("Are you sure? Deleting this order cannot be undone");
@@ -655,14 +672,15 @@ public class StaffScreenController implements Initializable {
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK) {
-			staffModel.DeleteCurrentOrderFromDB(currentTableNo);
+			staffModel.deleteCurrentOrderFromDB(currentTableNo);
 			// and clear the fields
 			timeLbl.setText("");
 			totalPriceLbl.setText("");
 			specialRequestsTxt.setText("");
 			commentsTxt.setText("");
 			clearOrderListView();
-			saveActivityLog("Deleted a working order: Table " + currentTableNo );
+			saveActivityLog("Deleted a working order: Table " + currentTableNo);
+			workStatus.setText("Order deleted");
 		} else {
 			alert.close();
 		}
@@ -683,16 +701,16 @@ public class StaffScreenController implements Initializable {
 		return total;
 	}
 
-	void GetUser(String user) {
+	void getUser(String user) {
 		lblUser.setText(user);
 	}
 
-	void StoreTemporaryCredentials(String user, String pw) {
+	void storeTemporaryCredentials(String user, String pw) {
 		usernameStr = user;
 		passwordStr = pw;
 	}
 
-	public void SwitchToManagerScreen(ActionEvent event) throws SQLException {
+	public void switchToManagerScreen(ActionEvent event) throws SQLException {
 		// verify current user if manager == true then allow access to manager
 		// screen
 		if (staffModel.verifyManagerLogin(usernameStr, passwordStr)) {
@@ -701,24 +719,26 @@ public class StaffScreenController implements Initializable {
 				Stage primaryStage = new Stage();
 				FXMLLoader loader = new FXMLLoader();
 				Pane root = loader.load(getClass().getResource("/application/ManagerScreen.fxml").openStream());
-				ManagerScreenController managerController = (ManagerScreenController)loader.getController();
-				managerController.GetUser(usernameStr);
-				managerController.StoreTemporaryCredentials(usernameStr, passwordStr);
+				ManagerScreenController managerController = (ManagerScreenController) loader.getController();
+				managerController.getUser(usernameStr);
+				managerController.storeTemporaryCredentials(usernameStr, passwordStr);
 				Scene scene = new Scene(root);
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				primaryStage.setScene(scene);
 				primaryStage.show();
-				
+
 			} catch (Exception e) {
 				System.err.println("Exception Caught");
 				e.printStackTrace();
 			}
 		} else {
 			System.out.println("You can't go there!");
+			workStatus.setText("You don't have manager level access privileges");
+			searchStatus.setText("You don't have manager level access privileges");
 		}
 	}
 
-	public void SignOut(ActionEvent event) {
+	public void signOut(ActionEvent event) {
 		try {
 			saveActivityLog("Logged out of system");
 			LoginController.currentUser = null;
@@ -730,7 +750,6 @@ public class StaffScreenController implements Initializable {
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
-			
 
 		} catch (Exception e) {
 			System.err.println("Exception Caught");
@@ -746,125 +765,149 @@ public class StaffScreenController implements Initializable {
 	}
 
 	public void searchForTableNum() {
-		try {
-			int tableNum = Integer.parseInt(searchTableNoTxt.getText());
-			if (tableNum < 7 || tableNum > 0) { // as long as the number is
-												// within
-												// bounds of our tables
-				orderGroup = orderGroupComboBox.getValue();
-				if (orderGroup.equals("Current Orders")) {
-					searchStatus.setText("Searching");
-					tableViewOrdersObservableList.clear();
-					tableViewOrdersObservableList.addAll(staffModel.searchByTableNo(orderGroup, tableNum));
-					orderTableView.setItems(tableViewOrdersObservableList);
-					searchStatus.setText("Results Found");
-				} else if (orderGroup.equals("Stored Orders")) {
-					searchStatus.setText("Searching");
-					tableViewOrdersObservableList.clear();
-					tableViewOrdersObservableList.addAll(staffModel.searchByTableNo(orderGroup, tableNum));
-					orderTableView.setItems(tableViewOrdersObservableList);
-					searchStatus.setText("Results Found");
+		if (searchTableNoTxt.getText().equals("") || searchTableNoTxt.getText().equals(null)) {
+			searchStatus.setText("Nothing to look for");
+		} else {
+			try {
+				int tableNum = Integer.parseInt(searchTableNoTxt.getText());
+				if (tableNum < 7 || tableNum > 0) { // as long as the number is
+													// within
+													// bounds of our tables
+					orderGroup = orderGroupComboBox.getValue();
+					if (orderGroup.equals("Current Orders")) {
+						searchStatus.setText("Searching");
+						tableViewOrdersObservableList.clear();
+						tableViewOrdersObservableList.addAll(staffModel.searchByTableNo(orderGroup, tableNum));
+						orderTableView.setItems(tableViewOrdersObservableList);
+						searchStatus.setText("Results Found");
+					} else if (orderGroup.equals("Stored Orders")) {
+						searchStatus.setText("Searching");
+						tableViewOrdersObservableList.clear();
+						tableViewOrdersObservableList.addAll(staffModel.searchByTableNo(orderGroup, tableNum));
+						orderTableView.setItems(tableViewOrdersObservableList);
+						searchStatus.setText("Results Found");
+					}
+				} else {
+					searchStatus.setText("Invalid table");
 				}
-			} else {
-				searchStatus.setText("Invalid table");
+			} catch (RuntimeException e) {
+				System.out.println("Most likely non numerical characters entered");
+				e.printStackTrace();
 			}
-		} catch (RuntimeException e) {
-			System.out.println("Most likely non numerical characters entered");
-			e.printStackTrace();
 		}
 	}
 
 	public void searchForFoodItem() {
 		// handle when there is no text or else it just returns everything
-		orderGroup = orderGroupComboBox.getValue();
-		String inputFoodString = searchFoodItemTxt.getText();
-		if (orderGroup.equals("Current Orders")) {
-			searchStatus.setText("Searching");
-			tableViewOrdersObservableList.clear();
-			tableViewOrdersObservableList.addAll(staffModel.searchByFoodItem(orderGroup, inputFoodString));
-			orderTableView.setItems(tableViewOrdersObservableList);
-			searchStatus.setText("Results Found");
-		} else if (orderGroup.equals("Stored Orders")) {
-			searchStatus.setText("Searching");
-			tableViewOrdersObservableList.clear();
-			tableViewOrdersObservableList.addAll(staffModel.searchByFoodItem(orderGroup, inputFoodString));
-			orderTableView.setItems(tableViewOrdersObservableList);
-			searchStatus.setText("Results Found");
-		} else {
+		if (searchFoodItemTxt.getText().equals("") || searchFoodItemTxt.getText().equals(null)) {
 			searchStatus.setText("Invalid entry");
-		}
-	}
-
-	public void searchForSpecialRequest() {
-		orderGroup = orderGroupComboBox.getValue();
-		String inputSpecialRequest = searchSpecialReqsTxt.getText();
-		if (orderGroup.equals("Current Orders")) {
-			searchStatus.setText("Searching");
-			tableViewOrdersObservableList.clear();
-			tableViewOrdersObservableList.addAll(staffModel.searchBySpecialRequest(orderGroup, inputSpecialRequest));
-			orderTableView.setItems(tableViewOrdersObservableList);
-			searchStatus.setText("Results Found");
-		} else if (orderGroup.equals("Stored Orders")) {
-			searchStatus.setText("Searching");
-			tableViewOrdersObservableList.clear();
-			tableViewOrdersObservableList.addAll(staffModel.searchBySpecialRequest(orderGroup, inputSpecialRequest));
-			orderTableView.setItems(tableViewOrdersObservableList);
-			searchStatus.setText("Results Found");
 		} else {
-			searchStatus.setText("Invalid entry");
-		}
-	}
-
-	public void searchForComment() {
-		orderGroup = orderGroupComboBox.getValue();
-		String inputComment = searchCommentsTxt.getText();
-		// System.out.println(inputComment);
-		if (orderGroup.equals("Current Orders")) {
-			searchStatus.setText("Searching");
-			tableViewOrdersObservableList.clear();
-			tableViewOrdersObservableList.addAll(staffModel.searchByComments(orderGroup, inputComment));
-			orderTableView.setItems(tableViewOrdersObservableList);
-			searchStatus.setText("Results Found");
-		} else if (orderGroup.equals("Stored Orders")) {
-			searchStatus.setText("Searching");
-			tableViewOrdersObservableList.clear();
-			tableViewOrdersObservableList.addAll(staffModel.searchByComments(orderGroup, inputComment));
-			orderTableView.setItems(tableViewOrdersObservableList);
-			searchStatus.setText("Results Found");
-		} else {
-			searchStatus.setText("Invalid entry");
-		}
-	}
-
-	public void searchByPrice() {
-		String inputPriceBeginStr = searchPriceBeginTxt.getText();
-		String inputPriceEndStr = searchPriceEndTxt.getText();
-		try {
 			orderGroup = orderGroupComboBox.getValue();
+			String inputFoodString = searchFoodItemTxt.getText();
 			if (orderGroup.equals("Current Orders")) {
-				Double inputPriceBegin = Double.parseDouble(inputPriceBeginStr);
-				Double inputPriceEnd = Double.parseDouble(inputPriceEndStr);
 				searchStatus.setText("Searching");
 				tableViewOrdersObservableList.clear();
-				tableViewOrdersObservableList
-						.addAll(staffModel.searchByPrice(orderGroup, inputPriceBegin, inputPriceEnd));
+				tableViewOrdersObservableList.addAll(staffModel.searchByFoodItem(orderGroup, inputFoodString));
 				orderTableView.setItems(tableViewOrdersObservableList);
 				searchStatus.setText("Results Found");
 			} else if (orderGroup.equals("Stored Orders")) {
-				Double inputPriceBegin = Double.parseDouble(inputPriceBeginStr);
-				Double inputPriceEnd = Double.parseDouble(inputPriceEndStr);
 				searchStatus.setText("Searching");
 				tableViewOrdersObservableList.clear();
-				tableViewOrdersObservableList
-						.addAll(staffModel.searchByPrice(orderGroup, inputPriceBegin, inputPriceEnd));
+				tableViewOrdersObservableList.addAll(staffModel.searchByFoodItem(orderGroup, inputFoodString));
 				orderTableView.setItems(tableViewOrdersObservableList);
 				searchStatus.setText("Results Found");
 			} else {
 				searchStatus.setText("Invalid entry");
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			searchStatus.setText("Invalid search");
+		}
+	}
+
+	public void searchForSpecialRequest() {
+		if (searchSpecialReqsTxt.getText().equals("") || searchSpecialReqsTxt.getText().equals(null)) {
+			searchStatus.setText("Nothing to look for");
+		} else {
+			orderGroup = orderGroupComboBox.getValue();
+			String inputSpecialRequest = searchSpecialReqsTxt.getText();
+			if (orderGroup.equals("Current Orders")) {
+				searchStatus.setText("Searching");
+				tableViewOrdersObservableList.clear();
+				tableViewOrdersObservableList
+						.addAll(staffModel.searchBySpecialRequest(orderGroup, inputSpecialRequest));
+				orderTableView.setItems(tableViewOrdersObservableList);
+				searchStatus.setText("Results Found");
+			} else if (orderGroup.equals("Stored Orders")) {
+				searchStatus.setText("Searching");
+				tableViewOrdersObservableList.clear();
+				tableViewOrdersObservableList
+						.addAll(staffModel.searchBySpecialRequest(orderGroup, inputSpecialRequest));
+				orderTableView.setItems(tableViewOrdersObservableList);
+				searchStatus.setText("Results Found");
+			} else {
+				searchStatus.setText("Invalid entry");
+			}
+		}
+	}
+
+	public void searchForComment() {
+		if (searchCommentsTxt.getText().equals("") || searchCommentsTxt.getText().equals(null)) {
+			searchStatus.setText("Nothing to look for");
+		} else {
+			orderGroup = orderGroupComboBox.getValue();
+			String inputComment = searchCommentsTxt.getText();
+			// System.out.println(inputComment);
+			if (orderGroup.equals("Current Orders")) {
+				searchStatus.setText("Searching");
+				tableViewOrdersObservableList.clear();
+				tableViewOrdersObservableList.addAll(staffModel.searchByComments(orderGroup, inputComment));
+				orderTableView.setItems(tableViewOrdersObservableList);
+				searchStatus.setText("Results Found");
+			} else if (orderGroup.equals("Stored Orders")) {
+				searchStatus.setText("Searching");
+				tableViewOrdersObservableList.clear();
+				tableViewOrdersObservableList.addAll(staffModel.searchByComments(orderGroup, inputComment));
+				orderTableView.setItems(tableViewOrdersObservableList);
+				searchStatus.setText("Results Found");
+			} else {
+				searchStatus.setText("Invalid entry");
+			}
+		}
+	}
+
+	public void searchByPrice() {
+		if (searchPriceBeginTxt.getText().equals("") || searchPriceBeginTxt.getText().equals(null)
+				|| searchPriceEndTxt.getText().equals("") || searchPriceEndTxt.getText().equals(null)) {
+			searchStatus.setText("Nothing to look for");
+		} else {
+
+			String inputPriceBeginStr = searchPriceBeginTxt.getText();
+			String inputPriceEndStr = searchPriceEndTxt.getText();
+			try {
+				orderGroup = orderGroupComboBox.getValue();
+				if (orderGroup.equals("Current Orders")) {
+					Double inputPriceBegin = Double.parseDouble(inputPriceBeginStr);
+					Double inputPriceEnd = Double.parseDouble(inputPriceEndStr);
+					searchStatus.setText("Searching");
+					tableViewOrdersObservableList.clear();
+					tableViewOrdersObservableList
+							.addAll(staffModel.searchByPrice(orderGroup, inputPriceBegin, inputPriceEnd));
+					orderTableView.setItems(tableViewOrdersObservableList);
+					searchStatus.setText("Results Found");
+				} else if (orderGroup.equals("Stored Orders")) {
+					Double inputPriceBegin = Double.parseDouble(inputPriceBeginStr);
+					Double inputPriceEnd = Double.parseDouble(inputPriceEndStr);
+					searchStatus.setText("Searching");
+					tableViewOrdersObservableList.clear();
+					tableViewOrdersObservableList
+							.addAll(staffModel.searchByPrice(orderGroup, inputPriceBegin, inputPriceEnd));
+					orderTableView.setItems(tableViewOrdersObservableList);
+					searchStatus.setText("Results Found");
+				} else {
+					searchStatus.setText("Invalid entry");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				searchStatus.setText("Invalid search");
+			}
 		}
 	}
 
@@ -880,14 +923,14 @@ public class StaffScreenController implements Initializable {
 					tableViewOrdersObservableList
 							.addAll(staffModel.searchByIfComplete(orderGroup, inputCompleteStatus));
 					orderTableView.setItems(tableViewOrdersObservableList);
-					searchStatus.setText("Results Found");
+					searchStatus.setText("Results found for incomplete orders");
 				} else if (orderGroup.equals("Stored Orders")) {
 					searchStatus.setText("Searching");
 					tableViewOrdersObservableList.clear();
 					tableViewOrdersObservableList
 							.addAll(staffModel.searchByIfComplete(orderGroup, inputCompleteStatus));
 					orderTableView.setItems(tableViewOrdersObservableList);
-					searchStatus.setText("Results Found");
+					searchStatus.setText("Results found for incomplete orders");
 				} else {
 					searchStatus.setText("Invalid entry");
 				}
@@ -906,14 +949,14 @@ public class StaffScreenController implements Initializable {
 					tableViewOrdersObservableList
 							.addAll(staffModel.searchByIfComplete(orderGroup, inputCompleteStatus));
 					orderTableView.setItems(tableViewOrdersObservableList);
-					searchStatus.setText("Results Found");
+					searchStatus.setText("Results found for completed orders");
 				} else if (orderGroup.equals("Stored Orders")) {
 					searchStatus.setText("Searching");
 					tableViewOrdersObservableList.clear();
 					tableViewOrdersObservableList
 							.addAll(staffModel.searchByIfComplete(orderGroup, inputCompleteStatus));
 					orderTableView.setItems(tableViewOrdersObservableList);
-					searchStatus.setText("Results Found");
+					searchStatus.setText("Results found for completed orders");
 				} else {
 					searchStatus.setText("Invalid entry");
 				}
@@ -946,38 +989,62 @@ public class StaffScreenController implements Initializable {
 	}
 
 	public void searchForTimeInterval() {
-		String startTimeHour = searchTimeBeginHourTxt.getText();
-		String startTimeMinute = searchTimeBeginMinuteTxt.getText();
-		String endTimeHour = searchTimeEndHourTxt.getText();
-		String endTimeMinute = searchTimeEndMinuteTxt.getText();
-		try {
-			orderGroup = orderGroupComboBox.getValue();
-			if (orderGroup.equals("Current Orders")) {
-				searchStatus.setText("Searching");
-				tableViewOrdersObservableList.clear();
-				tableViewOrdersObservableList.addAll(staffModel.searchByTime(orderGroup, startTimeHour, startTimeMinute,
-						endTimeHour, endTimeMinute));
-				orderTableView.setItems(tableViewOrdersObservableList);
-				searchStatus.setText("Results Found");
-			} else if (orderGroup.equals("Stored Orders")) {
-				searchStatus.setText("Searching");
-				tableViewOrdersObservableList.clear();
-				tableViewOrdersObservableList.addAll(staffModel.searchByTime(orderGroup, startTimeHour, startTimeMinute,
-						endTimeHour, endTimeMinute));
-				orderTableView.setItems(tableViewOrdersObservableList);
-				searchStatus.setText("Results Found");
-			} else {
-				searchStatus.setText("Invalid entry");
+		if (searchTimeBeginHourTxt.getText().equals("") || searchTimeBeginMinuteTxt.getText().equals("")
+				|| searchTimeEndHourTxt.getText().equals("") || searchTimeEndMinuteTxt.getText().equals("")) {
+			searchStatus.setText("Please fill all time fields in before searching.");
+		} else {
+			String startTimeHour = searchTimeBeginHourTxt.getText();
+			String startTimeMinute = searchTimeBeginMinuteTxt.getText();
+			String endTimeHour = searchTimeEndHourTxt.getText();
+			String endTimeMinute = searchTimeEndMinuteTxt.getText();
+			try {
+				orderGroup = orderGroupComboBox.getValue();
+				if (orderGroup.equals("Current Orders")) {
+					searchStatus.setText("Searching");
+					tableViewOrdersObservableList.clear();
+					tableViewOrdersObservableList.addAll(staffModel.searchByTime(orderGroup, startTimeHour,
+							startTimeMinute, endTimeHour, endTimeMinute));
+					orderTableView.setItems(tableViewOrdersObservableList);
+					searchStatus.setText("Results Found");
+				} else if (orderGroup.equals("Stored Orders")) {
+					searchStatus.setText("Searching");
+					tableViewOrdersObservableList.clear();
+					tableViewOrdersObservableList.addAll(staffModel.searchByTime(orderGroup, startTimeHour,
+							startTimeMinute, endTimeHour, endTimeMinute));
+					orderTableView.setItems(tableViewOrdersObservableList);
+					searchStatus.setText("Results Found");
+				} else {
+					searchStatus.setText("Invalid entry");
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				searchStatus.setText("Invalid Times Entered");
 			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			searchStatus.setText("Invalid Times");
 		}
 	}
 	
+	public void retrieveAllOrders() {
+		orderGroup = orderGroupComboBox.getValue();
+		if (orderGroup.equals("Current Orders")) {
+			searchStatus.setText("Searching");
+			tableViewOrdersObservableList.clear();
+			tableViewOrdersObservableList.addAll(staffModel.getAllOrders(orderGroup));
+			orderTableView.setItems(tableViewOrdersObservableList);
+			searchStatus.setText("Results Found");
+		} else if (orderGroup.equals("Stored Orders")) {
+			searchStatus.setText("Searching");
+			tableViewOrdersObservableList.clear();
+			tableViewOrdersObservableList.addAll(staffModel.getAllOrders(orderGroup));
+			orderTableView.setItems(tableViewOrdersObservableList);
+			searchStatus.setText("Results Found");
+		} else {
+			searchStatus.setText("Error");
+		}
+	}
+
 	// Activity recording
-	
+
 	public void saveActivityLog(String activity) {
 		Date timeObject = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

@@ -1,13 +1,10 @@
 package application;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -40,9 +37,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import com.opencsv.*; // this class makes use of the free openCSV parser 3rd party library from http://opencsv.sourceforge.net/ 
+
 public class ManagerScreenController implements Initializable {
 	
-	public ManagerScreenModel managerModel = new ManagerScreenModel();
+	private ManagerScreenModel managerModel = new ManagerScreenModel();
 	
 	// Hold login details of current user 
 	private String usernameStr;
@@ -286,7 +285,7 @@ public class ManagerScreenController implements Initializable {
 	}
 	
 	public void addNewStaffAccount() {
-		
+		try {
 		String newUsername = manageUsernameTxt.getText();
 		String newPassword = managePasswordTxt.getText();
 		int newStaffID = Integer.parseInt(manageStaffIdTxt.getText());
@@ -296,7 +295,7 @@ public class ManagerScreenController implements Initializable {
 		// check that the id is an int greater than 0
 		if (newUsername != "" && newPassword != "" && newStaffID > 0) {
 			System.out.println("Valid fields entered");
-			managerModel.AddStaffAccountIntoDB(newStaffID, newUsername, newPassword, managerLevel);
+			managerModel.addStaffAccountIntoDB(newStaffID, newUsername, newPassword, managerLevel);
 			staffTableViewObsList.clear();
 			staffTableViewObsList.addAll(managerModel.getAllEmployeesFromDB());
 			staffTableView.setItems(staffTableViewObsList);
@@ -306,9 +305,14 @@ public class ManagerScreenController implements Initializable {
 		} else {
 			manageStaffStatus.setText("Please fill all the fields before trying to add a new staff account");
 		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			manageStaffStatus.setText("Invalid staff fields entered");
+		}
 	}
 	
 	public void deletedSelectedAccount() {
+		try {
 		if  (staffTableView.getSelectionModel().getSelectedItem() == null ) { 
 			manageStaffStatus.setText("No staff account selected, please select a row from the table.");
 		} else {
@@ -317,7 +321,7 @@ public class ManagerScreenController implements Initializable {
 			String targetUser = staffToDelete.getUsername();
 			String targetPass = staffToDelete.getPassword();
 			String targetIsManager = staffToDelete.getIsManager();
-			managerModel.DeleteStaffAccountFromDB(targetID, targetUser, targetPass, targetIsManager);
+			managerModel.deleteStaffAccountFromDB(targetID, targetUser, targetPass, targetIsManager);
 			staffTableViewObsList.clear();
 			staffTableViewObsList.addAll(managerModel.getAllEmployeesFromDB());
 			staffTableView.setItems(staffTableViewObsList);
@@ -325,6 +329,10 @@ public class ManagerScreenController implements Initializable {
 			staffUsernameListView.setItems(staffTableViewObsList);
 			activityLogTableView.setItems(activityLogObsList);
 			manageStaffStatus.setText("Account removed");
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			manageStaffStatus.setText("Error encountered");
 		}
 	}
 	
@@ -337,7 +345,7 @@ public class ManagerScreenController implements Initializable {
 			Staff listViewSelectedStaff = staffUsernameListView.getSelectionModel().getSelectedItem();
 			String selectedStaffName = listViewSelectedStaff.getUsername();
 			activityLogObsList.clear();
-			activityLogObsList.addAll(managerModel.GetActivityLogForEmployee(selectedStaffName));
+			activityLogObsList.addAll(managerModel.getActivityLogForEmployee(selectedStaffName));
 			activitySearchStatus.setText(selectedStaffName + " activity log found");
 			
 		}
@@ -354,7 +362,7 @@ public class ManagerScreenController implements Initializable {
 			// negative double
 
 			if (newItemName != "" && newItemPrice > 0.0) {
-				managerModel.AddNewDishToMenuDB(newItemName, newItemPrice);
+				managerModel.addNewDishToMenuDB(newItemName, newItemPrice);
 				editableMenuObsList.clear();
 				editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
 				managerMenuListView.setItems(editableMenuObsList);
@@ -369,7 +377,7 @@ public class ManagerScreenController implements Initializable {
 		}
 	}
 	
-	public void DeleteDishFromMenu() {
+	public void deleteDishFromMenu() {
 		if (managerMenuListView.getSelectionModel().getSelectedItem() == null) {
 			manageMenuStatus.setText("No item was selected from the menu, please click a row from the list and"
 					+ " press delete again to remove it from the system");
@@ -377,7 +385,7 @@ public class ManagerScreenController implements Initializable {
 			Food foodToDelete = managerMenuListView.getSelectionModel().getSelectedItem();
 			String targetFoodName = foodToDelete.getMenuItemName();
 			Double targetFoodPrice = foodToDelete.getPrice();
-			managerModel.DeleteDishFromMenuDB(targetFoodName, targetFoodPrice);
+			managerModel.deleteDishFromMenuDB(targetFoodName, targetFoodPrice);
 			editableMenuObsList.clear();
 			editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
 			managerMenuListView.setItems(editableMenuObsList);
@@ -406,14 +414,18 @@ public class ManagerScreenController implements Initializable {
 				for (Order o : selectedOrders) {
 					// replace commas in order list with plus signs to separate food:price pairs 
 					// otherwise csv parsing will separate all order items
-					lineToWrite = o.getTableNo() + " , " + o.getOrderList().replaceAll(",", "/") + " , " + o.getTotalPrice() 
-					+ " , " + o.getDate() + " , " + o.getTime() + " , " + o.getSpecialRequests() 
-					+ " , " + o.getComments() + " , " + o.getCompleted() ; 
-					bw.write(lineToWrite);
+					// surround anything which may have commas with speech marks
+					lineToWrite = o.getTableNo() + "," + "\"" + o.getOrderList().trim().replaceAll("\\s","") + "\"" + "," + o.getTotalPrice() 
+					+ "," + o.getDate() + "," + o.getTime() + "," + "\"" + o.getSpecialRequests() + "\""
+					+ "," +  "\"" + o.getComments() + "\"" + "," + o.getCompleted() ; 
+					bw.write(lineToWrite); 
+					// The whitespace within the orders was confusing the excel csv parser
+					// System.out.println(lineToWrite.replaceAll("\\s",""));
 					bw.newLine(); // new line for next order
 				}
 				bw.close();
 				exportStatusTxt.setText("Selection of orders exported.");
+				saveActivityLog("Exported a list of orders as a CSV file.");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -425,8 +437,8 @@ public class ManagerScreenController implements Initializable {
 	
 	// Import Orders handling ============================================================
 	
-	public String turnCsvToString() {
-		String fileToString = null;
+	public void importCsvFormattedOrder() {
+		ArrayList<Order> csvFileOrders = new ArrayList<Order>();
 		FileChooser fc = new FileChooser();
 		FileChooser.ExtensionFilter exFilter = new FileChooser.ExtensionFilter("Comma separated value files ( .csv)",
 				"*.csv");
@@ -435,83 +447,74 @@ public class ManagerScreenController implements Initializable {
 		if (selectedFile == null) {
 			importStatusTxt.setText("Invalid file chosen.");
 		} else if (selectedFile.exists() && selectedFile.canRead()) {
-			importStatusTxt.setText("Selected " + selectedFile.getName() + " " + selectedFile.getAbsolutePath());
-			Reader reader;
+			CSVReader reader;
 			try {
-				reader = new FileReader(selectedFile);
-				BufferedReader br = new BufferedReader(reader);
-				StringBuilder sb = new StringBuilder(); // StringBuilder object to hold the file contents
-				String line = null;
-				while ((line = br.readLine()) != null) {
-					sb.append(line).append("~~~~~~~~~~~~~~~~~~~~"); // ~~~~ symbols marks the end of a line, each line encodes an order object
-					// so it will allow us to later split the one big string into several smaller ones each which can be fed into 
-					// an Order constructor method. // its extremely unlikely for someone to enter in that into system as an input in this context.
+				reader = new CSVReader(new FileReader(selectedFile));
+				String[] lineToRead;
+				while ((lineToRead = reader.readNext()) != null) {
+					int tableNoInput = Integer.parseInt(lineToRead[0].trim());
+					String orderListInput = lineToRead[1].replaceAll("\\+", ",");
+					String totalPriceInput = lineToRead[2];
+					String specReqsInput = lineToRead[5];
+					String commentsInput = lineToRead[6];
+					String dateInput = lineToRead[3];
+					String timeInput = lineToRead[4];
+					String isCompInput = lineToRead[7];
+					csvFileOrders.add(new Order(tableNoInput, orderListInput, totalPriceInput, specReqsInput, commentsInput,
+							isCompInput, dateInput, timeInput));
 				}
-				br.close();
-				
-				fileToString = sb.toString();
-
+				reader.close();
+				ordersForPossibleImport.clear();
+				ordersForPossibleImport.addAll(csvFileOrders);
+				importTableView.setItems(ordersForPossibleImport);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				importStatusTxt.setText("File not found error");
 			}
 		}
-		
-		return fileToString; 
 	}
 	
-	public void importCsvFormattedOrder() {
-		ArrayList<Order> csvFileOrders = new ArrayList<Order>();
-		String csvString = turnCsvToString();
-		//System.out.println(turnCsvToString()); 
-		// Components meaning each of the inputs, like TableNo etc, into Order() constructor
-		String[] orderComponentsStringArray = csvString.split("~~~~~~~~~~~~~~~~~~~~");
-		for (String s : orderComponentsStringArray) {
-			System.out.println(s);
-			// split up components mean we look at each components like TableNo individually
-			String[] splitUpComponents = s.split(",");
-			System.out.println("here");
-			// variables we will pass to an order constructor
-			int tableNoInput = Integer.parseInt(splitUpComponents[0].trim());
-			String orderListInput = splitUpComponents[1].replaceAll("\\+", ",");
-			String totalPriceInput = splitUpComponents[2];
-			String specReqsInput = splitUpComponents[3];
-			String commentsInput = splitUpComponents[4];
-			String dateInput = splitUpComponents[5];
-			String timeInput = splitUpComponents[6];
-			String isCompInput = splitUpComponents[7];
-			csvFileOrders.add(new Order(tableNoInput, orderListInput, totalPriceInput, specReqsInput, commentsInput,
-					isCompInput, dateInput, timeInput));
+	public void saveImportedCsvOrderToSystem() {
+		if (ordersForPossibleImport == null) {
+			importStatusTxt.setText("No CSV file has been imported into the system.");
+		} else {
+			// add imported orders to stored order table in database
+			managerModel.saveImportToDB(ordersForPossibleImport);
+			// clear the import table
+			ordersForPossibleImport.clear();
+			importTableView.setItems(ordersForPossibleImport);
+			// refresh the export table with all the orders
+			ordersForPossibleExport.clear();
+			ordersForPossibleExport.addAll(managerModel.getAllOrders());
+			exportTableView.setItems(ordersForPossibleExport);
+			importStatusTxt.setText("Order saved into the system");
+			saveActivityLog("Imported orders from a CSV file into the system ");
 		}
-		ordersForPossibleImport.clear();
-		ordersForPossibleImport.addAll(csvFileOrders);
-		importTableView.setItems(ordersForPossibleImport);;
-		
 	}
 	
 	// ======================= Log outs etc switching screens etc ========================
 	
-	void GetUser(String user) {
+	void getUser(String user) {
 		lblUser.setText(user);
 		//System.out.println(user);
 	}
 	
-	void StoreTemporaryCredentials(String user, String pw) {
+	void storeTemporaryCredentials(String user, String pw) {
 		usernameStr = user;
 		passwordStr = pw;
 	}
 	
 	// to allow manager to use staff screen no verification needed from this direction
-	public void SwitchToStaffScreen(ActionEvent event) {
+	public void switchToStaffScreen(ActionEvent event) {
 		try {
 			((Node)event.getSource()).getScene().getWindow().hide();
 			Stage primaryStage = new Stage();
 			FXMLLoader loader = new FXMLLoader();
 			Pane root = loader.load(getClass().getResource("/application/StaffScreen.fxml").openStream());
 			StaffScreenController staffController = (StaffScreenController)loader.getController();
-			staffController.GetUser(usernameStr);
-			staffController.StoreTemporaryCredentials(usernameStr, passwordStr);
+			staffController.getUser(usernameStr);
+			staffController.storeTemporaryCredentials(usernameStr, passwordStr);
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
@@ -522,7 +525,7 @@ public class ManagerScreenController implements Initializable {
 		}
 	}
 	
-	public void SignOut(ActionEvent event) {
+	public void signOut(ActionEvent event) {
 		try {
 			saveActivityLog("Logged out");
 			LoginController.currentUser = null; // no user logged in now
