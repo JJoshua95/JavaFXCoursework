@@ -287,22 +287,16 @@ public class StaffScreenController implements Initializable {
 		orderGroupComboBox.setItems(orderGroupComboBoxObsList);
 
 		searchPane.setDisable(true); // disable search by default
-		workStatus.setText("Welcome!");
 
 	}
 
 	// --------------------------- Current Order GUI Controls
 	// --------------------------------------
 
-	public void addItemToOrder(ActionEvent event) {
-		if (menuListView.getSelectionModel().getSelectedItem() == null) {
-			workStatus.setText("Please click on an item from the menu before trying to add one.");
-		} else {
+	public void AddItemToOrder(ActionEvent event) {
 		currentItemToAdd = menuListView.getSelectionModel().getSelectedItem();
 		currentOrderObservableList.add(currentItemToAdd);
 		currentOrderListView.setItems(currentOrderObservableList);
-		workStatus.setText("Item added");
-		}
 	}
 
 	public void clearOrderListView() {
@@ -311,15 +305,12 @@ public class StaffScreenController implements Initializable {
 		// clear the comments and set the CheckBox to null
 	}
 
-	public void removeItemFromOrder(ActionEvent event) {
-		if (currentOrderListView.getSelectionModel().getSelectedItem() == null) {
-			workStatus.setText("Please click on an item before trying to remove it");
-		} else {
+	public void RemoveItemFromOrder(ActionEvent event) {
+
 		currentItemToRemove = currentOrderListView.getSelectionModel().getSelectedItem();
 		currentOrderObservableList.remove(currentItemToRemove);
 		currentOrderListView.setItems(currentOrderObservableList);
-		workStatus.setText("Item Removed");
-		}
+		// Deal with errors if nothing to remove
 	}
 
 	// condense some of the following into smaller component methods to be
@@ -613,7 +604,7 @@ public class StaffScreenController implements Initializable {
 
 	}
 
-	public void saveCurrentOrder() throws SQLException {
+	public void SaveCurrentOrder() throws SQLException {
 		// save all the important variables
 		// DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		dateTimeOfCurrentOrder = new Date();
@@ -643,17 +634,14 @@ public class StaffScreenController implements Initializable {
 				orderCompleteCheckBox.setSelected(false);
 				staffModel.DeleteCurrentOrderFromDB(currentTableNo);
 				saveActivityLog("Completed a working order and moved it to stored orders records. Table: " + currentTableNo);
-				workStatus.setText("You have successfully completed this order and moved it to the stored order records.");
 			} else {
 				alert.close();
-				workStatus.setText("Cancelled save");
 			}
 		} else {
 			isOrderCompleteString = "false";
-			staffModel.saveCurrentOrderToDatabase(currentTableNo, currentOrderObservableList, orderTotalPrice,
+			staffModel.SaveCurrentOrderToDatabase(currentTableNo, currentOrderObservableList, orderTotalPrice,
 					specialRequestsString, commentsString, isOrderCompleteString, dateTimeOfCurrentOrder);
 			System.out.println("Saved");
-			workStatus.setText("Saved/Updated an order.");
 			saveActivityLog("Created/Updated a working order: Table: " + currentTableNo);
 		}
 
@@ -700,12 +688,12 @@ public class StaffScreenController implements Initializable {
 		lblUser.setText(user);
 	}
 
-	void storeTemporaryCredentials(String user, String pw) {
+	void StoreTemporaryCredentials(String user, String pw) {
 		usernameStr = user;
 		passwordStr = pw;
 	}
 
-	public void switchToManagerScreen(ActionEvent event) throws SQLException {
+	public void SwitchToManagerScreen(ActionEvent event) throws SQLException {
 		// verify current user if manager == true then allow access to manager
 		// screen
 		if (staffModel.verifyManagerLogin(usernameStr, passwordStr)) {
@@ -728,11 +716,10 @@ public class StaffScreenController implements Initializable {
 			}
 		} else {
 			System.out.println("You can't go there!");
-			workStatus.setText("You don't have manager level access privileges");
 		}
-	} 
+	}
 
-	public void signOut(ActionEvent event) {
+	public void SignOut(ActionEvent event) {
 		try {
 			saveActivityLog("Logged out of system");
 			LoginController.currentUser = null;

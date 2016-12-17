@@ -1,5 +1,5 @@
-1,"[Chicken:3.60,Chicken:3.60,Chicken:3.60]",10.8,14/12/2016,14:13:53,Hello,TestingloadfromDB,false
-2,"[Chicken:3.60,Beef:4.30,Chicken:3.60,Lamb:5.00]",16.5,13/11/2016,12:12:55,import,import,false
-3,"[Burger:5.00,Burger:5.00,Pizza:10.00,Pizza:10.00]",30,15/12/2016,22:44:54,Import test ,abcdef,false
-6,"[Lamb:5.00,Lamb:5.00,Lamb:5.00,Lamb:5.00]",20,15/12/2016,13:17:20,Import test,import,false
-4,"[Chicken:3.60,Chicken:3.60,Chicken:3.60,Chicken:3.60]",14.4,14/12/2016,17:08:43,test4,test4,false
+1,"[Chicken:3.60,Chicken:3.60,Chicken:3.60]",10.8,2016-12-14,14:13:53,"Hello","Testing load from DB",false
+2,"[Chicken:3.60,Beef:4.30,Chicken:3.60,Lamb:5.00]",16.5,null,null,"","",false
+3,"[Burger:5.00,Burger:5.00,Pizza:10.00,Pizza:10.00]",30.0,2016-12-15,22:44:54,"Testing menu managing","null",false
+6,"[Lamb:5.00,Lamb:5.00,Lamb:5.00,Lamb:5.00]",20.0,2016-12-15,13:17:20,"Added to test date search","",false
+4,"[Chicken:3.60,Chicken:3.60,Chicken:3.60,Chicken:3.60]",14.4,2016-12-14,17:08:43,"test 4","test 4",true

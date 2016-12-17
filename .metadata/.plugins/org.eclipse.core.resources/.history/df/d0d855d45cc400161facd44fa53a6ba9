@@ -405,10 +405,9 @@ public class ManagerScreenController implements Initializable {
 				for (Order o : selectedOrders) {
 					// replace commas in order list with plus signs to separate food:price pairs 
 					// otherwise csv parsing will separate all order items
-					// surround anything which may have commas with speech marks
-					lineToWrite = o.getTableNo() + "," + "\"" + o.getOrderList().trim().replaceAll("\\s","") + "\"" + "," + o.getTotalPrice() 
-					+ "," + o.getDate() + "," + o.getTime() + "," + "\"" + o.getSpecialRequests() + "\""
-					+ "," +  "\"" + o.getComments() + "\"" + "," + o.getCompleted() ; 
+					lineToWrite = o.getTableNo() + " , " + "\"" + o.getOrderList().trim().replaceAll("\\s","") + "\"" + " , " + o.getTotalPrice() 
+					+ " , " + o.getDate() + " , " + o.getTime() + " , " + o.getSpecialRequests() 
+					+ " , " + o.getComments() + " , " + o.getCompleted() ; 
 					bw.write(lineToWrite); 
 					// The whitespace within the orders was confusing the excel csv parser
 					// System.out.println(lineToWrite.replaceAll("\\s",""));
@@ -505,7 +504,7 @@ public class ManagerScreenController implements Initializable {
 			Pane root = loader.load(getClass().getResource("/application/StaffScreen.fxml").openStream());
 			StaffScreenController staffController = (StaffScreenController)loader.getController();
 			staffController.GetUser(usernameStr);
-			staffController.storeTemporaryCredentials(usernameStr, passwordStr);
+			staffController.StoreTemporaryCredentials(usernameStr, passwordStr);
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);

@@ -30,7 +30,7 @@ public class StaffScreenModel extends LoginModel {
 		}
 	}
 
-	void saveCurrentOrderToDatabase(int tableNum, ObservableList<Food> orderList, double totalBill, String specialReqs,
+	void SaveCurrentOrderToDatabase(int tableNum, ObservableList<Food> orderList, double totalBill, String specialReqs,
 			String comments, String isComplete, Date inDate) throws SQLException {
 
 		// String[] foodItemArr; // array to hold strings of the items in the

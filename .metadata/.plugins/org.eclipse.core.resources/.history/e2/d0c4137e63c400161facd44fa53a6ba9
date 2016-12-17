@@ -294,7 +294,7 @@ public class StaffScreenController implements Initializable {
 	// --------------------------- Current Order GUI Controls
 	// --------------------------------------
 
-	public void addItemToOrder(ActionEvent event) {
+	public void AddItemToOrder(ActionEvent event) {
 		if (menuListView.getSelectionModel().getSelectedItem() == null) {
 			workStatus.setText("Please click on an item from the menu before trying to add one.");
 		} else {
@@ -311,7 +311,7 @@ public class StaffScreenController implements Initializable {
 		// clear the comments and set the CheckBox to null
 	}
 
-	public void removeItemFromOrder(ActionEvent event) {
+	public void RemoveItemFromOrder(ActionEvent event) {
 		if (currentOrderListView.getSelectionModel().getSelectedItem() == null) {
 			workStatus.setText("Please click on an item before trying to remove it");
 		} else {
@@ -613,7 +613,7 @@ public class StaffScreenController implements Initializable {
 
 	}
 
-	public void saveCurrentOrder() throws SQLException {
+	public void SaveCurrentOrder() throws SQLException {
 		// save all the important variables
 		// DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		dateTimeOfCurrentOrder = new Date();
@@ -650,7 +650,7 @@ public class StaffScreenController implements Initializable {
 			}
 		} else {
 			isOrderCompleteString = "false";
-			staffModel.saveCurrentOrderToDatabase(currentTableNo, currentOrderObservableList, orderTotalPrice,
+			staffModel.SaveCurrentOrderToDatabase(currentTableNo, currentOrderObservableList, orderTotalPrice,
 					specialRequestsString, commentsString, isOrderCompleteString, dateTimeOfCurrentOrder);
 			System.out.println("Saved");
 			workStatus.setText("Saved/Updated an order.");

@@ -650,7 +650,7 @@ public class StaffScreenController implements Initializable {
 			}
 		} else {
 			isOrderCompleteString = "false";
-			staffModel.saveCurrentOrderToDatabase(currentTableNo, currentOrderObservableList, orderTotalPrice,
+			staffModel.SaveCurrentOrderToDatabase(currentTableNo, currentOrderObservableList, orderTotalPrice,
 					specialRequestsString, commentsString, isOrderCompleteString, dateTimeOfCurrentOrder);
 			System.out.println("Saved");
 			workStatus.setText("Saved/Updated an order.");

@@ -405,10 +405,9 @@ public class ManagerScreenController implements Initializable {
 				for (Order o : selectedOrders) {
 					// replace commas in order list with plus signs to separate food:price pairs 
 					// otherwise csv parsing will separate all order items
-					// surround anything which may have commas with speech marks
-					lineToWrite = o.getTableNo() + "," + "\"" + o.getOrderList().trim().replaceAll("\\s","") + "\"" + "," + o.getTotalPrice() 
-					+ "," + o.getDate() + "," + o.getTime() + "," + "\"" + o.getSpecialRequests() + "\""
-					+ "," +  "\"" + o.getComments() + "\"" + "," + o.getCompleted() ; 
+					lineToWrite = o.getTableNo() + " , " + "\"" + o.getOrderList().replaceAll("\\s","") + "\"" + " , " + o.getTotalPrice() 
+					+ " , " + o.getDate() + " , " + o.getTime() + " , " + o.getSpecialRequests() 
+					+ " , " + o.getComments() + " , " + o.getCompleted() ; 
 					bw.write(lineToWrite); 
 					// The whitespace within the orders was confusing the excel csv parser
 					// System.out.println(lineToWrite.replaceAll("\\s",""));
@@ -446,10 +445,10 @@ public class ManagerScreenController implements Initializable {
 					int tableNoInput = Integer.parseInt(lineToRead[0].trim());
 					String orderListInput = lineToRead[1].replaceAll("\\+", ",");
 					String totalPriceInput = lineToRead[2];
-					String specReqsInput = lineToRead[5];
-					String commentsInput = lineToRead[6];
-					String dateInput = lineToRead[3];
-					String timeInput = lineToRead[4];
+					String specReqsInput = lineToRead[3];
+					String commentsInput = lineToRead[4];
+					String dateInput = lineToRead[5];
+					String timeInput = lineToRead[6];
 					String isCompInput = lineToRead[7];
 					csvFileOrders.add(new Order(tableNoInput, orderListInput, totalPriceInput, specReqsInput, commentsInput,
 							isCompInput, dateInput, timeInput));
@@ -505,7 +504,7 @@ public class ManagerScreenController implements Initializable {
 			Pane root = loader.load(getClass().getResource("/application/StaffScreen.fxml").openStream());
 			StaffScreenController staffController = (StaffScreenController)loader.getController();
 			staffController.GetUser(usernameStr);
-			staffController.storeTemporaryCredentials(usernameStr, passwordStr);
+			staffController.StoreTemporaryCredentials(usernameStr, passwordStr);
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
