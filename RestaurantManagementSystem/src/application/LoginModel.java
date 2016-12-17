@@ -13,6 +13,12 @@ public class LoginModel {
 		}
 		
 		// Create tables if they don't exist
+		
+		initialiseStaffTable();
+		initOrdersTable();
+		initMenuTable();
+		initStoredOrdersTable();
+		initActivityLogTable() ;
 	}
 	
 	boolean isDbConnected() {
@@ -98,12 +104,103 @@ public class LoginModel {
 		} 
 	}
 	
-	/*
+	
 	void initialiseStaffTable() {
 		PreparedStatement prepStmt = null;
-		String query = "CREATE IF NOT EXISTS staff "
-				+ "( `username`	TEXT, `password' TEXT, `id`	INTEGER, `isManager' TEXT, PRIMARY KEY(`id`) )";
+		try {
+			String query = "CREATE TABLE IF NOT EXISTS 'staff' "
+					+ "( 'username'	TEXT, 'password' TEXT, 'id'	INTEGER, 'isManager' TEXT , PRIMARY KEY ('id') )";
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.execute();
+			prepStmt.close();
+			insertAdminAccount();
+			/*
+			if (ifNoTable == true) {
+				System.out.println("No table was found so we initialise it here with an admin account to fix anything : admin, password");
+				prepStmt.close();
+				// insert a row
+				insertAdminAccount();
+			} else {
+				System.out.println("staff table exists.");
+			}
+			*/
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	*/
+	
+	void insertAdminAccount() {
+		PreparedStatement prepStmt = null;
+		String query = "INSERT INTO staff (id, username, password, isManager) VALUES (99 , 'admin', 'password', 'true')";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.execute();
+			prepStmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	void initOrdersTable() {
+		PreparedStatement prepStmt = null;
+		String query = "CREATE TABLE IF NOT EXISTS 'orders' "
+				+ " ('tableNo' INTEGER, 'orderList' TEXT, 'totalPrice' REAL, 'comments' TEXT, 'specialRequests' TEXT, "
+				+ " 'isComplete' TEXT, 'date' TEXT, 'time' TEXT, PRIMARY KEY ('tableNo') ) ";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.execute();
+			prepStmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	void initMenuTable() {
+		PreparedStatement prepStmt = null;
+		String query = "CREATE TABLE IF NOT EXISTS 'menu' "
+				+ " ( 'menuItem' TEXT, 'price' REAL )";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.execute();
+			prepStmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	} 
+	
+	void initStoredOrdersTable() {
+		PreparedStatement prepStmt = null;
+		String query = "CREATE TABLE IF NOT EXISTS 'storedOrders' "
+				+ " ('tableNo' INTEGER, 'orderList' TEXT, 'totalPrice' REAL, 'comments' TEXT, 'specialRequests' TEXT, "
+				+ " 'isComplete' TEXT, 'date' TEXT, 'time' TEXT ) ";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.execute();
+			prepStmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	void initActivityLogTable() {
+		PreparedStatement prepStmt = null;
+		String query = "CREATE TABLE IF NOT EXISTS 'activityLog' "
+				+ " '( username' TEXT, 'activityEntry' TEXT, 'time' TEXT )";
+		try {
+			prepStmt = connection.prepareStatement(query);
+			prepStmt.execute();
+			prepStmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
 	
 }
