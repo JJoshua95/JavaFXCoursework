@@ -120,7 +120,7 @@ public class StaffScreenModel extends LoginModel {
 
 	}
 
-	ArrayList<Food> RetrieveATableOrderFromDB(int tableNoVal) throws SQLException {
+	ArrayList<Food> retrieveATableOrderFromDB(int tableNoVal) throws SQLException {
 		String targetOrder = null;
 		String[] stringOrderArray = null;
 		PreparedStatement prepStmt = null;
@@ -265,7 +265,7 @@ public class StaffScreenModel extends LoginModel {
 		return dateStringForLabel;
 	}
 
-	void DeleteCurrentOrderFromDB(int tableNum) {
+	void deleteCurrentOrderFromDB(int tableNum) {
 		PreparedStatement prepStmt = null;
 
 		String query = "DELETE FROM orders WHERE tableNo = ?";
@@ -679,6 +679,44 @@ public class StaffScreenModel extends LoginModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return targetOrders;
+	}
+	
+	ArrayList<Order> getAllOrders(String group) {
+		ArrayList<Order> targetOrders = new ArrayList<Order>();
+		PreparedStatement prepStmt = null;
+		ResultSet resSet = null;
+		try {
+			if (group.equals("Current Orders")) {
+				String query = "SELECT * FROM orders";
+				prepStmt = connection.prepareStatement(query);
+				resSet = prepStmt.executeQuery();
+				while (resSet.next()) {
+					targetOrders.add(new Order(resSet.getInt("tableNo"), resSet.getString("orderList"),
+							resSet.getString("totalPrice"), resSet.getString("specialRequests"),
+							resSet.getString("comments"), resSet.getString("isComplete"), resSet.getString("date"),
+							resSet.getString("time")));
+				}
+				prepStmt.close();
+				resSet.close();
+			} else {
+				String query = "SELECT * FROM storedOrders";
+				prepStmt = connection.prepareStatement(query);
+				resSet = prepStmt.executeQuery();
+				while (resSet.next()) {
+					targetOrders.add(new Order(resSet.getInt("tableNo"), resSet.getString("orderList"),
+							resSet.getString("totalPrice"), resSet.getString("specialRequests"),
+							resSet.getString("comments"), resSet.getString("isComplete"), resSet.getString("date"),
+							resSet.getString("time")));
+				}
+				prepStmt.close();
+				resSet.close();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return targetOrders;
 	}
 	

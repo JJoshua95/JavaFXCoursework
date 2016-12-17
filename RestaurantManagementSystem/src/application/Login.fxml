@@ -14,7 +14,7 @@
       <Label layoutX="170.0" layoutY="34.0" text="Welcome!" />
       <PasswordField fx:id="txtPassword" layoutX="117.0" layoutY="137.0" promptText="password" />
       <TextField fx:id="txtUsername" layoutX="118.0" layoutY="94.0" promptText="username" />
-      <Button layoutX="174.0" layoutY="214.0" mnemonicParsing="false" onAction="#Login" text="Login" />
+      <Button layoutX="174.0" layoutY="214.0" mnemonicParsing="false" onAction="#login" text="Login" />
       <Label fx:id="lblDatabaseStatus" alignment="CENTER_RIGHT" layoutX="124.0" layoutY="369.0" prefHeight="17.0" prefWidth="262.0" text="Waiting" textAlignment="RIGHT" textFill="#22da11" />
    </children>
 </AnchorPane>

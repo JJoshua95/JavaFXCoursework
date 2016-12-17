@@ -56,7 +56,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 		return targetStaff;
 	}
 	
-	void AddStaffAccountIntoDB(int id, String user, String pw, String managerVerified) {
+	void addStaffAccountIntoDB(int id, String user, String pw, String managerVerified) {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT OR REPLACE INTO staff (id, username, password, isManager) VALUES (?, ?, ?, ?)";
 		try {
@@ -73,7 +73,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 		}
 	}
 	
-	void DeleteStaffAccountFromDB(int id, String user, String pw, String managerVerified) {
+	void deleteStaffAccountFromDB(int id, String user, String pw, String managerVerified) {
 		PreparedStatement prepStmt = null;
 		String query = "DELETE FROM staff WHERE id = ? AND username = ? AND password = ? AND isManager = ?";
 		try {
@@ -90,7 +90,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 		}
 	}
 	
-	ArrayList<ActivityLog> GetActivityLogForEmployee(String user) {
+	ArrayList<ActivityLog> getActivityLogForEmployee(String user) {
 		ArrayList<ActivityLog> targetActivity = new ArrayList<ActivityLog>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -119,7 +119,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 	
 	// ========================= Menu queries ==================================
 	
-	void AddNewDishToMenuDB(String name, double cost) {
+	void addNewDishToMenuDB(String name, double cost) {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT OR REPLACE INTO menu (menuItem, price) VALUES (?, ?)";
 		
@@ -135,7 +135,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 		}
 	}
 	
-	void DeleteDishFromMenuDB(String name, double cost) {
+	void deleteDishFromMenuDB(String name, double cost) {
 		PreparedStatement prepStmt = null;
 		String query = "DELETE FROM menu WHERE menuItem = ? AND price = ?";
 		try {

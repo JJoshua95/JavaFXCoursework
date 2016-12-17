@@ -108,7 +108,7 @@
                               <Label text="Item:" GridPane.rowIndex="1" />
                               <Label text="Cost:" GridPane.rowIndex="2" />
                               <Button fx:id="addItemBtn" mnemonicParsing="false" onAction="#saveNewDishToMenu" prefHeight="27.0" prefWidth="143.0" text="Add Item" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Button fx:id="removeItemBtn" mnemonicParsing="false" onAction="#DeleteDishFromMenu" prefHeight="27.0" prefWidth="143.0" text="Remove" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Button fx:id="removeItemBtn" mnemonicParsing="false" onAction="#deleteDishFromMenu" prefHeight="27.0" prefWidth="143.0" text="Remove" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Label text="Remove item:" GridPane.rowIndex="4" />
                               <TextField fx:id="manageItemNameTxt" prefHeight="49.0" prefWidth="139.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <TextField fx:id="manageItemCostTxt" prefHeight="52.0" prefWidth="139.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -161,15 +161,15 @@
                         </TableView>
                         <Button fx:id="importCsvBtn" layoutX="87.0" layoutY="47.0" mnemonicParsing="false" onAction="#importCsvFormattedOrder" text="Import CSV file" />
                         <TextArea fx:id="importStatusTxt" editable="false" layoutX="43.0" layoutY="252.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
-                        <Button fx:id="saveImportToDbBtn" layoutX="70.0" layoutY="149.0" mnemonicParsing="false" onAction="#SaveImportedCsvOrderToSystem" text="Save imported Order" />
+                        <Button fx:id="saveImportToDbBtn" layoutX="70.0" layoutY="149.0" mnemonicParsing="false" onAction="#saveImportedCsvOrderToSystem" text="Save imported Order" />
                      </children>
                   </AnchorPane>
               </content>
             </Tab>
         </tabs>
       </TabPane>
-      <Button layoutX="10.0" layoutY="8.0" mnemonicParsing="false" onAction="#SignOut" text="Sign Out" textFill="RED" />
+      <Button layoutX="10.0" layoutY="8.0" mnemonicParsing="false" onAction="#signOut" text="Sign Out" textFill="RED" />
       <Label fx:id="lblUser" alignment="CENTER_RIGHT" layoutX="1057.0" layoutY="6.0" prefHeight="27.0" prefWidth="128.0" text="Username Label" textFill="#323232" />
-      <Button fx:id="switchToStaffBtn" layoutX="92.0" layoutY="8.0" mnemonicParsing="false" onAction="#SwitchToStaffScreen" text="Staff Screen" />
+      <Button fx:id="switchToStaffBtn" layoutX="92.0" layoutY="8.0" mnemonicParsing="false" onAction="#switchToStaffScreen" text="Staff Screen" />
    </children>
 </AnchorPane>

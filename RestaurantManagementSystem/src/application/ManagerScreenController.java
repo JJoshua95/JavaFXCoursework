@@ -285,7 +285,7 @@ public class ManagerScreenController implements Initializable {
 	}
 	
 	public void addNewStaffAccount() {
-		
+		try {
 		String newUsername = manageUsernameTxt.getText();
 		String newPassword = managePasswordTxt.getText();
 		int newStaffID = Integer.parseInt(manageStaffIdTxt.getText());
@@ -295,7 +295,7 @@ public class ManagerScreenController implements Initializable {
 		// check that the id is an int greater than 0
 		if (newUsername != "" && newPassword != "" && newStaffID > 0) {
 			System.out.println("Valid fields entered");
-			managerModel.AddStaffAccountIntoDB(newStaffID, newUsername, newPassword, managerLevel);
+			managerModel.addStaffAccountIntoDB(newStaffID, newUsername, newPassword, managerLevel);
 			staffTableViewObsList.clear();
 			staffTableViewObsList.addAll(managerModel.getAllEmployeesFromDB());
 			staffTableView.setItems(staffTableViewObsList);
@@ -305,9 +305,14 @@ public class ManagerScreenController implements Initializable {
 		} else {
 			manageStaffStatus.setText("Please fill all the fields before trying to add a new staff account");
 		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			manageStaffStatus.setText("Invalid staff fields entered");
+		}
 	}
 	
 	public void deletedSelectedAccount() {
+		try {
 		if  (staffTableView.getSelectionModel().getSelectedItem() == null ) { 
 			manageStaffStatus.setText("No staff account selected, please select a row from the table.");
 		} else {
@@ -316,7 +321,7 @@ public class ManagerScreenController implements Initializable {
 			String targetUser = staffToDelete.getUsername();
 			String targetPass = staffToDelete.getPassword();
 			String targetIsManager = staffToDelete.getIsManager();
-			managerModel.DeleteStaffAccountFromDB(targetID, targetUser, targetPass, targetIsManager);
+			managerModel.deleteStaffAccountFromDB(targetID, targetUser, targetPass, targetIsManager);
 			staffTableViewObsList.clear();
 			staffTableViewObsList.addAll(managerModel.getAllEmployeesFromDB());
 			staffTableView.setItems(staffTableViewObsList);
@@ -324,6 +329,10 @@ public class ManagerScreenController implements Initializable {
 			staffUsernameListView.setItems(staffTableViewObsList);
 			activityLogTableView.setItems(activityLogObsList);
 			manageStaffStatus.setText("Account removed");
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			manageStaffStatus.setText("Error encountered");
 		}
 	}
 	
@@ -336,7 +345,7 @@ public class ManagerScreenController implements Initializable {
 			Staff listViewSelectedStaff = staffUsernameListView.getSelectionModel().getSelectedItem();
 			String selectedStaffName = listViewSelectedStaff.getUsername();
 			activityLogObsList.clear();
-			activityLogObsList.addAll(managerModel.GetActivityLogForEmployee(selectedStaffName));
+			activityLogObsList.addAll(managerModel.getActivityLogForEmployee(selectedStaffName));
 			activitySearchStatus.setText(selectedStaffName + " activity log found");
 			
 		}
@@ -353,7 +362,7 @@ public class ManagerScreenController implements Initializable {
 			// negative double
 
 			if (newItemName != "" && newItemPrice > 0.0) {
-				managerModel.AddNewDishToMenuDB(newItemName, newItemPrice);
+				managerModel.addNewDishToMenuDB(newItemName, newItemPrice);
 				editableMenuObsList.clear();
 				editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
 				managerMenuListView.setItems(editableMenuObsList);
@@ -368,7 +377,7 @@ public class ManagerScreenController implements Initializable {
 		}
 	}
 	
-	public void DeleteDishFromMenu() {
+	public void deleteDishFromMenu() {
 		if (managerMenuListView.getSelectionModel().getSelectedItem() == null) {
 			manageMenuStatus.setText("No item was selected from the menu, please click a row from the list and"
 					+ " press delete again to remove it from the system");
@@ -376,7 +385,7 @@ public class ManagerScreenController implements Initializable {
 			Food foodToDelete = managerMenuListView.getSelectionModel().getSelectedItem();
 			String targetFoodName = foodToDelete.getMenuItemName();
 			Double targetFoodPrice = foodToDelete.getPrice();
-			managerModel.DeleteDishFromMenuDB(targetFoodName, targetFoodPrice);
+			managerModel.deleteDishFromMenuDB(targetFoodName, targetFoodPrice);
 			editableMenuObsList.clear();
 			editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
 			managerMenuListView.setItems(editableMenuObsList);
@@ -466,7 +475,7 @@ public class ManagerScreenController implements Initializable {
 		}
 	}
 	
-	public void SaveImportedCsvOrderToSystem() {
+	public void saveImportedCsvOrderToSystem() {
 		if (ordersForPossibleImport == null) {
 			importStatusTxt.setText("No CSV file has been imported into the system.");
 		} else {
@@ -486,25 +495,25 @@ public class ManagerScreenController implements Initializable {
 	
 	// ======================= Log outs etc switching screens etc ========================
 	
-	void GetUser(String user) {
+	void getUser(String user) {
 		lblUser.setText(user);
 		//System.out.println(user);
 	}
 	
-	void StoreTemporaryCredentials(String user, String pw) {
+	void storeTemporaryCredentials(String user, String pw) {
 		usernameStr = user;
 		passwordStr = pw;
 	}
 	
 	// to allow manager to use staff screen no verification needed from this direction
-	public void SwitchToStaffScreen(ActionEvent event) {
+	public void switchToStaffScreen(ActionEvent event) {
 		try {
 			((Node)event.getSource()).getScene().getWindow().hide();
 			Stage primaryStage = new Stage();
 			FXMLLoader loader = new FXMLLoader();
 			Pane root = loader.load(getClass().getResource("/application/StaffScreen.fxml").openStream());
 			StaffScreenController staffController = (StaffScreenController)loader.getController();
-			staffController.GetUser(usernameStr);
+			staffController.getUser(usernameStr);
 			staffController.storeTemporaryCredentials(usernameStr, passwordStr);
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -516,7 +525,7 @@ public class ManagerScreenController implements Initializable {
 		}
 	}
 	
-	public void SignOut(ActionEvent event) {
+	public void signOut(ActionEvent event) {
 		try {
 			saveActivityLog("Logged out");
 			LoginController.currentUser = null; // no user logged in now
