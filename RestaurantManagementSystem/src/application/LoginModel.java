@@ -141,6 +141,7 @@ public class LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("Most Likely the admin account has already been inserted and cannot be overwritten");
 		} 
 	}
 	
@@ -191,7 +192,7 @@ public class LoginModel {
 	void initActivityLogTable() {
 		PreparedStatement prepStmt = null;
 		String query = "CREATE TABLE IF NOT EXISTS 'activityLog' "
-				+ " '( username' TEXT, 'activityEntry' TEXT, 'time' TEXT )";
+				+ "( 'username' TEXT, 'activityEntry' TEXT, 'time' TEXT )";
 		try {
 			prepStmt = connection.prepareStatement(query);
 			prepStmt.execute();
@@ -201,6 +202,4 @@ public class LoginModel {
 			e.printStackTrace();
 		} 
 	}
-	
-	
 }
