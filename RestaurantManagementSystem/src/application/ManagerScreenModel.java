@@ -3,6 +3,8 @@ package application;
 import java.sql.*;
 import java.util.ArrayList;
 
+import javafx.collections.ObservableList;
+
 public class ManagerScreenModel extends StaffScreenModel {
 	
 	private Connection connection;
@@ -198,5 +200,30 @@ public class ManagerScreenModel extends StaffScreenModel {
 	}
 	
 	// Import Queries =========================================================
+	
+	void saveImportToDB(ObservableList<Order> csvImport) {
+		try {
+			for (Order o : csvImport) {
+				PreparedStatement prepStmt = null;
+				String query = "INSERT INTO storedOrders (tableNo, orderList, totalPrice, specialRequests, comments, isComplete,"
+						+ " date, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				prepStmt = connection.prepareStatement(query);
+				prepStmt.setInt(1, o.getTableNo());
+				prepStmt.setString(2, o.getOrderList());
+				prepStmt.setDouble(3, Double.parseDouble(o.getTotalPrice()));
+				prepStmt.setString(4, o.getSpecialRequests());
+				prepStmt.setString(5, o.getComments());
+				prepStmt.setString(6, o.getCompleted());
+				prepStmt.setString(7, o.getDate());
+				prepStmt.setString(8, o.getTime());
+				prepStmt.execute();
+				prepStmt.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 }

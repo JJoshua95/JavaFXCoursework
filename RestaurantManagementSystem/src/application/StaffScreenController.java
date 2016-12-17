@@ -42,7 +42,7 @@ import javafx.util.Callback;
 
 public class StaffScreenController implements Initializable {
 
-	public StaffScreenModel staffModel = new StaffScreenModel();
+	private StaffScreenModel staffModel = new StaffScreenModel();
 	
 	// UI Components
 	@FXML

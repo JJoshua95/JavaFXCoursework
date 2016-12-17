@@ -1,12 +1,10 @@
 package application;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -39,9 +37,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import com.opencsv.*; // this class makes use of the free openCSV parser 3rd party library from http://opencsv.sourceforge.net/ 
+
 public class ManagerScreenController implements Initializable {
 	
-	public ManagerScreenModel managerModel = new ManagerScreenModel();
+	private ManagerScreenModel managerModel = new ManagerScreenModel();
 	
 	// Hold login details of current user 
 	private String usernameStr;
@@ -405,14 +405,17 @@ public class ManagerScreenController implements Initializable {
 				for (Order o : selectedOrders) {
 					// replace commas in order list with plus signs to separate food:price pairs 
 					// otherwise csv parsing will separate all order items
-					lineToWrite = o.getTableNo() + " , " + o.getOrderList().replaceAll(",", "/") + " , " + o.getTotalPrice() 
+					lineToWrite = o.getTableNo() + " , " + "\"" + o.getOrderList().replaceAll("\\s","") + "\"" + " , " + o.getTotalPrice() 
 					+ " , " + o.getDate() + " , " + o.getTime() + " , " + o.getSpecialRequests() 
 					+ " , " + o.getComments() + " , " + o.getCompleted() ; 
-					bw.write(lineToWrite);
+					bw.write(lineToWrite); 
+					// The whitespace within the orders was confusing the excel csv parser
+					// System.out.println(lineToWrite.replaceAll("\\s",""));
 					bw.newLine(); // new line for next order
 				}
 				bw.close();
 				exportStatusTxt.setText("Selection of orders exported.");
+				saveActivityLog("Exported a list of orders as a CSV file.");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -424,8 +427,8 @@ public class ManagerScreenController implements Initializable {
 	
 	// Import Orders handling ============================================================
 	
-	public String turnCsvToString() {
-		String fileToString = null;
+	public void importCsvFormattedOrder() {
+		ArrayList<Order> csvFileOrders = new ArrayList<Order>();
 		FileChooser fc = new FileChooser();
 		FileChooser.ExtensionFilter exFilter = new FileChooser.ExtensionFilter("Comma separated value files ( .csv)",
 				"*.csv");
@@ -434,62 +437,50 @@ public class ManagerScreenController implements Initializable {
 		if (selectedFile == null) {
 			importStatusTxt.setText("Invalid file chosen.");
 		} else if (selectedFile.exists() && selectedFile.canRead()) {
-			importStatusTxt.setText("Selected " + selectedFile.getName() + " " + selectedFile.getAbsolutePath());
-			Reader reader;
+			CSVReader reader;
 			try {
-				reader = new FileReader(selectedFile);
-				BufferedReader br = new BufferedReader(reader);
-				StringBuilder sb = new StringBuilder(); // StringBuilder object to hold the file contents
-				String line = null;
-				while ((line = br.readLine()) != null) {
-					sb.append(line).append("~~~~~~~~~~~~~~~~~~~~"); // ~~~~ symbols marks the end of a line, each line encodes an order object
-					// so it will allow us to later split the one big string into several smaller ones each which can be fed into 
-					// an Order constructor method. // its extremely unlikely for someone to enter in that into system as an input in this context.
+				reader = new CSVReader(new FileReader(selectedFile));
+				String[] lineToRead;
+				while ((lineToRead = reader.readNext()) != null) {
+					int tableNoInput = Integer.parseInt(lineToRead[0].trim());
+					String orderListInput = lineToRead[1].replaceAll("\\+", ",");
+					String totalPriceInput = lineToRead[2];
+					String specReqsInput = lineToRead[3];
+					String commentsInput = lineToRead[4];
+					String dateInput = lineToRead[5];
+					String timeInput = lineToRead[6];
+					String isCompInput = lineToRead[7];
+					csvFileOrders.add(new Order(tableNoInput, orderListInput, totalPriceInput, specReqsInput, commentsInput,
+							isCompInput, dateInput, timeInput));
 				}
-				br.close();
-				
-				fileToString = sb.toString();
-
+				reader.close();
+				ordersForPossibleImport.clear();
+				ordersForPossibleImport.addAll(csvFileOrders);
+				importTableView.setItems(ordersForPossibleImport);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				importStatusTxt.setText("File not found error");
 			}
 		}
-		
-		return fileToString; 
 	}
 	
-	public void importCsvFormattedOrder() {
-		ArrayList<Order> csvFileOrders = new ArrayList<Order>();
-		String csvString = turnCsvToString();
-		//System.out.println(turnCsvToString()); 
-		// Components meaning each of the inputs, like TableNo etc, into Order() constructor
-		String[] orderComponentsStringArray = csvString.split("~~~~~~~~~~~~~~~~~~~~");
-		for (String s : orderComponentsStringArray) {
-			// System.out.println(s);
-			// split up components mean we look at each components like TableNo individually
-			String[] splitUpComponents = s.split(",");
-			// variables we will pass to an order constructor
-			int tableNoInput = Integer.parseInt(splitUpComponents[0].trim());
-			String orderListInput = splitUpComponents[1].replaceAll("\\+", ",");
-			String totalPriceInput = splitUpComponents[2];
-			String specReqsInput = splitUpComponents[3];
-			String commentsInput = splitUpComponents[4];
-			String dateInput = splitUpComponents[5];
-			String timeInput = splitUpComponents[6];
-			String isCompInput = splitUpComponents[7];
-			csvFileOrders.add(new Order(tableNoInput, orderListInput, totalPriceInput, specReqsInput, commentsInput,
-					isCompInput, dateInput, timeInput));
+	public void SaveImportedCsvOrderToSystem() {
+		if (ordersForPossibleImport == null) {
+			importStatusTxt.setText("No CSV file has been imported into the system.");
+		} else {
+			// add imported orders to stored order table in database
+			managerModel.saveImportToDB(ordersForPossibleImport);
+			// clear the import table
+			ordersForPossibleImport.clear();
+			importTableView.setItems(ordersForPossibleImport);
+			// refresh the export table with all the orders
+			ordersForPossibleExport.clear();
+			ordersForPossibleExport.addAll(managerModel.getAllOrders());
+			exportTableView.setItems(ordersForPossibleExport);
+			importStatusTxt.setText("Order saved into the system");
+			saveActivityLog("Imported orders from a CSV file into the system ");
 		}
-		
-		ordersForPossibleImport.clear();
-		ordersForPossibleImport.addAll(csvFileOrders);
-		importTableView.setItems(ordersForPossibleImport);;
-	}
-	
-	public void saveImportedCsvOrderToSystem() {
-		
 	}
 	
 	// ======================= Log outs etc switching screens etc ========================
