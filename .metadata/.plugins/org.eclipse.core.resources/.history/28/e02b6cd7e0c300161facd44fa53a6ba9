@@ -197,6 +197,4 @@ public class ManagerScreenModel extends StaffScreenModel {
 		return targetOrders;
 	}
 	
-	// Import Queries =========================================================
-	
 }

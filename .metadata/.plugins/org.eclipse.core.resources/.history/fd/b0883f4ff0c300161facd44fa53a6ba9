@@ -12,7 +12,6 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -406,7 +405,7 @@ public class ManagerScreenController implements Initializable {
 				for (Order o : selectedOrders) {
 					// replace commas in order list with plus signs to separate food:price pairs 
 					// otherwise csv parsing will separate all order items
-					lineToWrite = o.getTableNo() + " , " + o.getOrderList().replaceAll(",", "/") + " , " + o.getTotalPrice() 
+					lineToWrite = o.getTableNo() + " , " + o.getOrderList().replaceAll(",", "+") + " , " + o.getTotalPrice() 
 					+ " , " + o.getDate() + " , " + o.getTime() + " , " + o.getSpecialRequests() 
 					+ " , " + o.getComments() + " , " + o.getCompleted() ; 
 					bw.write(lineToWrite);
@@ -462,7 +461,6 @@ public class ManagerScreenController implements Initializable {
 	}
 	
 	public void importCsvFormattedOrder() {
-		ArrayList<Order> csvFileOrders = new ArrayList<Order>();
 		String csvString = turnCsvToString();
 		//System.out.println(turnCsvToString()); 
 		// Components meaning each of the inputs, like TableNo etc, into Order() constructor
@@ -471,23 +469,17 @@ public class ManagerScreenController implements Initializable {
 			System.out.println(s);
 			// split up components mean we look at each components like TableNo individually
 			String[] splitUpComponents = s.split(",");
-			System.out.println("here");
 			// variables we will pass to an order constructor
-			int tableNoInput = Integer.parseInt(splitUpComponents[0].trim());
-			String orderListInput = splitUpComponents[1].replaceAll("\\+", ",");
+			int tableNoInput = Integer.parseInt(splitUpComponents[0]);
+			String orderListInput = splitUpComponents[1].replaceAll("+", ",");
 			String totalPriceInput = splitUpComponents[2];
 			String specReqsInput = splitUpComponents[3];
 			String commentsInput = splitUpComponents[4];
 			String dateInput = splitUpComponents[5];
 			String timeInput = splitUpComponents[6];
 			String isCompInput = splitUpComponents[7];
-			csvFileOrders.add(new Order(tableNoInput, orderListInput, totalPriceInput, specReqsInput, commentsInput,
-					isCompInput, dateInput, timeInput));
+			
 		}
-		ordersForPossibleImport.clear();
-		ordersForPossibleImport.addAll(csvFileOrders);
-		importTableView.setItems(ordersForPossibleImport);;
-		
 	}
 	
 	// ======================= Log outs etc switching screens etc ========================

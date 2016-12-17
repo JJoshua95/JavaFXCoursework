@@ -157,9 +157,9 @@
                               <TableColumn fx:id="importCompletedCol" prefWidth="108.0" text="Completed" />
                            </columns>
                         </TableView>
-                        <Button fx:id="importCsvBtn" layoutX="87.0" layoutY="47.0" mnemonicParsing="false" text="Import CSV file" />
+                        <Button fx:id="importCsvBtn" layoutX="87.0" layoutY="47.0" mnemonicParsing="false" onAction="#importCsvFormattedOrder" text="Import CSV file" />
                         <TextArea fx:id="importStatusTxt" editable="false" layoutX="43.0" layoutY="252.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
-                        <Button layoutX="70.0" layoutY="149.0" mnemonicParsing="false" text="Save imported Order" />
+                        <Button fx:id="saveImportToDbBtn" layoutX="70.0" layoutY="149.0" mnemonicParsing="false" text="Save imported Order" />
                      </children>
                   </AnchorPane>
               </content>

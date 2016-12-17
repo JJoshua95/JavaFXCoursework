@@ -12,7 +12,6 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -141,7 +140,6 @@ public class ManagerScreenController implements Initializable {
 	private ObservableList<Order> ordersForPossibleExport; // all the stored and current orders from database (can export anything)
 	
 	// Import Orders Variables ======================================================================
-	private ObservableList<Order> ordersForPossibleImport; // array to hold orders from a csv file, can be saved in stored orders 
 	
 	@FXML
 	private TableView<Order> importTableView;
@@ -263,18 +261,6 @@ public class ManagerScreenController implements Initializable {
 		exportTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // can select multiple rows
 		ordersForPossibleExport.addAll(managerModel.getAllOrders());
 		exportTableView.setItems(ordersForPossibleExport);
-		
-		// set up import table
-		
-		ordersForPossibleImport = FXCollections.observableArrayList();
-		importTableNoCol.setCellValueFactory(new PropertyValueFactory<Order, String>("tableNo"));
-		importOrderListCol.setCellValueFactory(new PropertyValueFactory<Order, String>("orderList"));
-		importTotalBillCol.setCellValueFactory(new PropertyValueFactory<Order, String>("totalPrice"));
-		importSpecialReqsCol.setCellValueFactory(new PropertyValueFactory<Order, String>("specialRequests"));
-		importCommentsCol.setCellValueFactory(new PropertyValueFactory<Order, String>("comments"));
-		importCompletedCol.setCellValueFactory(new PropertyValueFactory<Order, String>("completed"));
-		importDateCol.setCellValueFactory(new PropertyValueFactory<Order, String>("date"));
-		importTimeCol.setCellValueFactory(new PropertyValueFactory<Order, String>("time"));
 		
 	}
 		
@@ -406,7 +392,7 @@ public class ManagerScreenController implements Initializable {
 				for (Order o : selectedOrders) {
 					// replace commas in order list with plus signs to separate food:price pairs 
 					// otherwise csv parsing will separate all order items
-					lineToWrite = o.getTableNo() + " , " + o.getOrderList().replaceAll(",", "/") + " , " + o.getTotalPrice() 
+					lineToWrite = o.getTableNo() + " , " + o.getOrderList().replaceAll(",", "+") + " , " + o.getTotalPrice() 
 					+ " , " + o.getDate() + " , " + o.getTime() + " , " + o.getSpecialRequests() 
 					+ " , " + o.getComments() + " , " + o.getCompleted() ; 
 					bw.write(lineToWrite);
@@ -443,9 +429,7 @@ public class ManagerScreenController implements Initializable {
 				StringBuilder sb = new StringBuilder(); // StringBuilder object to hold the file contents
 				String line = null;
 				while ((line = br.readLine()) != null) {
-					sb.append(line).append("~~~~~~~~~~~~~~~~~~~~"); // ~~~~ symbols marks the end of a line, each line encodes an order object
-					// so it will allow us to later split the one big string into several smaller ones each which can be fed into 
-					// an Order constructor method. // its extremely unlikely for someone to enter in that into system as an input in this context.
+					sb.append(line).append("|"); // | symbol marks the end of a line, each line encodes an order object
 				}
 				br.close();
 				
@@ -462,32 +446,12 @@ public class ManagerScreenController implements Initializable {
 	}
 	
 	public void importCsvFormattedOrder() {
-		ArrayList<Order> csvFileOrders = new ArrayList<Order>();
 		String csvString = turnCsvToString();
-		//System.out.println(turnCsvToString()); 
-		// Components meaning each of the inputs, like TableNo etc, into Order() constructor
-		String[] orderComponentsStringArray = csvString.split("~~~~~~~~~~~~~~~~~~~~");
+		//System.out.println(turnCsvToString());
+		String[] orderComponentsStringArray = csvString.split("|");
 		for (String s : orderComponentsStringArray) {
-			System.out.println(s);
-			// split up components mean we look at each components like TableNo individually
-			String[] splitUpComponents = s.split(",");
-			System.out.println("here");
-			// variables we will pass to an order constructor
-			int tableNoInput = Integer.parseInt(splitUpComponents[0].trim());
-			String orderListInput = splitUpComponents[1].replaceAll("\\+", ",");
-			String totalPriceInput = splitUpComponents[2];
-			String specReqsInput = splitUpComponents[3];
-			String commentsInput = splitUpComponents[4];
-			String dateInput = splitUpComponents[5];
-			String timeInput = splitUpComponents[6];
-			String isCompInput = splitUpComponents[7];
-			csvFileOrders.add(new Order(tableNoInput, orderListInput, totalPriceInput, specReqsInput, commentsInput,
-					isCompInput, dateInput, timeInput));
+			System.our.println(s);
 		}
-		ordersForPossibleImport.clear();
-		ordersForPossibleImport.addAll(csvFileOrders);
-		importTableView.setItems(ordersForPossibleImport);;
-		
 	}
 	
 	// ======================= Log outs etc switching screens etc ========================

@@ -406,7 +406,7 @@ public class ManagerScreenController implements Initializable {
 				for (Order o : selectedOrders) {
 					// replace commas in order list with plus signs to separate food:price pairs 
 					// otherwise csv parsing will separate all order items
-					lineToWrite = o.getTableNo() + " , " + o.getOrderList().replaceAll(",", "/") + " , " + o.getTotalPrice() 
+					lineToWrite = o.getTableNo() + " , " + o.getOrderList().replaceAll(",", "+") + " , " + o.getTotalPrice() 
 					+ " , " + o.getDate() + " , " + o.getTime() + " , " + o.getSpecialRequests() 
 					+ " , " + o.getComments() + " , " + o.getCompleted() ; 
 					bw.write(lineToWrite);
@@ -473,8 +473,8 @@ public class ManagerScreenController implements Initializable {
 			String[] splitUpComponents = s.split(",");
 			System.out.println("here");
 			// variables we will pass to an order constructor
-			int tableNoInput = Integer.parseInt(splitUpComponents[0].trim());
-			String orderListInput = splitUpComponents[1].replaceAll("\\+", ",");
+			int tableNoInput = Integer.parseInt(splitUpComponents[0]);
+			String orderListInput = splitUpComponents[1].replaceAll("+", ",");
 			String totalPriceInput = splitUpComponents[2];
 			String specReqsInput = splitUpComponents[3];
 			String commentsInput = splitUpComponents[4];
