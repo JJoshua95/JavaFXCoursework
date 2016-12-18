@@ -169,7 +169,7 @@
         </tabs>
       </TabPane>
       <Button layoutX="10.0" layoutY="8.0" mnemonicParsing="false" onAction="#signOut" text="Sign Out" textFill="RED" />
-      <Label fx:id="lblUser" layoutX="967.0" layoutY="8.0" prefHeight="27.0" prefWidth="223.0" text="Username Label" textFill="#0759ff" />
+      <Label fx:id="lblUser" layoutX="941.0" layoutY="8.0" prefHeight="27.0" prefWidth="249.0" text="Username Label" textFill="#0759ff" />
       <Button fx:id="switchToStaffBtn" layoutX="92.0" layoutY="8.0" mnemonicParsing="false" onAction="#switchToStaffScreen" text="Staff Screen" />
       <Label layoutX="904.0" layoutY="13.0" text="User:" />
    </children>
