@@ -3,6 +3,11 @@ package application;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * The Order class is used to instantiate Order objects with simple property type varaibles that are required for displaying
+ * them in tableviews.
+ * @author jarrod joshua
+ */
 public class Order {
 	
 	private final SimpleIntegerProperty tableNo;
@@ -13,7 +18,19 @@ public class Order {
 	private final SimpleStringProperty completed;
 	private final SimpleStringProperty date;
 	private final SimpleStringProperty time;
-		
+	
+	/**
+	 * The constructor takes ints and strings and outputs new Order Objects with simple javafx properties allowing them to be displayed in
+	 * TableViews. The getters output ints or strings not properties
+	 * @param tableNo
+	 * @param orderList
+	 * @param totalPrice
+	 * @param specialRequests
+	 * @param comments
+	 * @param completed
+	 * @param date
+	 * @param time
+	 */
 	public Order(int tableNo, String orderList, String totalPrice, String specialRequests, String comments,
 			String completed, String date, String time) {
 		super();

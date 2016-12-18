@@ -19,6 +19,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+/**
+ * This class provides the logic (other than direct database interactions) to the LoginScreen GUI
+ * @author jarrod joshua
+ */
 public class LoginController implements Initializable {
 	
 	public LoginModel loginModel = new LoginModel();
@@ -44,6 +48,12 @@ public class LoginController implements Initializable {
 		}
 	}
 	
+	/**
+	 * This method is called upon a user pressing the login button it validates whether the credentials they entered are valid
+	 * by calling the verify methods from the LoginModel object and then opens the manager screen or the staff screen if the login inputs 
+	 * permits that. This hides the login screen upon completion.
+	 * @param event
+	 */
 	public void login(ActionEvent event) {
 		try {
 			if (loginModel.verifyStaffLogin(txtUsername.getText(), txtPassword.getText())) {
@@ -59,6 +69,7 @@ public class LoginController implements Initializable {
 				Scene scene = new Scene(root);
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				primaryStage.setScene(scene);
+				primaryStage.setTitle("Staff Screen");
 				primaryStage.show();
 				saveActivityLog("Logged in");
 			} else if (loginModel.verifyManagerLogin(txtUsername.getText(), txtPassword.getText())) {
@@ -75,6 +86,7 @@ public class LoginController implements Initializable {
 				Scene scene = new Scene(root);
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				primaryStage.setScene(scene);
+				primaryStage.setTitle("Manager Screen");
 				primaryStage.show();
 				saveActivityLog("Logged in");
 			} else {
@@ -92,6 +104,13 @@ public class LoginController implements Initializable {
 		} 
 	}
 	
+	/**
+	 * This takes just a simple string describing an event or action the currently logged in user performs , it generates a time
+	 * string and records the username of the currently logged in user, and passes these to the LoginModel object method to 
+	 * save the activity log to the database.
+	 * 
+	 * @param activity String
+	 */
 	public void saveActivityLog(String activity) {
 		Date timeObject = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

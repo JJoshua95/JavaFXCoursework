@@ -1,11 +1,60 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 
-/*
+/* #FFFAF0 complement color using http://www.color-hex.com */ 
 
 .root {
-	
-	-fx-background-color: gray ;
+	-fx-background-color: #f0f5ff ;
+}
+
+.tab {
+    -fx-background-color: #FFFAF0;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #f0f5ff;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #588FFF ;
+}
+
+.list-view {
+	-fx-background-color: #FFFAF0 ;
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: blue;
+    -fx-text-fill: white;
+}
+
+.list-cell:odd {
+    -fx-background-color: #FFFAF0;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #588FFF;
+    -fx-text-fill: white;
+}
+
+.text-field {
+	-fx-background-color: #FFFAF0;
+	-fx-border-color: #d2b48c;
+	-fx-border-color: 
+        derive(#d2b48c, 50%);
+}
+
+.text-area .content {
+	-fx-background-color: #FFFAF0;
 	
 }
 
-*/
+.table-view {
+	-fx-base: #588FFF;
+    -fx-control-inner-background: #FFFAF0;
+    -fx-background-color: #FFFAF0;
+    -fx-padding: 5;
+}
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-opacity: 1;
+}

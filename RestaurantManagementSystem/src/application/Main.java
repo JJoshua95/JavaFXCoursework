@@ -6,6 +6,9 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
+/**
+ * The first methods to be called in opening the application to the login screen
+ */
 public class Main extends Application {
 	
 	@Override
@@ -15,6 +18,7 @@ public class Main extends Application {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
+			primaryStage.setTitle("Restaurant Management System");
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();

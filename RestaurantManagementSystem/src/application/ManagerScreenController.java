@@ -39,6 +39,14 @@ import javafx.util.Callback;
 
 import com.opencsv.*; // this class makes use of the free openCSV parser 3rd party library from http://opencsv.sourceforge.net/ 
 
+// This class makes use of the opencsv library available from : http://opencsv.sourceforge.net/
+
+/**
+ * This class provides the logic (besides any direct database interactions) behind the Manager Screen GUI
+ * Makes use of the opencsv java library available from: http://opencsv.sourceforge.net/
+ * @author jarrod joshua
+ *
+ */
 public class ManagerScreenController implements Initializable {
 	
 	private ManagerScreenModel managerModel = new ManagerScreenModel();
@@ -279,11 +287,18 @@ public class ManagerScreenController implements Initializable {
 		
 	// Handle managing staff accounts
 	
+	/**
+	 * enables clicking the add staff account button, which is disabled initially.
+	 */
 	public void enableAddAccount() {
 		addStaffBtn.setDisable(false);
 		// System.out.println(isManagerCB.getValue());
 	}
 	
+	/**
+	 * Reads from user inputs and then inputs a username, password, id number, and whether the new account has manager 
+	 * level access or not, and then passes these to a managerModel object method which then queries the database and inserts a new record.
+	 */
 	public void addNewStaffAccount() {
 		try {
 		String newUsername = manageUsernameTxt.getText();
@@ -311,6 +326,10 @@ public class ManagerScreenController implements Initializable {
 		}
 	}
 	
+	/**
+	 * Retrieves the staff account credentialsfrom a selected staff TableView row, and then passes these to a ManagerModel 
+	 * method to query the database to delete the corresponding record from the database and the system.
+	 */
 	public void deletedSelectedAccount() {
 		try {
 		if  (staffTableView.getSelectionModel().getSelectedItem() == null ) { 
@@ -338,6 +357,10 @@ public class ManagerScreenController implements Initializable {
 	
 	// View activity logs
 	
+	/**
+	 * Gets the username string from the selected ListView staff object and then queries the database using a ManagerModel method
+	 * to retieve all activity log entries for that account and display them to the activity TableView
+	 */
 	public void getSelectedEmployeeActivity() {
 		if (staffUsernameListView.getSelectionModel().getSelectedItem() == null) {
 			activitySearchStatus.setText("No staff account selected from listview");
@@ -354,6 +377,10 @@ public class ManagerScreenController implements Initializable {
 	
 	// =========================== Handle editing menu ===================================
 	
+	/**
+	 * Takes the user inputted name and price for a new food item, and then uses a ManagerModel method to 
+	 * insert the new item into the menu table of the database.
+	 */
 	public void saveNewDishToMenu() {
 		try {
 			String newItemName = manageItemNameTxt.getText();
@@ -377,6 +404,10 @@ public class ManagerScreenController implements Initializable {
 		}
 	}
 	
+	/**
+	 * Retrieves the name and price for a food object in a selected ListView row and then passes these to a 
+	 * ManagerModel method to query the database and delete the corresponding record from the menu.
+	 */
 	public void deleteDishFromMenu() {
 		if (managerMenuListView.getSelectionModel().getSelectedItem() == null) {
 			manageMenuStatus.setText("No item was selected from the menu, please click a row from the list and"
@@ -396,6 +427,10 @@ public class ManagerScreenController implements Initializable {
 	
 	// Export handling ===================================================================
 	
+	/**
+	 * Takes a selection of orders from the TableView and puts them into a list, then these are looped through
+	 * and their components written to a file in CSV format. This method also takes the filename you want to write to.
+	 */
 	public void exportSelectedOrders() {
 		
 		ObservableList<Order> selectedOrders;
@@ -437,6 +472,12 @@ public class ManagerScreenController implements Initializable {
 	
 	// Import Orders handling ============================================================
 	
+	/**
+	 * This method uses a 3rd party library available from http://opencsv.sourceforge.net/
+	 * This takes a csv file chosen from a javafx filechooser and parses it to retrive the individual order
+	 * components on each line (every new line is a lone order) and passes each of these arguments to an order constructor
+	 * then all the orders are put in an observable list and displaye din a table.
+	 */
 	public void importCsvFormattedOrder() {
 		ArrayList<Order> csvFileOrders = new ArrayList<Order>();
 		FileChooser fc = new FileChooser();
@@ -475,9 +516,13 @@ public class ManagerScreenController implements Initializable {
 		}
 	}
 	
+	/**
+	 * This takes an observable list of orders displayed in the tableview and saves and appends them to the
+	 * stored orders.
+	 */
 	public void saveImportedCsvOrderToSystem() {
-		if (ordersForPossibleImport == null) {
-			importStatusTxt.setText("No CSV file has been imported into the system.");
+		if (ordersForPossibleImport.isEmpty()) {
+			importStatusTxt.setText("No CSV file has been imported into the system yet.");
 		} else {
 			// add imported orders to stored order table in database
 			managerModel.saveImportToDB(ordersForPossibleImport);
@@ -495,17 +540,31 @@ public class ManagerScreenController implements Initializable {
 	
 	// ======================= Log outs etc switching screens etc ========================
 	
+	/**
+	 * Holds onto the username entry of the current user from the login screen and displays it on the GUI
+	 * @param user
+	 */
 	void getUser(String user) {
 		lblUser.setText(user);
 		//System.out.println(user);
 	}
 	
+	/**
+	 * Holds onto the account credentials of the current user when switching between staff and manager screens or vice versa
+	 * @param user
+	 * @param pw
+	 */
 	void storeTemporaryCredentials(String user, String pw) {
 		usernameStr = user;
 		passwordStr = pw;
 	}
 	
 	// to allow manager to use staff screen no verification needed from this direction
+	/**
+	 * Upon clicking the staff screen button an event is passed to this method which then hides the manager sreen and displays 
+	 * the staff screen so the manager can also do some real work.
+	 * @param event
+	 */
 	public void switchToStaffScreen(ActionEvent event) {
 		try {
 			((Node)event.getSource()).getScene().getWindow().hide();
@@ -518,6 +577,7 @@ public class ManagerScreenController implements Initializable {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
+			primaryStage.setTitle("Staff Screen");
 			primaryStage.show();
 		} catch (Exception e) {
 			System.err.println("Exception Caught");
@@ -525,6 +585,11 @@ public class ManagerScreenController implements Initializable {
 		}
 	}
 	
+	/**
+	 * Upon clicking the sign out button the manager screen is hidden, the login screen opened, and the current user logged out, 
+	 * so his activity no longer logged.
+	 * @param event
+	 */
 	public void signOut(ActionEvent event) {
 		try {
 			saveActivityLog("Logged out");
@@ -536,6 +601,7 @@ public class ManagerScreenController implements Initializable {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
+			primaryStage.setTitle("Restaurant Management System");
 			primaryStage.show();
 			
 			// switch current user global variable to none for logging activity purposes
@@ -546,6 +612,12 @@ public class ManagerScreenController implements Initializable {
 		}
 	}
 	
+	/**
+	 * Takes a string description of a user activity or event, generates a date string, and keeps a note
+	 * of the currently logged in user, and passes them all to a manager model method to save a record to
+	 * the activityLog
+	 * @param activity
+	 */
 	public void saveActivityLog(String activity) {
 		Date timeObject = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

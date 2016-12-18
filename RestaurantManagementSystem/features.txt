@@ -1,0 +1,1 @@
+This restaurant management system has the following features:

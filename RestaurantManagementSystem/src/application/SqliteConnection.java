@@ -1,6 +1,19 @@
 package application;
 
-import java.sql.*;
+import java.sql.*; 
+
+// This class makes use of a 3rd party library, the SQLite JDBC Driver 
+// available from https://bitbucket.org/xerial/sqlite-jdbc/downloads
+
+/**
+ * This class establishes a connection with a local SQLite database file called 'RestaurantDB.sqlite'
+ * It contains a method Connector() which
+ * either makes use of this file in the same directory, or if the file is not found it will create an empty database of the same name
+ * This class makes use of a 3rd party library, the SQLite JDBC Driver 
+ * available from https://bitbucket.org/xerial/sqlite-jdbc/downloads
+ * 
+ * @author jarrod joshua
+ */
 
 public class SqliteConnection {
 	
@@ -15,7 +28,6 @@ public class SqliteConnection {
 	 * @return connection - A Connection type object - "A connection (session) with a specific database. SQL statements are executed and results 
 	 * are returned within the context of a connection.".
 	 */
-	
 	public static Connection Connector() {
 		try {
 			Class.forName("org.sqlite.JDBC");
