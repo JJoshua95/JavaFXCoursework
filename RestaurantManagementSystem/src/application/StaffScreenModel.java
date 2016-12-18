@@ -216,8 +216,9 @@ public class StaffScreenModel extends LoginModel {
 	 * the database as a double.
 	 * @param tableNum
 	 * @return Double totalFromDB the total price of the ordered items from an order
+	 * @throws SQLException 
 	 */
-	Double getTotalPriceFromDB(int tableNum) {
+	Double getTotalPriceFromDB(int tableNum) throws SQLException {
 		double totalFromDB = 0.0;
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -230,6 +231,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		return totalFromDB;
 	}
@@ -238,8 +242,9 @@ public class StaffScreenModel extends LoginModel {
 	 * Takes a table number input and then fetches the special requests entry of that tables order from the database as a string.
 	 * @param tableNum
 	 * @return specialReqs String
+	 * @throws SQLException 
 	 */
-	String getSpecialRequestsFromDB(int tableNum) {
+	String getSpecialRequestsFromDB(int tableNum) throws SQLException {
 		String specialReqs = null;
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -252,6 +257,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		return specialReqs;
 	}
@@ -260,8 +268,9 @@ public class StaffScreenModel extends LoginModel {
 	 * Takes a table number input and then retrieves the comments from an order as a sring
 	 * @param tableNum
 	 * @return comments String
+	 * @throws SQLException 
 	 */
-	String getCommentsFromDB(int tableNum) {
+	String getCommentsFromDB(int tableNum) throws SQLException {
 		String comment = null;
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -274,6 +283,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		return comment;
 	}
@@ -282,8 +294,9 @@ public class StaffScreenModel extends LoginModel {
 	 * Takes a table number input and finds whether the order has been marked as complete or not as a string.
 	 * @param tableNum
 	 * @return String isComplete, either true or false , not boolean but string outputs.
+	 * @throws SQLException 
 	 */
-	String getIsComplete(int tableNum) {
+	String getIsComplete(int tableNum) throws SQLException {
 		String complete = null;
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -296,6 +309,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		return complete;
 	}
@@ -304,8 +320,9 @@ public class StaffScreenModel extends LoginModel {
 	 * Takes a table number input and then outputs a date and a time that the order was first saved at, as a single string
 	 * @param tableNum
 	 * @return date String
+	 * @throws SQLException 
 	 */
-	String getDateToDisplay(int tableNum) {
+	String getDateToDisplay(int tableNum) throws SQLException {
 		String dateStringForLabel = null;
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -320,6 +337,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		return dateStringForLabel;
 	}
@@ -327,8 +347,9 @@ public class StaffScreenModel extends LoginModel {
 	/**
 	 * Takes a table number input, finds the corresponding working order and then removes it completely from the system.
 	 * @param tableNum
+	 * @throws SQLException 
 	 */
-	void deleteCurrentOrderFromDB(int tableNum) {
+	void deleteCurrentOrderFromDB(int tableNum) throws SQLException {
 		PreparedStatement prepStmt = null;
 
 		String query = "DELETE FROM orders WHERE tableNo = ?";
@@ -343,6 +364,8 @@ public class StaffScreenModel extends LoginModel {
 			System.out.println("Failed to delete record");
 			e.printStackTrace();
 
+		} finally {
+			prepStmt.close();
 		}
 
 	}
@@ -413,6 +436,8 @@ public class StaffScreenModel extends LoginModel {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			preparedStatement.close();
 		}
 	}
 
@@ -424,8 +449,9 @@ public class StaffScreenModel extends LoginModel {
 	 * @param group
 	 * @param tableNum
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 * @throws SQLException 
 	 */
-	ArrayList<Order> searchByTableNo(String group, int tableNum) {
+	ArrayList<Order> searchByTableNo(String group, int tableNum) throws SQLException {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -462,6 +488,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 
 		return targetOrders;
@@ -475,8 +504,9 @@ public class StaffScreenModel extends LoginModel {
 	 * @param group
 	 * @param tableNum
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 * @throws SQLException 
 	 */
-	ArrayList<Order> searchByFoodItem(String group, String inputItem) {
+	ArrayList<Order> searchByFoodItem(String group, String inputItem) throws SQLException {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -513,6 +543,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		// System.out.println(targetOrders.toString());
 		return targetOrders;
@@ -526,8 +559,9 @@ public class StaffScreenModel extends LoginModel {
 	 * @param group
 	 * @param tableNum
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 * @throws SQLException 
 	 */
-	ArrayList<Order> searchBySpecialRequest(String group, String inputRequest) {
+	ArrayList<Order> searchBySpecialRequest(String group, String inputRequest) throws SQLException {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -564,6 +598,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		
 		return targetOrders;
@@ -578,8 +615,9 @@ public class StaffScreenModel extends LoginModel {
 	 * @param group
 	 * @param tableNum
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 * @throws SQLException 
 	 */
-	ArrayList<Order> searchByComments(String group, String inputComment) {
+	ArrayList<Order> searchByComments(String group, String inputComment) throws SQLException {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -616,6 +654,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		
 		return targetOrders;
@@ -630,8 +671,9 @@ public class StaffScreenModel extends LoginModel {
 	 * @param group
 	 * @param tableNum
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 * @throws SQLException 
 	 */
-	ArrayList<Order> searchByPrice(String group, double inputStart, double inputEnd) {
+	ArrayList<Order> searchByPrice(String group, double inputStart, double inputEnd) throws SQLException {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -668,6 +710,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		return targetOrders;
 	}
@@ -680,8 +725,9 @@ public class StaffScreenModel extends LoginModel {
 	 * @param group
 	 * @param tableNum
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 * @throws SQLException 
 	 */
-	ArrayList<Order> searchByIfComplete(String group, String inputWhetherComplete) {
+	ArrayList<Order> searchByIfComplete(String group, String inputWhetherComplete) throws SQLException {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -716,6 +762,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		
 		return targetOrders;
@@ -729,8 +778,9 @@ public class StaffScreenModel extends LoginModel {
 	 * @param group
 	 * @param tableNum
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 * @throws SQLException 
 	 */
-	ArrayList<Order> searchByDate(String group, String inputDate) {
+	ArrayList<Order> searchByDate(String group, String inputDate) throws SQLException {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -765,6 +815,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		return targetOrders;
 	}
@@ -777,8 +830,9 @@ public class StaffScreenModel extends LoginModel {
 	 * @param group
 	 * @param tableNum
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 * @throws SQLException 
 	 */
-	ArrayList<Order> searchByTime(String group, String beginHour, String beginMinute, String endHour, String endMinute) {
+	ArrayList<Order> searchByTime(String group, String beginHour, String beginMinute, String endHour, String endMinute) throws SQLException {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -824,6 +878,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		return targetOrders;
 	}
@@ -833,8 +890,9 @@ public class StaffScreenModel extends LoginModel {
 	 * as an ArrayList
 	 * @param group
 	 * @return ArrayList<Order> targetOrders: all the order objects from specified group of orders
+	 * @throws SQLException 
 	 */
-	ArrayList<Order> getAllOrders(String group) {
+	ArrayList<Order> getAllOrders(String group) throws SQLException {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -867,6 +925,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		
 		return targetOrders;
@@ -877,8 +938,9 @@ public class StaffScreenModel extends LoginModel {
 	/**
 	 * Retrieves all food objects from the menu which might have been edited by a manager
 	 * @return ArrayList<Food> : all the food objects in the menu
+	 * @throws SQLException 
 	 */
-	ArrayList<Food> getAllFoodFromMenu() {
+	ArrayList<Food> getAllFoodFromMenu() throws SQLException {
 		ArrayList<Food> targetFoods = new ArrayList<Food>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -898,15 +960,19 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		} finally {
+			prepStmt.close();
+			resSet.close();
+		}
 		return targetFoods;
-	}
+	} 
 	
 	/**
 	 * Takes three strings, a username, activity description, and a timestamps, and then registers a new record
 	 * into the activityLog
+	 * @throws SQLException 
 	 */
-	public void saveActivityEntryToDB(String user, String act, String timestamp) {
+	public void saveActivityEntryToDB(String user, String act, String timestamp) throws SQLException {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT INTO activityLog (username, activityEntry, time) VALUES (? ,?, ?)";
 		try {
@@ -920,7 +986,9 @@ public class StaffScreenModel extends LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		} finally {
+			prepStmt.close();
+		}
 	}
 
 }

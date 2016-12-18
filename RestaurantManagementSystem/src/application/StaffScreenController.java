@@ -207,7 +207,12 @@ public class StaffScreenController implements Initializable {
 
 		menuObservableList = FXCollections.observableArrayList();
 		// add some food to the menu
-		menuObservableList.addAll(staffModel.getAllFoodFromMenu());
+		try {
+			menuObservableList.addAll(staffModel.getAllFoodFromMenu());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		menuListView.setItems(menuObservableList);
 		menuListView.setCellFactory(new Callback<ListView<Food>, ListCell<Food>>() {
@@ -727,8 +732,9 @@ public class StaffScreenController implements Initializable {
 	/**
 	 * This launches a confirmation dialog, if ok is clicked then the currenly selected order record will be erased from the database and
 	 * hence the system completely. It will not be in stored orders upon clicking delete.
+	 * @throws SQLException 
 	 */
-	public void deleteCurrentOrder() {
+	public void deleteCurrentOrder() throws SQLException {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Confirm Delete");
 		alert.setHeaderText("Are you sure? Deleting this order cannot be undone");
@@ -864,8 +870,9 @@ public class StaffScreenController implements Initializable {
 	 * This method records the user inputted table number, and the user chice of whether to query stored or working 
 	 * orders, these variables are then passed it to the StaffModel methods that interact with the
 	 * database to search for all orders from that table. All corresponding orders are displayed in the table
+	 * @throws SQLException 
 	 */
-	public void searchForTableNum() {
+	public void searchForTableNum() throws SQLException {
 		if (searchTableNoTxt.getText().equals("") || searchTableNoTxt.getText().equals(null)) {
 			searchStatus.setText("Nothing to look for");
 		} else {
@@ -903,8 +910,9 @@ public class StaffScreenController implements Initializable {
 	 * and the user chice of whether to query stored or working 
 	 * orders, these variables are then passed it to the StaffModel methods that interact with the
 	 * database to search for all corresponding orders from that table. All corresponding orders are displayed in the table
+	 * @throws SQLException 
 	 */
-	public void searchForFoodItem() {
+	public void searchForFoodItem() throws SQLException {
 		// handle when there is no text or else it just returns everything
 		if (searchFoodItemTxt.getText().equals("") || searchFoodItemTxt.getText().equals(null)) {
 			searchStatus.setText("Invalid entry");
@@ -934,8 +942,9 @@ public class StaffScreenController implements Initializable {
 	 * and the user chice of whether to query stored or working 
 	 * orders, these variables are then passed it to the StaffModel methods that interact with the
 	 * database to search for all orders from that table. All corresponding orders are displayed in the table
+	 * @throws SQLException 
 	 */
-	public void searchForSpecialRequest() {
+	public void searchForSpecialRequest() throws SQLException {
 		if (searchSpecialReqsTxt.getText().equals("") || searchSpecialReqsTxt.getText().equals(null)) {
 			searchStatus.setText("Nothing to look for");
 		} else {
@@ -967,8 +976,9 @@ public class StaffScreenController implements Initializable {
 	 * orders, these variables are then passed it to the StaffModel methods that interact with the
 	 * database to search for all orders from that table corresponding to the entered string.
 	 * All corresponding orders are displayed in the table
+	 * @throws SQLException 
 	 */
-	public void searchForComment() {
+	public void searchForComment() throws SQLException {
 		if (searchCommentsTxt.getText().equals("") || searchCommentsTxt.getText().equals(null)) {
 			searchStatus.setText("Nothing to look for");
 		} else {
@@ -1106,8 +1116,9 @@ public class StaffScreenController implements Initializable {
 	 * orders, these variables are then passed it to the StaffModel methods that interact with the
 	 * database to search for all orders from that table from that chosen date.
 	 * All corresponding orders are displayed in the table
+	 * @throws SQLException 
 	 */
-	public void searchForDate() {
+	public void searchForDate() throws SQLException {
 		String DateChosenStr = datePickTxt.getValue().toString();
 		orderGroup = orderGroupComboBox.getValue();
 		if (orderGroup.equals("Current Orders")) {
@@ -1172,8 +1183,9 @@ public class StaffScreenController implements Initializable {
 	
 	/**
 	 * This method retrieves all orders from either the stored orders or current working orders and displayes them to the table.
+	 * @throws SQLException 
 	 */
-	public void retrieveAllOrders() {
+	public void retrieveAllOrders() throws SQLException {
 		orderGroup = orderGroupComboBox.getValue();
 		if (orderGroup.equals("Current Orders")) {
 			searchStatus.setText("Searching");
@@ -1199,8 +1211,9 @@ public class StaffScreenController implements Initializable {
 	 * the username of the logged in user, to a StaffModel method 
 	 * which then records an entry the manager can look at later.
 	 * @param activity String
+	 * @throws SQLException 
 	 */
-	public void saveActivityLog(String activity) {
+	public void saveActivityLog(String activity) throws SQLException {
 		Date timeObject = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String dateStr = dateFormat.format(timeObject);

@@ -3,3 +3,4 @@
 3,"[Burger:5, Pizza:10]",17.00,2016-12-12,17:15:15,Test csv import special request,test import csv comment,true
 4,"[Burger:5, Pizza:10]",18.00,2016-12-13,18:15:15,Test csv import special request,test import csv comment,true
 5,"[Burger:5, Pizza:10]",19.00,2016-12-14,19:15:15,Test csv import special request,test import csv comment,true
+6,"[Burger:5, Pizza:10, Chips:12]",20.00,2016-12-15,20:15:15,Test csv import special request,test import csv comment,true

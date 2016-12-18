@@ -47,8 +47,9 @@ public class ManagerScreenModel extends StaffScreenModel {
 	 * Queries the database to retrieve all staff account elements and output an arraylist containing all Staff objects 
 	 * associated with the system
 	 * @return ArrayList<Staff> targetStaff a list of all staff objects in the database
+	 * @throws SQLException 
 	 */
-	ArrayList<Staff> getAllEmployeesFromDB() {
+	ArrayList<Staff> getAllEmployeesFromDB() throws SQLException {
 		ArrayList<Staff> targetStaff = new ArrayList<Staff>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -70,6 +71,9 @@ public class ManagerScreenModel extends StaffScreenModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		
 		return targetStaff;
@@ -82,8 +86,9 @@ public class ManagerScreenModel extends StaffScreenModel {
 	 * @param user
 	 * @param pw
 	 * @param managerVerified
+	 * @throws SQLException 
 	 */
-	void addStaffAccountIntoDB(int id, String user, String pw, String managerVerified) {
+	void addStaffAccountIntoDB(int id, String user, String pw, String managerVerified) throws SQLException {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT OR REPLACE INTO staff (id, username, password, isManager) VALUES (?, ?, ?, ?)";
 		try {
@@ -97,6 +102,8 @@ public class ManagerScreenModel extends StaffScreenModel {
 			System.out.println("inserted or replaced");
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
 		}
 	}
 	
@@ -108,8 +115,9 @@ public class ManagerScreenModel extends StaffScreenModel {
 	 * @param user
 	 * @param pw
 	 * @param managerVerified
+	 * @throws SQLException 
 	 */
-	void deleteStaffAccountFromDB(int id, String user, String pw, String managerVerified) {
+	void deleteStaffAccountFromDB(int id, String user, String pw, String managerVerified) throws SQLException {
 		PreparedStatement prepStmt = null;
 		String query = "DELETE FROM staff WHERE id = ? AND username = ? AND password = ? AND isManager = ?";
 		try {
@@ -123,6 +131,8 @@ public class ManagerScreenModel extends StaffScreenModel {
 			System.out.println("Record deleted");
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
 		}
 	}
 	
@@ -130,8 +140,9 @@ public class ManagerScreenModel extends StaffScreenModel {
 	 * Takes a username string and queries the database to find a list of activity logs recorded from the corresponding staff account
 	 * @param user
 	 * @return ArrayList<ActivityLog> a list of ActivityLog objects ready for display on a tableview
+	 * @throws SQLException 
 	 */
-	ArrayList<ActivityLog> getActivityLogForEmployee(String user) {
+	ArrayList<ActivityLog> getActivityLogForEmployee(String user) throws SQLException {
 		ArrayList<ActivityLog> targetActivity = new ArrayList<ActivityLog>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -153,6 +164,9 @@ public class ManagerScreenModel extends StaffScreenModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		
 		return targetActivity;
@@ -164,8 +178,9 @@ public class ManagerScreenModel extends StaffScreenModel {
 	 * Takes a name string and price double and inserts a new Food item into the menu table of the database.
 	 * @param name
 	 * @param cost
+	 * @throws SQLException 
 	 */
-	void addNewDishToMenuDB(String name, double cost) {
+	void addNewDishToMenuDB(String name, double cost) throws SQLException {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT OR REPLACE INTO menu (menuItem, price) VALUES (?, ?)";
 		
@@ -178,6 +193,8 @@ public class ManagerScreenModel extends StaffScreenModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
 		}
 	}
 	
@@ -185,8 +202,9 @@ public class ManagerScreenModel extends StaffScreenModel {
 	 * Takes a name string and price double and deletes the corresponding Food item from the menu table of the database.
 	 * @param name
 	 * @param cost
+	 * @throws SQLException 
 	 */
-	void deleteDishFromMenuDB(String name, double cost) {
+	void deleteDishFromMenuDB(String name, double cost) throws SQLException {
 		PreparedStatement prepStmt = null;
 		String query = "DELETE FROM menu WHERE menuItem = ? AND price = ?";
 		try {
@@ -199,14 +217,17 @@ public class ManagerScreenModel extends StaffScreenModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
 		}
 	}
 	
 	/**
 	 * Takes strings for the username, activity description, and timestamp, then inserts a new record
 	 * with all of these into the activityLog table for managers to track.
+	 * @throws SQLException 
 	 */
-	public void saveActivityEntryToDB(String user, String act, String timestamp) {
+	public void saveActivityEntryToDB(String user, String act, String timestamp) throws SQLException {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT INTO activityLog (username, activityEntry, time) VALUES (? ,?, ?)";
 		try {
@@ -220,7 +241,9 @@ public class ManagerScreenModel extends StaffScreenModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		} finally {
+			prepStmt.close();
+		}
 	}
 	
 	// Export queries ========================================================
@@ -229,8 +252,9 @@ public class ManagerScreenModel extends StaffScreenModel {
 	 * searches both stored orders and (working) orders tables for all of their order records and returns an arraylist containing every order 
 	 * in the system ready for display in a table
 	 * @return ArrayList<Order> targetOrders: all the order objects in the system
+	 * @throws SQLException 
 	 */
-	ArrayList<Order> getAllOrders() {
+	ArrayList<Order> getAllOrders() throws SQLException {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
 		ResultSet resSet = null;
@@ -254,6 +278,9 @@ public class ManagerScreenModel extends StaffScreenModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
+			resSet.close();
 		}
 		
 		return targetOrders;
@@ -262,14 +289,15 @@ public class ManagerScreenModel extends StaffScreenModel {
 	// Import Queries =========================================================
 	
 	/**
-	 * Takes a list of order objects (in this ocntext imported from a csv file) and then saves each of them into the stored records
+	 * Takes a list of order objects (in this context imported from a csv file) and then saves each of them into the stored records
 	 * table in the database
 	 * @param csvImport
+	 * @throws SQLException 
 	 */
-	void saveImportToDB(ObservableList<Order> csvImport) {
+	void saveImportToDB(ObservableList<Order> csvImport) throws SQLException {
+		PreparedStatement prepStmt = null;
 		try {
 			for (Order o : csvImport) {
-				PreparedStatement prepStmt = null;
 				String query = "INSERT INTO storedOrders (tableNo, orderList, totalPrice, specialRequests, comments, isComplete,"
 						+ " date, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 				prepStmt = connection.prepareStatement(query);
@@ -288,6 +316,8 @@ public class ManagerScreenModel extends StaffScreenModel {
 			e.printStackTrace();
 		} catch(Exception e) {
 			e.printStackTrace();
+		} finally {
+			prepStmt.close();
 		}
 	}
 	

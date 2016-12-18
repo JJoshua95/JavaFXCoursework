@@ -110,8 +110,9 @@ public class LoginController implements Initializable {
 	 * save the activity log to the database.
 	 * 
 	 * @param activity String
+	 * @throws SQLException 
 	 */
-	public void saveActivityLog(String activity) {
+	public void saveActivityLog(String activity) throws SQLException {
 		Date timeObject = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String dateStr = dateFormat.format(timeObject);

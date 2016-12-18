@@ -30,12 +30,12 @@ public class LoginModel {
 		}
 		
 		// Create tables if they don't exist
-		
 		initialiseStaffTable();
 		initOrdersTable();
 		initMenuTable();
 		initStoredOrdersTable();
 		initActivityLogTable() ;
+	
 	}
 	
 	/**
@@ -59,8 +59,8 @@ public class LoginModel {
 	 * admin.
 	 * @param user A string input that will be searched for in 'username' field in the 'staff' table
 	 * @param pass A string input that will be searched for in the 'password' field in the 'staff' table
-	 * @return
-	 * @throws SQLException
+	 * @return boolean
+	 * @throws SQLException 
 	 */
 	boolean verifyStaffLogin(String user, String pass) throws SQLException {
 		PreparedStatement preparedStatement = null;
@@ -135,8 +135,9 @@ public class LoginModel {
 	 * @param user the 'staff'username attribute of the currently logged in user
 	 * @param act a string describing what the current user has just done for tracking user activity in th logs managers see
 	 * @param timestamp a formatted string containing the date and time of the action
+	 * @throws SQLException 
 	 */
-	public void saveActivityEntryToDB(String user, String act, String timestamp) {
+	public void saveActivityEntryToDB(String user, String act, String timestamp) throws SQLException {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT INTO activityLog (username, activityEntry, time) VALUES (? ,?, ?)";
 		try {
@@ -150,8 +151,10 @@ public class LoginModel {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
-	}
+		} finally {
+			prepStmt.close();
+		}
+	} 
 	
 	/**
 	 * Creates a staff table if one does not already exist and also inserts a record allowing a special admin account user to login
@@ -166,21 +169,11 @@ public class LoginModel {
 			prepStmt.execute();
 			prepStmt.close();
 			insertAdminAccount();
-			/*
-			if (ifNoTable == true) {
-				System.out.println("No table was found so we initialise it here with an admin account to fix anything : admin, password");
-				prepStmt.close();
-				// insert a row
-				insertAdminAccount();
-			} else {
-				System.out.println("staff table exists.");
-			}
-			*/
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 	
 	/**
@@ -199,7 +192,7 @@ public class LoginModel {
 			System.out.println("Most Likely the admin account has already been inserted and cannot be overwritten");
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		} 
 	}
 	
 	/**

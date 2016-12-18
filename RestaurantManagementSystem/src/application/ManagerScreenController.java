@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -185,7 +186,12 @@ public class ManagerScreenController implements Initializable {
 		passwordCol.setCellValueFactory(new PropertyValueFactory<Staff, String>("password"));
 		managerColumn.setCellValueFactory(new PropertyValueFactory<Staff, String>("isManager"));
 		
-		staffTableViewObsList.addAll(managerModel.getAllEmployeesFromDB());
+		try {
+			staffTableViewObsList.addAll(managerModel.getAllEmployeesFromDB());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		staffTableView.setItems(staffTableViewObsList);
 		
@@ -221,7 +227,12 @@ public class ManagerScreenController implements Initializable {
 				return cell;
 			}
 		});
-		editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
+		try {
+			editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		managerMenuListView.setItems(editableMenuObsList);
 		
 		// set up the staff name ListView
@@ -268,7 +279,12 @@ public class ManagerScreenController implements Initializable {
 		exportTimeCol.setCellValueFactory(new PropertyValueFactory<Order, String>("time"));
 		
 		exportTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // can select multiple rows
-		ordersForPossibleExport.addAll(managerModel.getAllOrders());
+		try {
+			ordersForPossibleExport.addAll(managerModel.getAllOrders());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		exportTableView.setItems(ordersForPossibleExport);
 		
 		// set up import table
@@ -360,8 +376,9 @@ public class ManagerScreenController implements Initializable {
 	/**
 	 * Gets the username string from the selected ListView staff object and then queries the database using a ManagerModel method
 	 * to retieve all activity log entries for that account and display them to the activity TableView
+	 * @throws SQLException 
 	 */
-	public void getSelectedEmployeeActivity() {
+	public void getSelectedEmployeeActivity() throws SQLException {
 		if (staffUsernameListView.getSelectionModel().getSelectedItem() == null) {
 			activitySearchStatus.setText("No staff account selected from listview");
 		} else {
@@ -401,14 +418,18 @@ public class ManagerScreenController implements Initializable {
 			}
 		} catch (NumberFormatException e) {
 			manageMenuStatus.setText("Invalid name or price entered");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
 	/**
 	 * Retrieves the name and price for a food object in a selected ListView row and then passes these to a 
 	 * ManagerModel method to query the database and delete the corresponding record from the menu.
+	 * @throws SQLException 
 	 */
-	public void deleteDishFromMenu() {
+	public void deleteDishFromMenu() throws SQLException {
 		if (managerMenuListView.getSelectionModel().getSelectedItem() == null) {
 			manageMenuStatus.setText("No item was selected from the menu, please click a row from the list and"
 					+ " press delete again to remove it from the system");
@@ -416,9 +437,19 @@ public class ManagerScreenController implements Initializable {
 			Food foodToDelete = managerMenuListView.getSelectionModel().getSelectedItem();
 			String targetFoodName = foodToDelete.getMenuItemName();
 			Double targetFoodPrice = foodToDelete.getPrice();
-			managerModel.deleteDishFromMenuDB(targetFoodName, targetFoodPrice);
+			try {
+				managerModel.deleteDishFromMenuDB(targetFoodName, targetFoodPrice);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			editableMenuObsList.clear();
-			editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
+			try {
+				editableMenuObsList.addAll(managerModel.getAllFoodFromMenu());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			managerMenuListView.setItems(editableMenuObsList);
 			manageMenuStatus.setText("Dish was removed.");
 			saveActivityLog("Removed a dish from the menu: " + targetFoodName);
@@ -430,8 +461,9 @@ public class ManagerScreenController implements Initializable {
 	/**
 	 * Takes a selection of orders from the TableView and puts them into a list, then these are looped through
 	 * and their components written to a file in CSV format. This method also takes the filename you want to write to.
+	 * @throws SQLException 
 	 */
-	public void exportSelectedOrders() {
+	public void exportSelectedOrders() throws SQLException {
 		
 		ObservableList<Order> selectedOrders;
 		String userFilename = exportFilenameTxt.getText();
@@ -519,8 +551,9 @@ public class ManagerScreenController implements Initializable {
 	/**
 	 * This takes an observable list of orders displayed in the tableview and saves and appends them to the
 	 * stored orders.
+	 * @throws SQLException 
 	 */
-	public void saveImportedCsvOrderToSystem() {
+	public void saveImportedCsvOrderToSystem() throws SQLException {
 		if (ordersForPossibleImport.isEmpty()) {
 			importStatusTxt.setText("No CSV file has been imported into the system yet.");
 		} else {
@@ -617,8 +650,9 @@ public class ManagerScreenController implements Initializable {
 	 * of the currently logged in user, and passes them all to a manager model method to save a record to
 	 * the activityLog
 	 * @param activity
+	 * @throws SQLException 
 	 */
-	public void saveActivityLog(String activity) {
+	public void saveActivityLog(String activity) throws SQLException {
 		Date timeObject = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String dateStr = dateFormat.format(timeObject);
