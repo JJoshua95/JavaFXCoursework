@@ -5,6 +5,11 @@ import javafx.beans.property.SimpleStringProperty;
 
 // Regular employees are only allowed to see the staff Screen, staff with isManager == true are able to access manager screen
 
+/**
+ * The staff class instantiates Staff objects that can be displayed in Tableviews after retriving the relevent data
+ * from a database
+ * @author jarrod joshua
+ */
 public class Staff {
 	
 	private SimpleIntegerProperty staffID;
@@ -12,6 +17,14 @@ public class Staff {
 	private SimpleStringProperty password;
 	private SimpleStringProperty isManager;
 	
+	/**
+	 * The class constructor takes int andString type inputs and outputs a Staff object with javafx properties that can
+	 * be displayed in a tableview. The getters output ints or Strings not properties
+	 * @param staffID
+	 * @param username
+	 * @param password
+	 * @param isManager
+	 */
 	public Staff(int staffID, String username, String password, String isManager) {
 		super();
 		this.staffID = new SimpleIntegerProperty(staffID);

@@ -19,6 +19,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+/**
+ * This class provides the logic (other than direct database interactions) to the LoginScreen GUI
+ * @author jarrod joshua
+ */
 public class LoginController implements Initializable {
 	
 	public LoginModel loginModel = new LoginModel();
@@ -65,6 +69,7 @@ public class LoginController implements Initializable {
 				Scene scene = new Scene(root);
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				primaryStage.setScene(scene);
+				primaryStage.setTitle("Staff Screen");
 				primaryStage.show();
 				saveActivityLog("Logged in");
 			} else if (loginModel.verifyManagerLogin(txtUsername.getText(), txtPassword.getText())) {
@@ -81,6 +86,7 @@ public class LoginController implements Initializable {
 				Scene scene = new Scene(root);
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				primaryStage.setScene(scene);
+				primaryStage.setTitle("Manager Screen");
 				primaryStage.show();
 				saveActivityLog("Logged in");
 			} else {

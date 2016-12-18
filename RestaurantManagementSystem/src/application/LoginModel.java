@@ -11,7 +11,7 @@ import java.sql.*;
  * application will need to function at the bare minimum if the local RestaurantDB.sqlite file is deleted and a new one is created 
  * with no tables by default. There is also a special emergency admin account inserted into the database to allow access back in if the 
  * database is deleted.
- * @author Jarrod Joshua
+ * @author jarrod joshua
  */
 
 public class LoginModel {

@@ -9,6 +9,13 @@ import java.util.ArrayList;
 
 import javafx.collections.ObservableList;
 
+//This class makes use of a 3rd party library, the SQLite JDBC Driver 
+//available from https://bitbucket.org/xerial/sqlite-jdbc/downloads
+
+/**
+ * This class handles the database interactions needed for the StaffScreenController
+ * @author jarrod joshua
+ */
 public class StaffScreenModel extends LoginModel {
 	
 	private Connection connection;
@@ -205,9 +212,10 @@ public class StaffScreenModel extends LoginModel {
 	}
 	
 	/**
-	 * Takes a 
+	 * Takes a table number input and then retrieves the total bill associated with that tables order from 
+	 * the database as a double.
 	 * @param tableNum
-	 * @return Double totalFromDB the total price of the orderered items from an order
+	 * @return Double totalFromDB the total price of the ordered items from an order
 	 */
 	Double getTotalPriceFromDB(int tableNum) {
 		double totalFromDB = 0.0;
@@ -225,7 +233,12 @@ public class StaffScreenModel extends LoginModel {
 		}
 		return totalFromDB;
 	}
-
+	
+	/**
+	 * Takes a table number input and then fetches the special requests entry of that tables order from the database as a string.
+	 * @param tableNum
+	 * @return specialReqs String
+	 */
 	String getSpecialRequestsFromDB(int tableNum) {
 		String specialReqs = null;
 		PreparedStatement prepStmt = null;
@@ -242,7 +255,12 @@ public class StaffScreenModel extends LoginModel {
 		}
 		return specialReqs;
 	}
-
+	
+	/**
+	 * Takes a table number input and then retrieves the comments from an order as a sring
+	 * @param tableNum
+	 * @return comments String
+	 */
 	String getCommentsFromDB(int tableNum) {
 		String comment = null;
 		PreparedStatement prepStmt = null;
@@ -259,7 +277,12 @@ public class StaffScreenModel extends LoginModel {
 		}
 		return comment;
 	}
-
+	
+	/**
+	 * Takes a table number input and finds whether the order has been marked as complete or not as a string.
+	 * @param tableNum
+	 * @return String isComplete, either true or false , not boolean but string outputs.
+	 */
 	String getIsComplete(int tableNum) {
 		String complete = null;
 		PreparedStatement prepStmt = null;
@@ -276,7 +299,12 @@ public class StaffScreenModel extends LoginModel {
 		}
 		return complete;
 	}
-
+	
+	/**
+	 * Takes a table number input and then outputs a date and a time that the order was first saved at, as a single string
+	 * @param tableNum
+	 * @return date String
+	 */
 	String getDateToDisplay(int tableNum) {
 		String dateStringForLabel = null;
 		PreparedStatement prepStmt = null;
@@ -295,7 +323,11 @@ public class StaffScreenModel extends LoginModel {
 		}
 		return dateStringForLabel;
 	}
-
+	
+	/**
+	 * Takes a table number input, finds the corresponding working order and then removes it completely from the system.
+	 * @param tableNum
+	 */
 	void deleteCurrentOrderFromDB(int tableNum) {
 		PreparedStatement prepStmt = null;
 
@@ -314,7 +346,20 @@ public class StaffScreenModel extends LoginModel {
 		}
 
 	}
-
+	
+	/**
+	 * Takes all the order components and then inserts the order into the stored orders (not the current working orders)
+	 * this is combined with deleting the same order from the current orders therefore having the effect of moving the order 
+	 * from working to stored.
+	 * @param tableNum
+	 * @param orderList
+	 * @param totalBill
+	 * @param specialReqs
+	 * @param comments
+	 * @param isComplete
+	 * @param inDate
+	 * @throws SQLException
+	 */
 	void moveCurrentOrderToStorage(int tableNum, ObservableList<Food> orderList, double totalBill, String specialReqs,
 			String comments, String isComplete, Date inDate) throws SQLException {
 
@@ -372,7 +417,14 @@ public class StaffScreenModel extends LoginModel {
 	}
 
 	// ------------------------------ Deal with TableView queries ------------------------
-
+	
+	/**
+	 * Takes a table number integer input, and takes a string input group which determines which table in the database to search ('stored orders'
+	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders with the inputted table number
+	 * @param group
+	 * @param tableNum
+	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 */
 	ArrayList<Order> searchByTableNo(String group, int tableNum) {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
@@ -414,7 +466,16 @@ public class StaffScreenModel extends LoginModel {
 
 		return targetOrders;
 	}
-
+	
+	/**
+	 * Takes a string input which is aimed at finding orders with specified food items, 
+	 * and takes a string input group which determines which table in the database to search ('stored orders'
+	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain 
+	 * specified food items in their orders.
+	 * @param group
+	 * @param tableNum
+	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 */
 	ArrayList<Order> searchByFoodItem(String group, String inputItem) {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
@@ -456,7 +517,16 @@ public class StaffScreenModel extends LoginModel {
 		// System.out.println(targetOrders.toString());
 		return targetOrders;
 	}
-
+	
+	/**
+	 * Takes a string input which is aimed at finding orders with specified special requests, 
+	 * and takes a string input group which determines which table in the database to search ('stored orders'
+	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain
+	 * the specified special requests strings in their orders.
+	 * @param group
+	 * @param tableNum
+	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 */
 	ArrayList<Order> searchBySpecialRequest(String group, String inputRequest) {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
@@ -500,6 +570,15 @@ public class StaffScreenModel extends LoginModel {
 
 	}
 	
+	/**
+	 * Takes a string input which is aimed at finding orders with specified comments, 
+	 * and takes a string input group which determines which table in the database to search ('stored orders'
+	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain
+	 * the specified comments strings in their orders.
+	 * @param group
+	 * @param tableNum
+	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 */
 	ArrayList<Order> searchByComments(String group, String inputComment) {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
@@ -543,6 +622,15 @@ public class StaffScreenModel extends LoginModel {
 
 	}
 	
+	/**
+	 * Takes a string input which is aimed at finding orders whih bills fall within a specified price range, 
+	 * and takes a string input group which determines which table in the database to search ('stored orders'
+	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain
+	 * the specified special requests strings in their orders.
+	 * @param group
+	 * @param tableNum
+	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 */
 	ArrayList<Order> searchByPrice(String group, double inputStart, double inputEnd) {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
@@ -584,6 +672,15 @@ public class StaffScreenModel extends LoginModel {
 		return targetOrders;
 	}
 	
+	/**
+	 * Takes a string input ('true', or 'false') which is aimed at finding orders which have been marked as complete or not complete, 
+	 * and takes a string input group which determines which table in the database to search ('stored orders'
+	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain
+	 * the specified special requests strings in their orders.
+	 * @param group
+	 * @param tableNum
+	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 */
 	ArrayList<Order> searchByIfComplete(String group, String inputWhetherComplete) {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
@@ -624,6 +721,15 @@ public class StaffScreenModel extends LoginModel {
 		return targetOrders;
 	}
 	
+	/**
+	 * Takes a date formatted string string which is aimed at finding orders which were registered on a specified date, 
+	 * and takes a string input group which determines which table in the database to search ('stored orders'
+	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain
+	 * the specified date strings in their orders.
+	 * @param group
+	 * @param tableNum
+	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 */
 	ArrayList<Order> searchByDate(String group, String inputDate) {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
@@ -663,6 +769,15 @@ public class StaffScreenModel extends LoginModel {
 		return targetOrders;
 	}
 	
+	/**
+	 * Takes a time formatted string string which is aimed at finding orders which were registered within specified time intervals, 
+	 * and takes a string input group which determines which table in the database to search ('stored orders'
+	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain
+	 * the specified time strings in their orders.
+	 * @param group
+	 * @param tableNum
+	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
+	 */
 	ArrayList<Order> searchByTime(String group, String beginHour, String beginMinute, String endHour, String endMinute) {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
@@ -713,6 +828,12 @@ public class StaffScreenModel extends LoginModel {
 		return targetOrders;
 	}
 	
+	/**
+	 * Takes a string instructing the method what set or 'group' of orders to query, and then outputs all the orders from that group 
+	 * as an ArrayList
+	 * @param group
+	 * @return ArrayList<Order> targetOrders: all the order objects from specified group of orders
+	 */
 	ArrayList<Order> getAllOrders(String group) {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
@@ -753,6 +874,10 @@ public class StaffScreenModel extends LoginModel {
 	
 	// Menu queries
 	
+	/**
+	 * Retrieves all food objects from the menu which might have been edited by a manager
+	 * @return ArrayList<Food> : all the food objects in the menu
+	 */
 	ArrayList<Food> getAllFoodFromMenu() {
 		ArrayList<Food> targetFoods = new ArrayList<Food>();
 		PreparedStatement prepStmt = null;
@@ -777,6 +902,10 @@ public class StaffScreenModel extends LoginModel {
 		return targetFoods;
 	}
 	
+	/**
+	 * Takes three strings, a username, activity description, and a timestamps, and then registers a new record
+	 * into the activityLog
+	 */
 	public void saveActivityEntryToDB(String user, String act, String timestamp) {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT INTO activityLog (username, activityEntry, time) VALUES (? ,?, ?)";

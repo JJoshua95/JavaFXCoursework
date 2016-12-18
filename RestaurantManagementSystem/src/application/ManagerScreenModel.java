@@ -5,10 +5,21 @@ import java.util.ArrayList;
 
 import javafx.collections.ObservableList;
 
+//This class makes use of a 3rd party library, the SQLite JDBC Driver 
+//available from https://bitbucket.org/xerial/sqlite-jdbc/downloads
+
+/**
+ * This class handles the sqlite queries and database interactions needed for the manager screen, manager screen controller 
+ * inputs are passed to methods in this class
+ * @author jarrod joshua
+ */
 public class ManagerScreenModel extends StaffScreenModel {
 	
 	private Connection connection;
 	
+	/**
+	 * The class constructor establishes a connection with the database or exits the program if no connection is found
+	 */
 	ManagerScreenModel() {
 		connection = SqliteConnection.Connector();
 		if (connection == null) {
@@ -17,6 +28,9 @@ public class ManagerScreenModel extends StaffScreenModel {
 		
 	}
 	
+	/**
+	 * returns a boolean true if the database is connected or false if it is not.
+	 */
 	boolean isDbConnected() {
 		try {
 			return !connection.isClosed();
@@ -29,6 +43,11 @@ public class ManagerScreenModel extends StaffScreenModel {
 	
 	// ============ Staff queries =================
 	
+	/**
+	 * Queries the database to retrieve all staff account elements and output an arraylist containing all Staff objects 
+	 * associated with the system
+	 * @return ArrayList<Staff> targetStaff a list of all staff objects in the database
+	 */
 	ArrayList<Staff> getAllEmployeesFromDB() {
 		ArrayList<Staff> targetStaff = new ArrayList<Staff>();
 		PreparedStatement prepStmt = null;
@@ -56,6 +75,14 @@ public class ManagerScreenModel extends StaffScreenModel {
 		return targetStaff;
 	}
 	
+	/**
+	 * Takes an integer id number, and strings for the username, password and isManager fields of a Staff object,
+	 * then add these as a new record into the database staff table.
+	 * @param id
+	 * @param user
+	 * @param pw
+	 * @param managerVerified
+	 */
 	void addStaffAccountIntoDB(int id, String user, String pw, String managerVerified) {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT OR REPLACE INTO staff (id, username, password, isManager) VALUES (?, ?, ?, ?)";
@@ -73,6 +100,15 @@ public class ManagerScreenModel extends StaffScreenModel {
 		}
 	}
 	
+	/**
+	 * Takes an integer id number, and strings for the username, password and isManager fields of a Staff object,
+	 * then finds a corresponding record in the staff table of the database and deletes the record coresponding to
+	 * the inputs.
+	 * @param id
+	 * @param user
+	 * @param pw
+	 * @param managerVerified
+	 */
 	void deleteStaffAccountFromDB(int id, String user, String pw, String managerVerified) {
 		PreparedStatement prepStmt = null;
 		String query = "DELETE FROM staff WHERE id = ? AND username = ? AND password = ? AND isManager = ?";
@@ -90,6 +126,11 @@ public class ManagerScreenModel extends StaffScreenModel {
 		}
 	}
 	
+	/**
+	 * Takes a username string and queries the database to find a list of activity logs recorded from the corresponding staff account
+	 * @param user
+	 * @return ArrayList<ActivityLog> a list of ActivityLog objects ready for display on a tableview
+	 */
 	ArrayList<ActivityLog> getActivityLogForEmployee(String user) {
 		ArrayList<ActivityLog> targetActivity = new ArrayList<ActivityLog>();
 		PreparedStatement prepStmt = null;
@@ -119,6 +160,11 @@ public class ManagerScreenModel extends StaffScreenModel {
 	
 	// ========================= Menu queries ==================================
 	
+	/**
+	 * Takes a name string and price double and inserts a new Food item into the menu table of the database.
+	 * @param name
+	 * @param cost
+	 */
 	void addNewDishToMenuDB(String name, double cost) {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT OR REPLACE INTO menu (menuItem, price) VALUES (?, ?)";
@@ -135,6 +181,11 @@ public class ManagerScreenModel extends StaffScreenModel {
 		}
 	}
 	
+	/**
+	 * Takes a name string and price double and deletes the corresponding Food item from the menu table of the database.
+	 * @param name
+	 * @param cost
+	 */
 	void deleteDishFromMenuDB(String name, double cost) {
 		PreparedStatement prepStmt = null;
 		String query = "DELETE FROM menu WHERE menuItem = ? AND price = ?";
@@ -151,6 +202,10 @@ public class ManagerScreenModel extends StaffScreenModel {
 		}
 	}
 	
+	/**
+	 * Takes strings for the username, activity description, and timestamp, then inserts a new record
+	 * with all of these into the activityLog table for managers to track.
+	 */
 	public void saveActivityEntryToDB(String user, String act, String timestamp) {
 		PreparedStatement prepStmt = null;
 		String query = "INSERT INTO activityLog (username, activityEntry, time) VALUES (? ,?, ?)";
@@ -170,6 +225,11 @@ public class ManagerScreenModel extends StaffScreenModel {
 	
 	// Export queries ========================================================
 	
+	/**
+	 * searches both stored orders and (working) orders tables for all of their order records and returns an arraylist containing every order 
+	 * in the system ready for display in a table
+	 * @return ArrayList<Order> targetOrders: all the order objects in the system
+	 */
 	ArrayList<Order> getAllOrders() {
 		ArrayList<Order> targetOrders = new ArrayList<Order>();
 		PreparedStatement prepStmt = null;
@@ -201,6 +261,11 @@ public class ManagerScreenModel extends StaffScreenModel {
 	
 	// Import Queries =========================================================
 	
+	/**
+	 * Takes a list of order objects (in this ocntext imported from a csv file) and then saves each of them into the stored records
+	 * table in the database
+	 * @param csvImport
+	 */
 	void saveImportToDB(ObservableList<Order> csvImport) {
 		try {
 			for (Order o : csvImport) {

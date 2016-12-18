@@ -12,7 +12,7 @@ import java.sql.*;
  * This class makes use of a 3rd party library, the SQLite JDBC Driver 
  * available from https://bitbucket.org/xerial/sqlite-jdbc/downloads
  * 
- * @author Jarrod Joshua
+ * @author jarrod joshua
  */
 
 public class SqliteConnection {

@@ -40,6 +40,10 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+/**
+ * This class handles the logic behind the StaffScreen GUI, besides direct database interactions
+ * @author jarrod joshua
+ */
 public class StaffScreenController implements Initializable {
 
 	private StaffScreenModel staffModel = new StaffScreenModel();
