@@ -16,3 +16,7 @@ the relevent credentials will be prevented access to the system.
 - You can edit the menus. 
 - You can export a list of orders in CSV format. 
 - You can import a CSV file encoding a list of orders (each line representing an order, and the fields must be in the order that they are written in the tables, ant fields containing commas must be surronded by speech marks). These orders are then displayed in a table on the import screen. You can then press save to store these orders into the stored orders table of the database.
+- A template for importing CSV files is included in the submission folder called csvTemplate
+- There is a failsafe in case someone deletes the .SQLite file, a special account with the username: admin and password: password. The CREATE IF NOT EXISTS queries are executed and a special account inserted every time the application is launched so there is always a way back in even if all the tables and data are lost.
+
+-Demonstration youtube video https://www.youtube.com/watch?v=zN7DX3uz6_M

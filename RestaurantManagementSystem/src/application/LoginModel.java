@@ -181,7 +181,7 @@ public class LoginModel {
 	 */
 	void insertAdminAccount() {
 		PreparedStatement prepStmt = null;
-		String query = "INSERT INTO staff (id, username, password, isManager) VALUES (99 , 'admin', 'password', 'true')";
+		String query = "INSERT OR REPLACE INTO staff (id, username, password, isManager) VALUES (99 , 'admin', 'password', 'true')";
 		try {
 			prepStmt = connection.prepareStatement(query);
 			prepStmt.execute();
