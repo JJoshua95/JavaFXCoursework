@@ -221,7 +221,7 @@ public class StaffScreenController implements Initializable {
 							DecimalFormat df = new DecimalFormat("#.00");
 							// to print the price to 2dp i.e. to the nearest
 							// penny
-							setText(f.getMenuItemName() + " : £ " + df.format(f.getPrice()));
+							setText(f.getMenuItemName() + " : £" + df.format(f.getPrice()));
 						} else {
 							setText(null);
 						}
@@ -243,7 +243,7 @@ public class StaffScreenController implements Initializable {
 							DecimalFormat df = new DecimalFormat("#.00");
 							// to print the price to 2dp i.e. to the nearest
 							// penny
-							setText(f.getMenuItemName() + " : £ " + df.format(f.getPrice()));
+							setText(f.getMenuItemName() + " : £" + df.format(f.getPrice()));
 						} else {
 							setText(null);
 						}

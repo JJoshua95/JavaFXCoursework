@@ -25,7 +25,7 @@
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="FLORALWHITE" height="33.0" layoutX="919.0" layoutY="5.0" stroke="#dddddd" strokeType="INSIDE" width="293.0" />
       <Button layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#signOut" text="Sign Out" textFill="#f50303" />
-      <Label fx:id="lblUser" layoutX="924.0" layoutY="8.0" prefHeight="27.0" prefWidth="287.0" text="Username Label" textFill="#0759ff" />
+      <Label fx:id="lblUser" layoutX="961.0" layoutY="8.0" prefHeight="27.0" prefWidth="251.0" text="Username Label" textFill="#0759ff" />
       <TabPane layoutY="42.0" prefHeight="675.0" prefWidth="1215.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="         Current Orders          ">
@@ -167,6 +167,6 @@
         </tabs>
       </TabPane>
       <Button fx:id="switchToManageBtn" layoutX="99.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchToManagerScreen" text="Manage" />
-      <Label layoutX="826.0" layoutY="15.0" text="Current User:" />
+      <Label layoutX="925.0" layoutY="13.0" text="User:" />
    </children>
 </AnchorPane>

@@ -54,7 +54,7 @@
                               <TextField fx:id="managePasswordTxt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Label text="StaffID" GridPane.rowIndex="3" />
                               <Label prefHeight="17.0" prefWidth="144.0" text="Manager Priviledges?" GridPane.rowIndex="4" />
-                              <ComboBox fx:id="isManagerCB" onAction="#enableAddAccount" prefWidth="150.0" promptText="Manager" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <ComboBox fx:id="isManagerCB" onAction="#enableAddAccount" prefWidth="150.0" promptText="Manager?" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <TextField fx:id="manageStaffIdTxt" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Button fx:id="addStaffBtn" mnemonicParsing="false" onAction="#addNewStaffAccount" prefHeight="27.0" prefWidth="144.0" text="Add Account" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <Button fx:id="removeStaffbtn" alignment="CENTER" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#deletedSelectedAccount" prefHeight="27.0" prefWidth="143.0" text="Delete" GridPane.columnIndex="1" GridPane.rowIndex="6" />
@@ -169,8 +169,8 @@
         </tabs>
       </TabPane>
       <Button layoutX="10.0" layoutY="8.0" mnemonicParsing="false" onAction="#signOut" text="Sign Out" textFill="RED" />
-      <Label fx:id="lblUser" layoutX="901.0" layoutY="7.0" prefHeight="27.0" prefWidth="294.0" text="Username Label" textFill="#0759ff" />
+      <Label fx:id="lblUser" layoutX="941.0" layoutY="8.0" prefHeight="27.0" prefWidth="249.0" text="Username Label" textFill="#0759ff" />
       <Button fx:id="switchToStaffBtn" layoutX="92.0" layoutY="8.0" mnemonicParsing="false" onAction="#switchToStaffScreen" text="Staff Screen" />
-      <Label layoutX="806.0" layoutY="13.0" text="Current User:" />
+      <Label layoutX="904.0" layoutY="13.0" text="User:" />
    </children>
 </AnchorPane>
