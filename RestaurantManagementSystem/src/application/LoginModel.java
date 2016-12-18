@@ -197,7 +197,9 @@ public class LoginModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Most Likely the admin account has already been inserted and cannot be overwritten");
-		} 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

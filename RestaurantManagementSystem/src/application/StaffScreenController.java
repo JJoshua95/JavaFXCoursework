@@ -810,6 +810,7 @@ public class StaffScreenController implements Initializable {
 				Scene scene = new Scene(root);
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				primaryStage.setScene(scene);
+				primaryStage.setTitle("Manager Screen");
 				primaryStage.show();
 
 			} catch (Exception e) {
@@ -839,6 +840,7 @@ public class StaffScreenController implements Initializable {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
+			primaryStage.setTitle("Restaurant Management System");
 			primaryStage.show();
 
 		} catch (Exception e) {

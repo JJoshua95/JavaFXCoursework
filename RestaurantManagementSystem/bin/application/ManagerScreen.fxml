@@ -18,7 +18,7 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ManagerScreenController">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d3e7ff" height="33.0" layoutX="1004.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="188.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="FLORALWHITE" height="34.0" layoutX="895.0" layoutY="3.0" stroke="#dddddd" strokeType="INSIDE" width="301.0" />
       <TabPane layoutY="40.0" prefHeight="560.0" prefWidth="1200.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Manage Staff Accounts">
@@ -169,7 +169,8 @@
         </tabs>
       </TabPane>
       <Button layoutX="10.0" layoutY="8.0" mnemonicParsing="false" onAction="#signOut" text="Sign Out" textFill="RED" />
-      <Label fx:id="lblUser" alignment="CENTER_RIGHT" layoutX="1057.0" layoutY="6.0" prefHeight="27.0" prefWidth="128.0" text="Username Label" textFill="#323232" />
+      <Label fx:id="lblUser" layoutX="901.0" layoutY="7.0" prefHeight="27.0" prefWidth="294.0" text="Username Label" textFill="#0759ff" />
       <Button fx:id="switchToStaffBtn" layoutX="92.0" layoutY="8.0" mnemonicParsing="false" onAction="#switchToStaffScreen" text="Staff Screen" />
+      <Label layoutX="806.0" layoutY="13.0" text="Current User:" />
    </children>
 </AnchorPane>

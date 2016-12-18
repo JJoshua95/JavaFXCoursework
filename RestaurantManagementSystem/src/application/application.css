@@ -1,8 +1,27 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 
+/* #FFFAF0 complement color using http://www.color-hex.com */ 
+
 .root {
-	
-	-fx-background-color: #8fbc8f ;
-	
+	-fx-background-color: #f0f5ff ;
 }
 
+.tab {
+    -fx-background-color: #FFFAF0;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #f0f5ff;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #588FFF ;
+}
+
+.list-view {
+	-fx-background-color: #FFFAF0 ;
+}
+
+-table-view {
+	-fx-background-color: #FFFAF0 ;
+}

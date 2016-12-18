@@ -521,8 +521,8 @@ public class ManagerScreenController implements Initializable {
 	 * stored orders.
 	 */
 	public void saveImportedCsvOrderToSystem() {
-		if (ordersForPossibleImport == null) {
-			importStatusTxt.setText("No CSV file has been imported into the system.");
+		if (ordersForPossibleImport.isEmpty()) {
+			importStatusTxt.setText("No CSV file has been imported into the system yet.");
 		} else {
 			// add imported orders to stored order table in database
 			managerModel.saveImportToDB(ordersForPossibleImport);
@@ -577,6 +577,7 @@ public class ManagerScreenController implements Initializable {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
+			primaryStage.setTitle("Staff Screen");
 			primaryStage.show();
 		} catch (Exception e) {
 			System.err.println("Exception Caught");
@@ -600,6 +601,7 @@ public class ManagerScreenController implements Initializable {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
+			primaryStage.setTitle("Restaurant Management System");
 			primaryStage.show();
 			
 			// switch current user global variable to none for logging activity purposes
