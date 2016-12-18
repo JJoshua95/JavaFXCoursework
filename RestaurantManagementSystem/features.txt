@@ -1,1 +1,18 @@
-This restaurant management system has the following features:
+ ============================= This restaurant management system has the following features: =========================================
+
+- SQLite database holding all of the relevent data it needs to function in a file 'RestaurantDB.sqlite'
+- A login screen which verifies user access, whether they are regular staff, managers, or someone else who if they dont have
+the relevent credentials will be prevented access to the system.
+- The tables depicted as circles which you can click on and then view the order (if the table has a current working order) and edit
+- One click on a table allows you to view the order, a second click allows editing of the order.
+- Orders are wither current/working as in they are currently being served and can be viewed by clicking tables, or orders are marked as complete and can be found as stored orders.
+- The time of order is registerd when saving a new order only, when an order is updated by pressing save on an existing order it does not replace the original time so you don't lose track of when the order was first made if you need to change something.
+- You can edit/add food items comments, special requests, automattically calculate the total bill for items currently on the working order (not stored orders).
+- You can mark the order as complete and then click save, at which point it will no longer be in the current orders, it will be in the stored orders, so you can still search for it.
+- You can search either stored or current orders by each individual field (table number, list of items ordered, price, date, time, comments, special requests, whether the order is complete) of the order and view the corresponding orders in a table.
+- Accounts with manager level access can view both the staff screen and a special manager screen.
+- In the manager screen you can add, remove or modify staff accounts. 
+- You can view activity logs for staff accounts which are tracked by the current user logged in. 
+- You can edit the menus. 
+- You can export a list of orders in CSV format. 
+- You can import a CSV file encoding a list of orders (each line representing an order, and the fields must be in the order that they are written in the tables, ant fields containing commas must be surronded by speech marks). These orders are then displayed in a table on the import screen. You can then press save to store these orders into the stored orders table of the database.
