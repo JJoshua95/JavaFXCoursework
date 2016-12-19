@@ -14,6 +14,11 @@ import javafx.collections.ObservableList;
 
 /**
  * This class handles the database interactions needed for the StaffScreenController
+ * The methods and structure of this class are derived from the tutorials available from the ProgrammingKnowledge playlist 
+ * JavaFX tutorial for beginners : https://www.youtube.com/watch?v=9YrmON6nlEw&list=PLS1QulWo1RIaUGP446_pWLgTZPiFizEMq
+ * This class makes use of a 3rd party library, the SQLite JDBC Driver 
+ * available from https://bitbucket.org/xerial/sqlite-jdbc/downloads
+ * http://www.tutorialspoint.com/sqlite/ also used this tutorial as a reference for SQLite queries
  * @author jarrod joshua
  */
 public class StaffScreenModel extends LoginModel {
@@ -33,6 +38,7 @@ public class StaffScreenModel extends LoginModel {
 	
 	/**
 	 * Returns true if the database is connected, false if it is not.
+	 * @return boolean : true if the database is connected, false if not
 	 */
 	boolean isDbConnected() {
 		try {
@@ -46,14 +52,14 @@ public class StaffScreenModel extends LoginModel {
 	
 	/**
 	 * Checks if the input tableNo already has a working order in the database, if it does it updates all fields apart from the time of order, 
-	 * (and the tableNo as that wouldn't make sense). If there is not working order for the inputted table then the record is simply inserted.
-	 * @param tableNum
-	 * @param orderList
-	 * @param totalBill
-	 * @param specialReqs
-	 * @param comments
-	 * @param isComplete
-	 * @param inDate
+	 * (and the tableNo as that wouldn't make sense). If there is not working order for the inputed table then the record is simply inserted.
+	 * @param tableNum : int specifying the table number of the order you want to save
+	 * @param orderList : ObservableList<Food> detailing the items customers at a table requested
+	 * @param totalBill : double specifying the total price of all the items the customers ordered
+	 * @param specialReqs : String recorded with the order detailing customers requests like allergies being considered etc
+	 * @param comments : String recorded with the order detailing any comments deemed relevant by staff
+	 * @param isComplete : String "true" or "false" specifying whether the order had been finished or was still being served
+	 * @param inDate : formatted String encoding the date/time the order was first made on an empty table.
 	 * @throws SQLException
 	 */
 	void saveCurrentOrderToDatabase(int tableNum, ObservableList<Food> orderList, double totalBill, String specialReqs,
@@ -148,9 +154,9 @@ public class StaffScreenModel extends LoginModel {
 	
 	/**
 	 * This takes a table number and queries the database to find the food items saved in that table order and puts them in 
-	 * an ArrayList that can be passed to the listviews and displayed with ease.
-	 * @param tableNoVal
-	 * @return ArrayList<Food> targetOrder
+	 * an ArrayList that can be passed to the ListViews and displayed with ease.
+	 * @param tableNoVal : int specifying the table number the order was registered with originally
+	 * @return ArrayList<Food> targetOrder : an ArrayList containing the Food objects that the customers on that table ordered originally
 	 * @throws SQLException
 	 */
 	ArrayList<Food> retrieveATableOrderFromDB(int tableNoVal) throws SQLException {
@@ -214,8 +220,8 @@ public class StaffScreenModel extends LoginModel {
 	/**
 	 * Takes a table number input and then retrieves the total bill associated with that tables order from 
 	 * the database as a double.
-	 * @param tableNum
-	 * @return Double totalFromDB the total price of the ordered items from an order
+	 * @param tableNum : int specifying the table number of the customers who made the order
+	 * @return Double : totalFromDB the total price of the ordered items from an order
 	 * @throws SQLException 
 	 */
 	Double getTotalPriceFromDB(int tableNum) throws SQLException {
@@ -240,8 +246,8 @@ public class StaffScreenModel extends LoginModel {
 	
 	/**
 	 * Takes a table number input and then fetches the special requests entry of that tables order from the database as a string.
-	 * @param tableNum
-	 * @return specialReqs String
+	 * @param tableNum : specifying the table number where the staff member first recorded the order
+	 * @return specialReqs : String detailing any extra requests the customers made
 	 * @throws SQLException 
 	 */
 	String getSpecialRequestsFromDB(int tableNum) throws SQLException {
@@ -265,9 +271,9 @@ public class StaffScreenModel extends LoginModel {
 	}
 	
 	/**
-	 * Takes a table number input and then retrieves the comments from an order as a sring
-	 * @param tableNum
-	 * @return comments String
+	 * Takes a table number input and then retrieves the comments from an order saved on that table as a string
+	 * @param tableNum : int specifying the table number were the order was made
+	 * @return comments : String detailing any comments made by the staff for the order on that table
 	 * @throws SQLException 
 	 */
 	String getCommentsFromDB(int tableNum) throws SQLException {
@@ -291,9 +297,9 @@ public class StaffScreenModel extends LoginModel {
 	}
 	
 	/**
-	 * Takes a table number input and finds whether the order has been marked as complete or not as a string.
-	 * @param tableNum
-	 * @return String isComplete, either true or false , not boolean but string outputs.
+	 * Takes a table number input and finds whether the order on that table has been marked as complete or not as a string.
+	 * @param tableNum : int specifying the table where the order is currently saved
+	 * @return String isComplete, either "true" or "false", not boolean but string outputs specifying whether the order is completed.
 	 * @throws SQLException 
 	 */
 	String getIsComplete(int tableNum) throws SQLException {
@@ -317,9 +323,9 @@ public class StaffScreenModel extends LoginModel {
 	}
 	
 	/**
-	 * Takes a table number input and then outputs a date and a time that the order was first saved at, as a single string
-	 * @param tableNum
-	 * @return date String
+	 * Takes a table number input and then outputs a date and a time that the order was first saved at, as a single String 
+	 * @param tableNum : int specifying the table where an order may be saved
+	 * @return date : String with the formatted date and time together separated by a space when the order was first made
 	 * @throws SQLException 
 	 */
 	String getDateToDisplay(int tableNum) throws SQLException {
@@ -346,7 +352,7 @@ public class StaffScreenModel extends LoginModel {
 	
 	/**
 	 * Takes a table number input, finds the corresponding working order and then removes it completely from the system.
-	 * @param tableNum
+	 * @param tableNum : int specifying the table where the order was first registered
 	 * @throws SQLException 
 	 */
 	void deleteCurrentOrderFromDB(int tableNum) throws SQLException {
@@ -374,13 +380,13 @@ public class StaffScreenModel extends LoginModel {
 	 * Takes all the order components and then inserts the order into the stored orders (not the current working orders)
 	 * this is combined with deleting the same order from the current orders therefore having the effect of moving the order 
 	 * from working to stored.
-	 * @param tableNum
-	 * @param orderList
-	 * @param totalBill
-	 * @param specialReqs
-	 * @param comments
-	 * @param isComplete
-	 * @param inDate
+	 * @param tableNum : int specifying the table where the order has been registered
+	 * @param orderList : ObservableList<Food> detailing the items the customer ordered as part of their order
+	 * @param totalBill : double specifying the total all the prices of each Food item the customer ordered added up
+	 * @param specialReqs : String detailing any requests like allergy help customers asked for
+	 * @param comments : String detailing any comments saved with the order
+	 * @param isComplete : String "true" or "false" only indicating whether the order has been completed
+	 * @param inDate : String specifying formatted the date and time the order was first registered at
 	 * @throws SQLException
 	 */
 	void moveCurrentOrderToStorage(int tableNum, ObservableList<Food> orderList, double totalBill, String specialReqs,
@@ -444,10 +450,10 @@ public class StaffScreenModel extends LoginModel {
 	// ------------------------------ Deal with TableView queries ------------------------
 	
 	/**
-	 * Takes a table number integer input, and takes a string input group which determines which table in the database to search ('stored orders'
-	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders with the inputted table number
-	 * @param group
-	 * @param tableNum
+	 * Takes a table number integer input, and takes a String input group which determines which table in the database to search ('stored orders'
+	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders with the inputed table number
+	 * @param group : String specifying what table in the database to search through records in 
+	 * @param tableNum : int specifying what table in the restaurant to look for
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
 	 * @throws SQLException 
 	 */
@@ -497,12 +503,12 @@ public class StaffScreenModel extends LoginModel {
 	}
 	
 	/**
-	 * Takes a string input which is aimed at finding orders with specified food items, 
+	 * Takes a String input which is aimed at finding orders with specified food items, 
 	 * and takes a string input group which determines which table in the database to search ('stored orders'
 	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain 
 	 * specified food items in their orders.
-	 * @param group
-	 * @param tableNum
+	 * @param group : String specifying what table in the database to search in through records in 
+	 * @param inputItem : String specifying what terms to look for in the orderList field of food items ordered
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
 	 * @throws SQLException 
 	 */
@@ -556,8 +562,8 @@ public class StaffScreenModel extends LoginModel {
 	 * and takes a string input group which determines which table in the database to search ('stored orders'
 	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain
 	 * the specified special requests strings in their orders.
-	 * @param group
-	 * @param tableNum
+	 * @param group : String specifying which table in the database to search through records in 
+	 * @param inputRequest : String specifying what Strings to find in the specialRequests fields
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
 	 * @throws SQLException 
 	 */
@@ -612,8 +618,8 @@ public class StaffScreenModel extends LoginModel {
 	 * and takes a string input group which determines which table in the database to search ('stored orders'
 	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain
 	 * the specified comments strings in their orders.
-	 * @param group
-	 * @param tableNum
+	 * @param group : String specifying which table in the database to search through records in 
+	 * @param inputComment : String to search for in the comments fields of orders
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
 	 * @throws SQLException 
 	 */
@@ -664,12 +670,13 @@ public class StaffScreenModel extends LoginModel {
 	}
 	
 	/**
-	 * Takes a string input which is aimed at finding orders whih bills fall within a specified price range, 
+	 * Takes a string input which is aimed at finding orders which bills fall within a specified price range, 
 	 * and takes a string input group which determines which table in the database to search ('stored orders'
 	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain
 	 * the specified special requests strings in their orders.
-	 * @param group
-	 * @param tableNum
+	 * @param group : String specifying what table in the database to search through records
+	 * @param inputStart : double specifying the beginning of price range you want to find orders in
+	 * @param inputEnd : double specifying the end of price range you want to find orders in
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
 	 * @throws SQLException 
 	 */
@@ -722,8 +729,8 @@ public class StaffScreenModel extends LoginModel {
 	 * and takes a string input group which determines which table in the database to search ('stored orders'
 	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain
 	 * the specified special requests strings in their orders.
-	 * @param group
-	 * @param tableNum
+	 * @param group : String specifying which table in the database to search through record in
+	 * @param inputWhetherComplete : String specifying whether to fins fields marked with "true" for complete or "false" for incomplete
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
 	 * @throws SQLException 
 	 */
@@ -775,8 +782,8 @@ public class StaffScreenModel extends LoginModel {
 	 * and takes a string input group which determines which table in the database to search ('stored orders'
 	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain
 	 * the specified date strings in their orders.
-	 * @param group
-	 * @param tableNum
+	 * @param group : String specifying what table in the database to search through records in
+	 * @param inputDate : String to search and match up with in the date field of the records
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
 	 * @throws SQLException 
 	 */
@@ -827,8 +834,11 @@ public class StaffScreenModel extends LoginModel {
 	 * and takes a string input group which determines which table in the database to search ('stored orders'
 	 * or just 'orders' for the working orders). This method then queries the database to retrieve any orders which contain
 	 * the specified time strings in their orders.
-	 * @param group
-	 * @param tableNum
+	 * @param group : String specifies which table in the database to search records in
+	 * @param beginHour : String specifying the hour (24 hour format) to begin searching at
+	 * @param beginMinute : String specifying the minute to begin searching at
+	 * @param endHour : String specifying the hour (24 hour format) to end searching at
+	 * @param endMinute : String specifying the minute to end searching at
 	 * @return ArrayList<Order> targetOrders: a list of orders which correspond with the inputs to look for
 	 * @throws SQLException 
 	 */
@@ -888,7 +898,7 @@ public class StaffScreenModel extends LoginModel {
 	/**
 	 * Takes a string instructing the method what set or 'group' of orders to query, and then outputs all the orders from that group 
 	 * as an ArrayList
-	 * @param group
+	 * @param group : String specifying which table in the database to look through
 	 * @return ArrayList<Order> targetOrders: all the order objects from specified group of orders
 	 * @throws SQLException 
 	 */
@@ -936,7 +946,7 @@ public class StaffScreenModel extends LoginModel {
 	// Menu queries
 	
 	/**
-	 * Retrieves all food objects from the menu which might have been edited by a manager
+	 * Retrieves all food objects from the menu which might have been edited by a manager ready for display in a ListView
 	 * @return ArrayList<Food> : all the food objects in the menu
 	 * @throws SQLException 
 	 */
@@ -968,7 +978,7 @@ public class StaffScreenModel extends LoginModel {
 	} 
 	
 	/**
-	 * Takes three strings, a username, activity description, and a timestamps, and then registers a new record
+	 * Takes three strings, a username, activity description, and a time stamp String, and then registers a new record
 	 * into the activityLog
 	 * @throws SQLException 
 	 */

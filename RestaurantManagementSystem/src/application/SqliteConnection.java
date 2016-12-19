@@ -11,6 +11,10 @@ import java.sql.*;
  * either makes use of this file in the same directory, or if the file is not found it will create an empty database of the same name
  * This class makes use of a 3rd party library, the SQLite JDBC Driver 
  * available from https://bitbucket.org/xerial/sqlite-jdbc/downloads
+ * The methods and structure of this class are derived from the tutorials available from the ProgrammingKnowledge playlist 
+ * JavaFX tutorial for beginners : https://www.youtube.com/watch?v=9YrmON6nlEw&list=PLS1QulWo1RIaUGP446_pWLgTZPiFizEMq
+ * This class makes use of a 3rd party library, the SQLite JDBC Driver 
+ * available from https://bitbucket.org/xerial/sqlite-jdbc/downloads
  * 
  * @author jarrod joshua
  */

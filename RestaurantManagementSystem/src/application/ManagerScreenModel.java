@@ -9,8 +9,12 @@ import javafx.collections.ObservableList;
 //available from https://bitbucket.org/xerial/sqlite-jdbc/downloads
 
 /**
- * This class handles the sqlite queries and database interactions needed for the manager screen, manager screen controller 
+ * This class handles the SQLite queries and database interactions needed for the manager screen, ManagerScreenController 
  * inputs are passed to methods in this class
+ * The methods and structure of this class are derived from the tutorials available from the ProgrammingKnowledge playlist 
+ * JavaFX tutorial for beginners : https://www.youtube.com/watch?v=9YrmON6nlEw&list=PLS1QulWo1RIaUGP446_pWLgTZPiFizEMq
+ * This class makes use of a 3rd party library, the SQLite JDBC Driver 
+ * available from https://bitbucket.org/xerial/sqlite-jdbc/downloads
  * @author jarrod joshua
  */
 public class ManagerScreenModel extends StaffScreenModel {
@@ -30,6 +34,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 	
 	/**
 	 * returns a boolean true if the database is connected or false if it is not.
+	 * @return boolean true if the database is connected or false if not
 	 */
 	boolean isDbConnected() {
 		try {
@@ -44,7 +49,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 	// ============ Staff queries =================
 	
 	/**
-	 * Queries the database to retrieve all staff account elements and output an arraylist containing all Staff objects 
+	 * Queries the database to retrieve all staff account elements and output an ArrayList containing all Staff record and objects 
 	 * associated with the system
 	 * @return ArrayList<Staff> targetStaff a list of all staff objects in the database
 	 * @throws SQLException 
@@ -82,10 +87,10 @@ public class ManagerScreenModel extends StaffScreenModel {
 	/**
 	 * Takes an integer id number, and strings for the username, password and isManager fields of a Staff object,
 	 * then add these as a new record into the database staff table.
-	 * @param id
-	 * @param user
-	 * @param pw
-	 * @param managerVerified
+	 * @param id : int number specifying the id attribute of this Staff object and its account
+	 * @param user : String specifying the username field of the Staff object
+	 * @param pw : String specifying the password field of the Staff object
+	 * @param managerVerified : String specifying if the staff account has manager access permission ("true") or if not ("false")
 	 * @throws SQLException 
 	 */
 	void addStaffAccountIntoDB(int id, String user, String pw, String managerVerified) throws SQLException {
@@ -109,12 +114,12 @@ public class ManagerScreenModel extends StaffScreenModel {
 	
 	/**
 	 * Takes an integer id number, and strings for the username, password and isManager fields of a Staff object,
-	 * then finds a corresponding record in the staff table of the database and deletes the record coresponding to
-	 * the inputs.
-	 * @param id
-	 * @param user
-	 * @param pw
-	 * @param managerVerified
+	 * then finds a corresponding record in the staff table of the database and deletes the record corresponding to
+	 * the all the inputs.
+	 * @param id : int number specifying the id attribute of this Staff object and its account
+	 * @param user : String specifying the username field of the Staff object
+	 * @param pw : String specifying the password field of the Staff object
+	 * @param managerVerified : String specifying if the staff account has manager access permission ("true") or if not ("false")
 	 * @throws SQLException 
 	 */
 	void deleteStaffAccountFromDB(int id, String user, String pw, String managerVerified) throws SQLException {
@@ -138,8 +143,8 @@ public class ManagerScreenModel extends StaffScreenModel {
 	
 	/**
 	 * Takes a username string and queries the database to find a list of activity logs recorded from the corresponding staff account
-	 * @param user
-	 * @return ArrayList<ActivityLog> a list of ActivityLog objects ready for display on a tableview
+	 * @param user : String specifying a username attribute of a staff record, in this case the account who's activity you want to see.
+	 * @return ArrayList<ActivityLog> a list of ActivityLog objects ready for display on a TableView
 	 * @throws SQLException 
 	 */
 	ArrayList<ActivityLog> getActivityLogForEmployee(String user) throws SQLException {
@@ -176,8 +181,8 @@ public class ManagerScreenModel extends StaffScreenModel {
 	
 	/**
 	 * Takes a name string and price double and inserts a new Food item into the menu table of the database.
-	 * @param name
-	 * @param cost
+	 * @param name : String input for the name of the new Food object you want to add to the menu
+	 * @param cost : double input specifying the price you want to charge for this new Food object in the menu
 	 * @throws SQLException 
 	 */
 	void addNewDishToMenuDB(String name, double cost) throws SQLException {
@@ -199,9 +204,10 @@ public class ManagerScreenModel extends StaffScreenModel {
 	}
 	
 	/**
-	 * Takes a name string and price double and deletes the corresponding Food item from the menu table of the database.
-	 * @param name
-	 * @param cost
+	 * Takes a name string and price double then searches the table menu and 
+	 * and deletes the corresponding Food item from the menu table of the database.
+	 * @param name : String input for the name of the Food object you want to delete from the menu
+	 * @param cost : double input specifying the price of the Food object you want removed from the menu
 	 * @throws SQLException 
 	 */
 	void deleteDishFromMenuDB(String name, double cost) throws SQLException {
@@ -223,8 +229,11 @@ public class ManagerScreenModel extends StaffScreenModel {
 	}
 	
 	/**
-	 * Takes strings for the username, activity description, and timestamp, then inserts a new record
+	 * Takes string inputs from the GUI prompts for the username, activity description, and time stamp, then inserts a new record
 	 * with all of these into the activityLog table for managers to track.
+	 * @param user : String specifying the username of a staff account
+	 * @param act : String describing an activity or action the user currently logged in has performed
+	 * @param timestamp : String formatted with the date and time the activity was performed
 	 * @throws SQLException 
 	 */
 	public void saveActivityEntryToDB(String user, String act, String timestamp) throws SQLException {
@@ -249,7 +258,7 @@ public class ManagerScreenModel extends StaffScreenModel {
 	// Export queries ========================================================
 	
 	/**
-	 * searches both stored orders and (working) orders tables for all of their order records and returns an arraylist containing every order 
+	 * Searches both stored orders and (working) orders tables for all of their records and returns an ArrayList containing every order 
 	 * in the system ready for display in a table
 	 * @return ArrayList<Order> targetOrders: all the order objects in the system
 	 * @throws SQLException 
@@ -289,9 +298,10 @@ public class ManagerScreenModel extends StaffScreenModel {
 	// Import Queries =========================================================
 	
 	/**
-	 * Takes a list of order objects (in this context imported from a csv file) and then saves each of them into the stored records
+	 * Takes a list of order objects (in this context imported from a CSV file) and then saves each of them into the stored records
 	 * table in the database
-	 * @param csvImport
+	 * @param csvImport : an ObservableList<Order> holding all of the orders you want to save to the stored orders table 
+	 * (orders in this context were read from a CSV file opened on the import page with a FileChooser)
 	 * @throws SQLException 
 	 */
 	void saveImportToDB(ObservableList<Order> csvImport) throws SQLException {

@@ -43,16 +43,18 @@ import com.opencsv.*; // this class makes use of the free openCSV parser 3rd par
 // This class makes use of the opencsv library available from : http://opencsv.sourceforge.net/
 
 /**
- * This class provides the logic (besides any direct database interactions) behind the Manager Screen GUI
+ * This class provides the logic (besides any direct database interactions) behind the Manager Screen GUI controls
  * Makes use of the opencsv java library available from: http://opencsv.sourceforge.net/
+ * The methods and structure of this class are derived from the tutorials available from the ProgrammingKnowledge playlist 
+ * JavaFX tutorial for beginners : https://www.youtube.com/watch?v=9YrmON6nlEw&list=PLS1QulWo1RIaUGP446_pWLgTZPiFizEMq
+ * This class makes use of the opencsv library available from : http://opencsv.sourceforge.net/
  * @author jarrod joshua
- *
  */
 public class ManagerScreenController implements Initializable {
 	
-	private ManagerScreenModel managerModel = new ManagerScreenModel();
+	private ManagerScreenModel managerModel = new ManagerScreenModel(); // To access the database
 	
-	// Hold login details of current user 
+	// Hold login details of current user for activity logging
 	private String usernameStr;
 	private String passwordStr;
 	
@@ -149,7 +151,7 @@ public class ManagerScreenController implements Initializable {
 	private ObservableList<Order> ordersForPossibleExport; // all the stored and current orders from database (can export anything)
 	
 	// Import Orders Variables ======================================================================
-	private ObservableList<Order> ordersForPossibleImport; // array to hold orders from a csv file, can be saved in stored orders 
+	private ObservableList<Order> ordersForPossibleImport; // array to hold orders from a CSV file, can be saved in stored orders 
 	
 	@FXML
 	private TableView<Order> importTableView;
@@ -304,7 +306,7 @@ public class ManagerScreenController implements Initializable {
 	// Handle managing staff accounts
 	
 	/**
-	 * enables clicking the add staff account button, which is disabled initially.
+	 * enables clicking the add staff account button, which is disabled initially to prevent user errors
 	 */
 	public void enableAddAccount() {
 		addStaffBtn.setDisable(false);
@@ -312,8 +314,9 @@ public class ManagerScreenController implements Initializable {
 	}
 	
 	/**
-	 * Reads from user inputs and then inputs a username, password, id number, and whether the new account has manager 
-	 * level access or not, and then passes these to a managerModel object method which then queries the database and inserts a new record.
+	 * Reads from user inputs from the GUI and then inputs a username, password, id number, and whether the new account has manager 
+	 * level access or not, and then passes these to a ManagerModel object method which then queries the database and inserts a new corresponding 
+	 * record.
 	 */
 	public void addNewStaffAccount() {
 		try {
@@ -343,8 +346,8 @@ public class ManagerScreenController implements Initializable {
 	}
 	
 	/**
-	 * Retrieves the staff account credentialsfrom a selected staff TableView row, and then passes these to a ManagerModel 
-	 * method to query the database to delete the corresponding record from the database and the system.
+	 * Retrieves the staff account credentials from a selected staff TableView row, and then passes these to a ManagerModel 
+	 * method to query the database to delete the corresponding record from the database and the system and then update the table.
 	 */
 	public void deletedSelectedAccount() {
 		try {
@@ -375,7 +378,7 @@ public class ManagerScreenController implements Initializable {
 	
 	/**
 	 * Gets the username string from the selected ListView staff object and then queries the database using a ManagerModel method
-	 * to retieve all activity log entries for that account and display them to the activity TableView
+	 * to retrieve all activity log entries for that account and display them to the activity TableView
 	 * @throws SQLException 
 	 */
 	public void getSelectedEmployeeActivity() throws SQLException {
@@ -395,7 +398,7 @@ public class ManagerScreenController implements Initializable {
 	// =========================== Handle editing menu ===================================
 	
 	/**
-	 * Takes the user inputted name and price for a new food item, and then uses a ManagerModel method to 
+	 * Takes the user inputed name from the GUI and price for a new food item, and then uses a ManagerModel method to 
 	 * insert the new item into the menu table of the database.
 	 */
 	public void saveNewDishToMenu() {
@@ -459,8 +462,9 @@ public class ManagerScreenController implements Initializable {
 	// Export handling ===================================================================
 	
 	/**
-	 * Takes a selection of orders from the TableView and puts them into a list, then these are looped through
+	 * Takes a selection of orders from the TableView and puts them into a list, these are then looped through
 	 * and their components written to a file in CSV format. This method also takes the filename you want to write to.
+	 * Careful not to enter filenames you don't want to overwrite.
 	 * @throws SQLException 
 	 */
 	public void exportSelectedOrders() throws SQLException {
@@ -506,9 +510,10 @@ public class ManagerScreenController implements Initializable {
 	
 	/**
 	 * This method uses a 3rd party library available from http://opencsv.sourceforge.net/
-	 * This takes a csv file chosen from a javafx filechooser and parses it to retrive the individual order
-	 * components on each line (every new line is a lone order) and passes each of these arguments to an order constructor
-	 * then all the orders are put in an observable list and displaye din a table.
+	 * This takes a CSV file chosen from a JavaFX FileChooser and parses it to retrieve the individual order
+	 * components (the inputs for the properties of an Order object) on each line (every new line is a single order) 
+	 * and passes each of these arguments to an order constructor
+	 * then all the orders are put in an observable list and displayed in a table.
 	 */
 	public void importCsvFormattedOrder() {
 		ArrayList<Order> csvFileOrders = new ArrayList<Order>();
@@ -549,8 +554,8 @@ public class ManagerScreenController implements Initializable {
 	}
 	
 	/**
-	 * This takes an observable list of orders displayed in the tableview and saves and appends them to the
-	 * stored orders.
+	 * This takes the observable list of imported orders (displayed in the TableView in this context) then saves and appends them to the
+	 * stored orders table in the database.
 	 * @throws SQLException 
 	 */
 	public void saveImportedCsvOrderToSystem() throws SQLException {
@@ -575,7 +580,7 @@ public class ManagerScreenController implements Initializable {
 	
 	/**
 	 * Holds onto the username entry of the current user from the login screen and displays it on the GUI
-	 * @param user
+	 * @param user : a String specifying a 'username' field of a staff account record in the database
 	 */
 	void getUser(String user) {
 		lblUser.setText(user);
@@ -584,8 +589,9 @@ public class ManagerScreenController implements Initializable {
 	
 	/**
 	 * Holds onto the account credentials of the current user when switching between staff and manager screens or vice versa
-	 * @param user
-	 * @param pw
+	 * So you can reverify the account credentials before allowing access back in
+	 * @param user : a String specifying a 'username' field of a staff account record in the database
+	 * @param pw : a String specifying a 'password' field of a staff account record in the database
 	 */
 	void storeTemporaryCredentials(String user, String pw) {
 		usernameStr = user;
@@ -594,9 +600,9 @@ public class ManagerScreenController implements Initializable {
 	
 	// to allow manager to use staff screen no verification needed from this direction
 	/**
-	 * Upon clicking the staff screen button an event is passed to this method which then hides the manager sreen and displays 
-	 * the staff screen so the manager can also do some real work.
-	 * @param event
+	 * Upon clicking the staff screen button an event is passed to this method which then hides the manager screen and displays 
+	 * the staff screen so the manager can also do some serving if needed or edit current orders.
+	 * @param event : an action this method waits for before being called, in this case the clicking of the switch to staff screen button
 	 */
 	public void switchToStaffScreen(ActionEvent event) {
 		try {
@@ -621,7 +627,7 @@ public class ManagerScreenController implements Initializable {
 	/**
 	 * Upon clicking the sign out button the manager screen is hidden, the login screen opened, and the current user logged out, 
 	 * so his activity no longer logged.
-	 * @param event
+	 * @param event : an action the method waits for before being called, in this case the user clicking the sign out button
 	 */
 	public void signOut(ActionEvent event) {
 		try {
@@ -637,8 +643,6 @@ public class ManagerScreenController implements Initializable {
 			primaryStage.setTitle("Restaurant Management System");
 			primaryStage.show();
 			
-			// switch current user global variable to none for logging activity purposes
-			
 		} catch (Exception e) {
 			System.err.println("Exception Caught");
 			e.printStackTrace();
@@ -649,7 +653,7 @@ public class ManagerScreenController implements Initializable {
 	 * Takes a string description of a user activity or event, generates a date string, and keeps a note
 	 * of the currently logged in user, and passes them all to a manager model method to save a record to
 	 * the activityLog
-	 * @param activity
+	 * @param activity : a String description of an action or event the current user has performed.
 	 * @throws SQLException 
 	 */
 	public void saveActivityLog(String activity) throws SQLException {

@@ -1,6 +1,9 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+/* 
+ * The structure of this CSS content is derived from a tutorials available from the ProgrammingKnowledge playlist 
+ * JavaFX tutorial for beginners : https://www.youtube.com/watch?v=lL1HHWTBZm4&list=PLS1QulWo1RIaUGP446_pWLgTZPiFizEMq&index=7
+ */
 
-/* #FFFAF0 complement color using http://www.color-hex.com */ 
+/* #FFFAF0 complement colour using http://www.color-hex.com */ 
 
 .root {
 	-fx-background-color: #f0f5ff ;
@@ -23,7 +26,7 @@
 }
 
 .list-cell:filled:selected:focused, .list-cell:filled:selected {
-    -fx-background-color: blue;
+    -fx-background-color: #073799;
     -fx-text-fill: white;
 }
 

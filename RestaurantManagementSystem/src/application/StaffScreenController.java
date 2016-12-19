@@ -41,7 +41,9 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 /**
- * This class handles the logic behind the StaffScreen GUI, besides direct database interactions
+ * This class handles the logic behind the StaffScreen GUI controls, besides direct database interactions which the StaffScreenModel class handles
+ * The methods and structure of this class are derived from the tutorials available from the ProgrammingKnowledge playlist 
+ * JavaFX tutorial for beginners : https://www.youtube.com/watch?v=9YrmON6nlEw&list=PLS1QulWo1RIaUGP446_pWLgTZPiFizEMq
  * @author jarrod joshua
  */
 public class StaffScreenController implements Initializable {
@@ -201,7 +203,10 @@ public class StaffScreenController implements Initializable {
 
 	@FXML
 	private Button switchToManageBtn;
-
+	
+	// Used the following links to find out how to populate ListViews in this program
+	// http://stackoverflow.com/questions/36657299/how-can-i-populate-a-listview-in-javafx-using-custom-objects
+	// http://java-buddy.blogspot.co.uk/2013/05/implement-javafx-listview-for-custom.html
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
@@ -268,14 +273,14 @@ public class StaffScreenController implements Initializable {
 		specialRequestsTxt.setText("");
 		commentsTxt.setText("");
 
-		// set buttons to uneditable to begin until a table is selected.
+		// set buttons to not editable to begin until a table is selected.
 		addFoodItemBtn.setDisable(true);
 		removeFoodItemFromOrder.setDisable(true);
 		saveOrderBtn.setDisable(true);
 		deleteCurrentOrderBtn.setDisable(true);
 		calculateTotalBtn.setDisable(true);
 		orderCompleteCheckBox.setDisable(true);
-		// make the text areas uneditable
+		// make the text areas not editable
 		specialRequestsTxt.setEditable(false);
 		commentsTxt.setEditable(false);
 
@@ -303,13 +308,12 @@ public class StaffScreenController implements Initializable {
 
 	}
 
-	// --------------------------- Current Order GUI Controls
-	// --------------------------------------
+	// --------------------------- Current Order GUI Controls --------------------------------------
 	
 	/**
-	 * passes a food item selected from the menu and adds it to the current working order of the currently selected table when the
+	 * Passes a Food object selected from the menu ListView and adds it to the current working order of the currently selected table when the
 	 * add button is clicked.
-	 * @param event
+	 * @param event : an action the method waits for before being called but in this case it is the clicking of the add button
 	 */
 	public void addItemToOrder(ActionEvent event) {
 		if (menuListView.getSelectionModel().getSelectedItem() == null) {
@@ -323,8 +327,8 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * clears the listview of food items so it is blank by emptying the observable arraylist that populates it
-	 * and then setting the items of the listview to that empty list.
+	 * Clears the ListView of Food objects so it is blank by emptying the observable ArrayList that populates it
+	 * and then resetting the items of the ListView to that list which would now be empty.
 	 */
 	public void clearOrderListView() {
 		currentOrderObservableList.clear();
@@ -333,9 +337,9 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * removes a food item from the order listview which is highlighted or selected at the time of clicking the remove button
-	 * by removing the selectd item from the observable list and then resetting the listview items to the observable list
-	 * @param event
+	 * Removes a Food object from the current order ListView, which is highlighted or selected at the time of clicking the remove button,
+	 * by removing the selected item from the observable list and then resetting the ListView items to the now empty observable list
+	 * @param event : an action the method waits for before being called in this case it's the clicking of the remove button
 	 */
 	public void removeItemFromOrder(ActionEvent event) {
 		if (currentOrderListView.getSelectionModel().getSelectedItem() == null) {
@@ -349,9 +353,9 @@ public class StaffScreenController implements Initializable {
 	}
 
 	/**
-	 * This retrives all the order components for table 1 upon a first click then allows editing of these components upon a 
+	 * This retrieves all the order components for table 1 upon a first click then allows editing of these components upon a 
 	 * second click of the table image.
-	 * @param mouseEvent
+	 * @param mouseEvent : an action where the Circle representing this table is clicked with the mouse
 	 * @throws SQLException
 	 */
 	public void getTableOneOrder(MouseEvent mouseEvent) throws SQLException {
@@ -363,12 +367,14 @@ public class StaffScreenController implements Initializable {
 		sixClickCount = 0;
 		currentTableNo = 1;
 
-		// reset all click counts of other tables to avoid confusing editable
-		// statuses when switching tables
-		// or else you may click back on a new table one and it is immediately
-		// editable
-		// stop editing of orders on 1st click (enable editing of orders after a
-		// second click)
+		/*
+		 * Reset all click counts of other tables to avoid mixing up which tables should be editable
+		 * when switching tables.
+		 * or else you may click back on a new table one and it is immediately
+		 * editable
+		 * stop editing of orders on 1st click (enable editing of orders after a
+		 * second click)
+		 */
 		addFoodItemBtn.setDisable(true);
 		removeFoodItemFromOrder.setDisable(true);
 		saveOrderBtn.setDisable(true);
@@ -405,15 +411,15 @@ public class StaffScreenController implements Initializable {
 			commentsTxt.setEditable(true);
 			mouseEvent.consume();
 			// oneClickCount = 0; // can add this and remove consume method to
-			// allow switching of editable status on subsequent clicks
+			// allow switching of editable status on subsequent clicks but this seems unnecessary / confusing
 		}
 
 	}
 	
 	/**
-	 * This retrives all the order components for table 2 upon a first click then allows editing of these components upon a 
+	 * This retrieves all the order components for table 2 upon a first click then allows editing of these components upon a 
 	 * second click of the table image.
-	 * @param mouseEvent
+	 * @param mouseEvent : an action where the Circle representing this table is clicked with the mouse
 	 * @throws SQLException
 	 */
 	public void getTableTwoOrder(MouseEvent mouseEvent) throws SQLException {
@@ -463,9 +469,9 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This retrives all the order components for table 3 upon a first click, then allows editing of these components upon a 
+	 * This retrieves all the order components for table 3 upon a first click, then allows editing of these components upon a 
 	 * second click of the table image.
-	 * @param mouseEvent
+	 * @param mouseEvent : an action where the Circle representing this table is clicked with the mouse
 	 * @throws SQLException
 	 */
 	public void getTableThreeOrder(MouseEvent mouseEvent) throws SQLException {
@@ -516,9 +522,9 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This retrives all the order components for table 4 upon a first click then allows editing of these components upon a 
+	 * This retrieves all the order components for table 4 upon a first click then allows editing of these components upon a 
 	 * second click of the table image.
-	 * @param mouseEvent
+	 * @param mouseEvent : an action where the Circle representing this table is clicked with the mouse
 	 * @throws SQLException
 	 */
 	public void getTableFourOrder(MouseEvent mouseEvent) throws SQLException {
@@ -569,9 +575,9 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This retrives all the order components for table 5 upon a first click then allows editing of these components upon a 
+	 * This retrieves all the order components for table 5 upon a first click then allows editing of these components upon a 
 	 * second click of the table image.
-	 * @param mouseEvent
+	 * @param mouseEvent : an action where the Circle representing this table is clicked with the mouse
 	 * @throws SQLException
 	 */
 	public void getTableFiveOrder(MouseEvent mouseEvent) throws SQLException {
@@ -621,9 +627,9 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This retrives all the order components for table 6 upon a first click then allows editing of these components upon a 
+	 * This retrieves all the order components for table 6 upon a first click then allows editing of these components upon a 
 	 * second click of the table image.
-	 * @param mouseEvent
+	 * @param mouseEvent : an action where the Circle representing this table is clicked with the mouse
 	 * @throws SQLException
 	 */
 	public void getTableSixOrder(MouseEvent mouseEvent) throws SQLException {
@@ -675,10 +681,10 @@ public class StaffScreenController implements Initializable {
 	
 	/**
 	 * Takes all the components of the currently selected table and its working order and then writes them to the database.
-	 * If there is already an order for the selected database in the system all but the time of order will be overwritten. 
-	 * Therefore you still have the original time of the order.
+	 * If there is already an order for the selected database in the system all but the date and time of order will be overwritten. 
+	 * Therefore you still have the original time of the order when editing.
 	 * If the order is marked as complete then the record will be removed from the current working orders and then inserted into the
-	 * stored orders so that it is in the records but out of the way of staff handling the tables.
+	 * stored orders so that it is in the records but out of the way of staff directly handling the tables.
 	 * @throws SQLException
 	 */
 	public void saveCurrentOrder() throws SQLException {
@@ -730,8 +736,9 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This launches a confirmation dialog, if ok is clicked then the currenly selected order record will be erased from the database and
+	 * This launches a confirmation dialog, if OK is clicked then the currently selected order record will be erased from the database and
 	 * hence the system completely. It will not be in stored orders upon clicking delete.
+	 * http://code.makery.ch/blog/javafx-dialogs-official/ was used to find out how to implement dialogs
 	 * @throws SQLException 
 	 */
 	public void deleteCurrentOrder() throws SQLException {
@@ -758,7 +765,7 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This takes all the food items in the listview and finds the sum of their corresponding prices
+	 * This takes all the food items in the ListView and finds the sum of their corresponding prices
 	 * returning a double and displaying it on screen
 	 * @return double, the current price of the food items currently within the working order
 	 */
@@ -777,7 +784,7 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This takes the user inut variable from the login screen and passes it to a label on the staff screen.
+	 * This takes the user input variable from the login screen and passes it to a label on the staff screen.
 	 * @param user String, username input.
 	 */
 	void getUser(String user) {
@@ -785,10 +792,10 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This method takes user credentials and holds them in ocal variables when switching between manager and staff screens
+	 * This method takes user credentials and holds them in variables when switching between manager and staff screens
 	 * therefore allowing activity logging even when screens are switched.
-	 * @param user
-	 * @param pw
+	 * @param user : String representing the username field of the user account currently logged into the system
+	 * @param pw : String representing the password field of the user account that is currently logged in
 	 */
 	void storeTemporaryCredentials(String user, String pw) {
 		usernameStr = user;
@@ -796,9 +803,9 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * upon clicking the manage button the user, if their credentials permit, will be taken to the manager screen and the 
+	 * Upon this method being called the user, if their staff account credentials permit, will be taken to the manager screen and the 
 	 * staff screen will be hidden.
-	 * @param event
+	 * @param event : an object representing user action that calls the method, in this case clicking the manage button
 	 * @throws SQLException
 	 */
 	public void switchToManagerScreen(ActionEvent event) throws SQLException {
@@ -833,7 +840,7 @@ public class StaffScreenController implements Initializable {
 	/**
 	 * Upon clicking the sign out button the user will be taken back to the login screen and the staff screen will be hidden,
 	 * activity logging will be stopped at this point until someone logs in again.
-	 * @param event
+	 * @param event : an object representing a user action, in this case clicking the sign out button
 	 */
 	public void signOut(ActionEvent event) {
 		try {
@@ -859,7 +866,7 @@ public class StaffScreenController implements Initializable {
 	// TableView ----------------------------
 	
 	/**
-	 * upon being called all of the user controls for searching the orders and stored orders
+	 * Upon being called all of the user controls for searching the orders and stored orders
 	 * will be enabled. This ensures the user selects a set of orders to look at in the first place.
 	 */
 	public void enableSearch() {
@@ -867,8 +874,8 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This method records the user inputted table number, and the user chice of whether to query stored or working 
-	 * orders, these variables are then passed it to the StaffModel methods that interact with the
+	 * This method records the user inputed table number, and the user choice of whether to query stored or working 
+	 * orders from GUI prompts, these variables are then passed it to the StaffModel methods that interact with the
 	 * database to search for all orders from that table. All corresponding orders are displayed in the table
 	 * @throws SQLException 
 	 */
@@ -906,9 +913,9 @@ public class StaffScreenController implements Initializable {
 	}
 
 	/**
-	 * This method records a user inputted string to try and match with the name of a food item, 
-	 * and the user chice of whether to query stored or working 
-	 * orders, these variables are then passed it to the StaffModel methods that interact with the
+	 * This method records a user inputed string to try and match with the name of a food item, 
+	 * and the user choice of whether to query stored or working 
+	 * orders from GUI prompts, these variables are then passed it to the StaffModel methods that interact with the
 	 * database to search for all corresponding orders from that table. All corresponding orders are displayed in the table
 	 * @throws SQLException 
 	 */
@@ -938,9 +945,9 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This method records a user inputted string to try and match with the special requests field of an order, 
-	 * and the user chice of whether to query stored or working 
-	 * orders, these variables are then passed it to the StaffModel methods that interact with the
+	 * This method records a user inputed string to try and match with the special requests field of an order, 
+	 * and the user choice of whether to query stored or working 
+	 * orders from GUI prompts, these variables are then passed it to the StaffModel methods that interact with the
 	 * database to search for all orders from that table. All corresponding orders are displayed in the table
 	 * @throws SQLException 
 	 */
@@ -971,9 +978,9 @@ public class StaffScreenController implements Initializable {
 	}
 
 	/**
-	 * This method records a user inputted string to try and match with thecomment field of an order, 
-	 * and the user chice of whether to query stored or working 
-	 * orders, these variables are then passed it to the StaffModel methods that interact with the
+	 * This method records a user inputed string to try and match with the comment field of an order, 
+	 * and the user choice of whether to query stored or working 
+	 * orders from GUI prompts, these variables are then passed it to the StaffModel methods that interact with the
 	 * database to search for all orders from that table corresponding to the entered string.
 	 * All corresponding orders are displayed in the table
 	 * @throws SQLException 
@@ -1004,16 +1011,16 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This method records user inputted price values, 
-	 * and the user chice of whether to query stored or working 
+	 * This method records user inputed price values from the GUI, 
+	 * and the user choice of whether to query stored or working 
 	 * orders, these variables are then passed it to the StaffModel methods that interact with the
-	 * database to search for all orders from that table corresponding to the entered range.
+	 * database to search for all orders from that table corresponding to the entered price range.
 	 * All corresponding orders are displayed in the table
 	 */
 	public void searchByPrice() {
 		if (searchPriceBeginTxt.getText().equals("") || searchPriceBeginTxt.getText().equals(null)
 				|| searchPriceEndTxt.getText().equals("") || searchPriceEndTxt.getText().equals(null)) {
-			searchStatus.setText("Nothing to look for");
+			searchStatus.setText("Please fill in both price fields");
 		} else {
 
 			String inputPriceBeginStr = searchPriceBeginTxt.getText();
@@ -1049,8 +1056,8 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This method records a user choice of whether to look for completed orders or incomplete orders, 
-	 * and the user chice of whether to query stored or working 
+	 * This method records a user choice from a ComboBox of whether to look for completed orders or incomplete orders, 
+	 * and the user choice of whether to query stored or working 
 	 * orders, these variables are then passed it to the StaffModel methods that interact with the
 	 * database to search for all corresponding orders from that table. All corresponding orders are displayed in the table
 	 */
@@ -1111,8 +1118,8 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This method records a user choice from a JavaFX DatePicker, 
-	 * and the user chice of whether to query stored or working 
+	 * This method records a date as a String the user picks from a JavaFX DatePicker, 
+	 * and the user choice of whether to query stored or working 
 	 * orders, these variables are then passed it to the StaffModel methods that interact with the
 	 * database to search for all orders from that table from that chosen date.
 	 * All corresponding orders are displayed in the table
@@ -1141,9 +1148,9 @@ public class StaffScreenController implements Initializable {
 	
 	/**
 	 * This method records a user time range entered in TextFields, 
-	 * and the user chice of whether to query stored or working 
+	 * and the user choice of whether to query stored or working 
 	 * orders, these variables are then passed it to the StaffModel methods that interact with the
-	 * database to search for all orders from that table within the fiven time. All corresponding orders are displayed in the table
+	 * database to search for all orders from that table within the given time. All corresponding orders are displayed in the table
 	 */
 	public void searchForTimeInterval() {
 		if (searchTimeBeginHourTxt.getText().equals("") || searchTimeBeginMinuteTxt.getText().equals("")
@@ -1182,7 +1189,7 @@ public class StaffScreenController implements Initializable {
 	}
 	
 	/**
-	 * This method retrieves all orders from either the stored orders or current working orders and displayes them to the table.
+	 * This method retrieves all orders from either the stored orders or current working orders and displays them in the table.
 	 * @throws SQLException 
 	 */
 	public void retrieveAllOrders() throws SQLException {
@@ -1207,10 +1214,11 @@ public class StaffScreenController implements Initializable {
 	// Activity recording
 	
 	/**
-	 * This method takes a simple string describing a user activity or action and then passes it, alongwith a timestamp and 
-	 * the username of the logged in user, to a StaffModel method 
+	 * This method takes a simple string describing a user activity or action and then passes it, along with a formatted time
+	 * stamp String generated at the time of the method being called, and 
+	 * the username String of the logged in user, to a StaffModel method 
 	 * which then records an entry the manager can look at later.
-	 * @param activity String
+	 * @param activity : String describing a user action in the system the managers might want to keep a track of
 	 * @throws SQLException 
 	 */
 	public void saveActivityLog(String activity) throws SQLException {

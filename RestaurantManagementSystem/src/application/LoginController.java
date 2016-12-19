@@ -21,6 +21,8 @@ import javafx.stage.Stage;
 
 /**
  * This class provides the logic (other than direct database interactions) to the LoginScreen GUI
+ * The methods and structure of this class are derived from the tutorials available from the ProgrammingKnowledge playlist 
+ * JavaFX tutorial for beginners : https://www.youtube.com/watch?v=9YrmON6nlEw&list=PLS1QulWo1RIaUGP446_pWLgTZPiFizEMq
  * @author jarrod joshua
  */
 public class LoginController implements Initializable {
@@ -51,8 +53,8 @@ public class LoginController implements Initializable {
 	/**
 	 * This method is called upon a user pressing the login button it validates whether the credentials they entered are valid
 	 * by calling the verify methods from the LoginModel object and then opens the manager screen or the staff screen if the login inputs 
-	 * permits that. This hides the login screen upon completion.
-	 * @param event
+	 * permit either level of access to the program. This hides the login screen upon completion.
+	 * @param event : an action the methods waits for, in this instance user clicking the corresponding login button
 	 */
 	public void login(ActionEvent event) {
 		try {
@@ -75,7 +77,6 @@ public class LoginController implements Initializable {
 			} else if (loginModel.verifyManagerLogin(txtUsername.getText(), txtPassword.getText())) {
 				currentUser = txtUsername.getText();
 				lblLoginStatus.setText("Username and Password Correct");
-				//loginModel.closeConnection();
 				((Node)event.getSource()).getScene().getWindow().hide();
 				Stage primaryStage = new Stage();
 				FXMLLoader loader = new FXMLLoader();
@@ -105,11 +106,12 @@ public class LoginController implements Initializable {
 	}
 	
 	/**
-	 * This takes just a simple string describing an event or action the currently logged in user performs , it generates a time
-	 * string and records the username of the currently logged in user, and passes these to the LoginModel object method to 
+	 * This takes just a simple string 'activity' describing an event or action the currently logged in user performs , it instantaneously 
+	 * generates a formated time string at the time of calling the method,
+	 * and records the username of the currently logged in user, and passes these to the LoginModel object method to 
 	 * save the activity log to the database.
 	 * 
-	 * @param activity String
+	 * @param activity : String describing a users action the managers can look at in the records
 	 * @throws SQLException 
 	 */
 	public void saveActivityLog(String activity) throws SQLException {

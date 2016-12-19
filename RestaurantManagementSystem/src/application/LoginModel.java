@@ -9,8 +9,12 @@ import java.sql.*;
  * The LoginModel class contains all the methods that the LoginScreenController class uses to access and interact with the database, 
  * this class focuses on verifying the login details a potential user may enter, it also initialises the necessary tables that this 
  * application will need to function at the bare minimum if the local RestaurantDB.sqlite file is deleted and a new one is created 
- * with no tables by default. There is also a special emergency admin account inserted into the database to allow access back in if the 
+ * with no tables by default. There is also a special emergency 'admin' account inserted into the database to allow access back in if the 
  * database is deleted.
+ * The methods and structure of this class are derived from the tutorials available from the ProgrammingKnowledge playlist 
+ * JavaFX tutorial for beginners : https://www.youtube.com/watch?v=9YrmON6nlEw&list=PLS1QulWo1RIaUGP446_pWLgTZPiFizEMq
+ * This class makes use of a 3rd party library, the SQLite JDBC Driver 
+ * available from https://bitbucket.org/xerial/sqlite-jdbc/downloads
  * @author jarrod joshua
  */
 
@@ -19,9 +23,8 @@ public class LoginModel {
 	private Connection connection;
 	
 	/**
-	 * The LoginModel class constructor initialises a connection to the SQLite database and initialises tables if they are not found
-	 * The methods and structure in this class and its children are derived from the tutorials available from the ProgrammingKnowledge playlist 
-	 * JavaFX tutorial for beginners : https://www.youtube.com/watch?v=9YrmON6nlEw&list=PLS1QulWo1RIaUGP446_pWLgTZPiFizEMq
+	 * The LoginModel class constructor initialises a connection to the SQLite database and initialises tables that are essential to the system
+	 * if they are not found.
 	 */
 	LoginModel() {
 		connection = SqliteConnection.Connector();
@@ -55,11 +58,11 @@ public class LoginModel {
 	/**
 	 * Determines if user has staff level access only.
 	 * This method takes a username password string pair entered into the login GUI and then searches the database to determine if 
-	 * the login input is in the system and if it allows staff level access to the application, i.e. registering orders etc but not manager level 
-	 * admin.
+	 * the login input corresponds to a staff account in the database and if it allows staff level access to the application,
+	 * i.e. registering orders etc but not manager level actions.
 	 * @param user A string input that will be searched for in 'username' field in the 'staff' table
 	 * @param pass A string input that will be searched for in the 'password' field in the 'staff' table
-	 * @return boolean
+	 * @return boolean : true if staff access is permitted or false if not
 	 * @throws SQLException 
 	 */
 	boolean verifyStaffLogin(String user, String pass) throws SQLException {
@@ -97,7 +100,7 @@ public class LoginModel {
 	 * application
 	 * @param user A string input that will be searched for in 'username' field in the 'staff' table
 	 * @param pass A string input that will be searched for in the 'password' field in the 'staff' table
-	 * @return
+	 * @return boolean true if the user has manager level access to the program, or false if not
 	 * @throws SQLException
 	 */
 	boolean verifyManagerLogin(String user, String pass) throws SQLException {
@@ -131,9 +134,9 @@ public class LoginModel {
 	/**
 	 * This method saves a record describing an action the currently logged in user has just performed and saves an entry with
 	 * the action, time and username of the currently logged in account into the database
-	 * the managers can look through
+	 * the managers can then look through
 	 * @param user the 'staff'username attribute of the currently logged in user
-	 * @param act a string describing what the current user has just done for tracking user activity in th logs managers see
+	 * @param act a string describing what the current user has just done for tracking user activity in the logs managers see
 	 * @param timestamp a formatted string containing the date and time of the action
 	 * @throws SQLException 
 	 */
@@ -157,8 +160,9 @@ public class LoginModel {
 	} 
 	
 	/**
-	 * Creates a staff table if one does not already exist and also inserts a record allowing a special admin account user to login
-	 * This is included in case the database file is deleted and there is still an emergency way back into the application.
+	 * Creates a staff table if one does not already exist and also inserts a record allowing a special 'admin' account user to login
+	 * This is included in case the database file is deleted and there is still an emergency way back into the application as all the staff
+	 * accounts would be missing in that case.
 	 */
 	void initialiseStaffTable() {
 		PreparedStatement prepStmt = null;
@@ -196,7 +200,7 @@ public class LoginModel {
 	}
 	
 	/**
-	 * Creates an orders table in case it does not already exist in the event of the database file being lost.
+	 * Creates an 'orders' table in the database in case it does not already exist in the event of the database file being lost.
 	 * This table holds working orders of tables currently being served
 	 */
 	void initOrdersTable() {
@@ -215,7 +219,7 @@ public class LoginModel {
 	}
 	
 	/**
-	 * Creates a menu table in case it does not already exist in the event of the database file being lost.
+	 * Creates a 'menu' table into the database in case it does not already exist in the event of the database file being lost.
 	 * This table holds the current menu the restaurant offers.
 	 */
 	void initMenuTable() {
@@ -233,8 +237,8 @@ public class LoginModel {
 	} 
 	
 	/**
-	 * Creates an storedOrders table in case it does not already exist in the event of the database file being lost.
-	 * Ths table holds records of prevoisly completed orders or orders imported by managers, they are kept separate from 
+	 * Creates an 'storedOrders' table in case it does not already exist in the event of the database file being lost.
+	 * This table holds records of previously completed orders or orders imported by managers, they are kept separate from 
 	 * working orders so as to avoid confusion and ambiguity with working orders which are the immediate priority of the 
 	 * staff to deal with.
 	 */
@@ -254,7 +258,7 @@ public class LoginModel {
 	}
 	
 	/**
-	 * Creates an activityLog table in case it does not already exist in the event of the database file being lost.
+	 * Creates an 'activityLog' table in the database in case it does not already exist in the event of the database file being lost.
 	 * This is where all the user information is stored and managers can track their employees behaviour on the program.
 	 */
 	void initActivityLogTable() {
